@@ -34,7 +34,6 @@ public class Drivetrain extends SubsystemBase {
     else if (mode.equals(Constants.TANK_DRIVE_STRING)){
       tankdrive(0, 0);
     }
-    System.out.println(mode);
   } 
    public void drive(double leftY, double rightX, double rightY ){
     }
