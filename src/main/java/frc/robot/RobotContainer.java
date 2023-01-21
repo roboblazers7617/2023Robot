@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
 import frc.robot.shuffleboard.ShuffleboardInfo;
 import frc.robot.shuffleboard.ShuffleboardTabBase;
@@ -42,6 +43,7 @@ public class RobotContainer {
     //YOUR CODE HERE |   |   |
     //               \/ \/  \/ 
     tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
+    tabs.add(new DriverStationTab());
     //STOP HERE
 
     ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();

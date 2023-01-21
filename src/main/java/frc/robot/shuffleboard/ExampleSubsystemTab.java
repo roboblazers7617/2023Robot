@@ -18,6 +18,7 @@ public class ExampleSubsystemTab extends ShuffleboardTabBase{
     IntegerPublisher xPub;
     ExampleSubsystem exampleSubsystem;
 
+    // use IntegerSubscriber to get integers from shuffleboard
     public ExampleSubsystemTab(ExampleSubsystem subsystem){
         //get the main network table
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
