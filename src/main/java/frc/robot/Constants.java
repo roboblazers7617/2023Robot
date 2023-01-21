@@ -19,10 +19,10 @@ public final class Constants {
     public static final int kDriverControllerPort = 0;
   }
     public static class DrivetrainConstants{
-    public static final int LEFT_WHEEL_PORT = 3;
-    public static final int RIGHT_WHEEL_PORT = 4;
-    public static final int LEFT_FOLLOWER_WHEEL_PORT = 32;
-    public static final int RIGHT_FOLLOWER_WHEEL_PORT = 31;
+    public static final int LEFT_WHEEL_PORT = 4;
+    public static final int RIGHT_WHEEL_PORT = 3;
+    public static final int LEFT_FOLLOWER_WHEEL_PORT = 31;
+    public static final int RIGHT_FOLLOWER_WHEEL_PORT = 32;
     public static final double DRIVE_TRAIN_SPEED = .25;
     public static final int CONTROLLER_PORT = 0;
     public static final String ARCADE_DRIVE_STRING = "ARCADE";
