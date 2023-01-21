@@ -16,8 +16,10 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkMax leftFrontMotor = new CANSparkMax(Constants.LEFT_WHEEL_PORT,MotorType.kBrushless);
   private final CANSparkMax rightFrontMotor = new CANSparkMax(Constants.RIGHT_WHEEL_PORT,MotorType.kBrushless);
   private final DifferentialDrive drivetrain;
-  private final SendableChooser<String> drivetrainSelector = new SendableChooser<>();
-  private String drivemode;
+  private String mode;
+  public void setDriveTrainMode (String mode){
+    this.mode = mode;
+  }
   public Drivetrain() {
     drivetrain = new DifferentialDrive(leftFrontMotor,rightFrontMotor);
     drivetrain.setMaxOutput(.25);
