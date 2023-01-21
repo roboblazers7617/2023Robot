@@ -4,12 +4,24 @@
 
 package frc.robot;
 
+import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.shuffleboard.DriverStationTab;
+import frc.robot.shuffleboard.ExampleSubsystemTab;
+import frc.robot.shuffleboard.ShuffleboardInfo;
+import frc.robot.shuffleboard.ShuffleboardTabBase;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import java.util.ArrayList;
+
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -21,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Drivetrain drivetrain = new Drivetrain();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -30,6 +43,21 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    //create shuffleboardinfo.java
+    drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(), m_driverController.getRightX(),m_driverController.getRightY()), drivetrain));
+    ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
+    //YOUR CODE HERE |   |   |
+    //               \/ \/  \/ 
+    tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
+    tabs.add(new DriverStationTab(drivetrain));
+    //STOP HERE
+
+    ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
+    shuffleboardInfo.addTabs(tabs);
+    
+    
+    //create some tabs
+
   }
 
   /**
@@ -45,6 +73,13 @@ public class RobotContainer {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
+    Trigger leftTop = m_driverController.leftBumper();
+    leftTop.onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED)))
+        .onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.MAX_SPEED)));
+
+        Trigger rightTop = m_driverController.rightBumper();
+    rightTop.onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED)))
+        .onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.MAX_SPEED)));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
