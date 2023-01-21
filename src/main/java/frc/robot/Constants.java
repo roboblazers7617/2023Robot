@@ -16,7 +16,11 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int kDriverControllerPort = 0;
   }
-  public static final String MECANUM_DRIVE_STRING = "MECANUM";
+  public static final int LEFT_WHEEL_PORT = 3;
+  public static final int RIGHT_WHEEL_PORT = 4;
+  public static final double DRIVE_TRAIN_SPEED = .25;
+  public static final int CONTROLLER_PORT = 0;
+  public static final String ARCADE_DRIVE_STRING = "ARCADE";
   public static final String TANK_DRIVE_STRING = "TANK";
 
 }

@@ -8,8 +8,6 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -23,28 +21,21 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain() {
     drivetrain = new DifferentialDrive(leftFrontMotor,rightFrontMotor);
     drivetrain.setMaxOutput(.25);
-    drivetrainSelector.setDefaultOption("Tank", Constants.TANKMODE);
-    drivetrainSelector.addOption("Arcade", Constants.ARCADEMODE);
-    SmartDashboard.putData("Drivetrain Mode", drivetrainSelector);
+    mode = Constants.TANK_DRIVE_STRING;
   }
 
   @Override
   public void periodic() {
-    drivemode = drivetrainSelector.getSelected();
+    if (mode.equals(Constants.ARCADE_DRIVE_STRING)){
+      arcadedrive(0, 0);
+    }
+    else if (mode.equals(Constants.TANK_DRIVE_STRING)){
+      tankdrive(0, 0);
+    }
+    System.out.println(mode);
   } 
    public void drive(double leftY, double rightX, double rightY ){
-    switch (drivemode) {
-      case Constants.TANKMODE:
-        tankdrive(leftY, rightY);
-        break;
-      case Constants.ARCADEMODE:
-        arcadedrive(leftY, rightX);
-        break;
-      default:
-        tankdrive(leftY, rightY);
-        break;
     }
-   }
   private void tankdrive(double leftSpeed, double rightSpeed){
       drivetrain.tankDrive(leftSpeed, rightSpeed);
   }

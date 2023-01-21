@@ -11,6 +11,7 @@ import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
 import frc.robot.shuffleboard.ShuffleboardInfo;
 import frc.robot.shuffleboard.ShuffleboardTabBase;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 
 import java.util.ArrayList;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
+  private final Drivetrain drivetrain = new Drivetrain();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -43,7 +45,7 @@ public class RobotContainer {
     //YOUR CODE HERE |   |   |
     //               \/ \/  \/ 
     tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
-    tabs.add(new DriverStationTab());
+    tabs.add(new DriverStationTab(drivetrain));
     //STOP HERE
 
     ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
