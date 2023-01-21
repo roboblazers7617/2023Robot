@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ExampleSubsystem extends SubsystemBase {
+  private int x = 0;
   /** Creates a new ExampleSubsystem. */
   public ExampleSubsystem() {}
 
@@ -35,8 +36,13 @@ public class ExampleSubsystem extends SubsystemBase {
     return false;
   }
 
+  public int getData(){
+    return x;
+  }
+
   @Override
   public void periodic() {
+    x++;
     // This method will be called once per scheduler run
   }
 
