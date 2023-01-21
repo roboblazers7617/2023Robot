@@ -30,7 +30,7 @@ public class Drivetrain extends SubsystemBase {
 
   private final DifferentialDrive drivetrain;
   private String mode;
-  private double maxDrivetrainspeed;
+  private double maxDrivetrainspeed = DrivetrainConstants.MAX_SPEED;
   public void setDriveTrainMode (String mode){
     this.mode = mode;
   }
