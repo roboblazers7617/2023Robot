@@ -49,18 +49,23 @@ public class Drivetrain extends SubsystemBase {
     configureMotor(rightFollowerMotor);
 
     rightMotorGroup.setInverted(true);
+    drivetrain.setDeadband(.1);
+
+
   }
 
   @Override
   public void periodic() {
-    if (mode.equals(DrivetrainConstants.ARCADE_DRIVE_STRING)){
-      arcadedrive(0, 0);
-    }
-    else if (mode.equals(DrivetrainConstants.TANK_DRIVE_STRING)){
-      tankdrive(0, 0);
-    }
   } 
    public void drive(double leftY, double rightX, double rightY ){
+    if (mode.equals(DrivetrainConstants.ARCADE_DRIVE_STRING)){
+      arcadedrive(leftY, -rightX);
+    }
+    else if (mode.equals(DrivetrainConstants.TANK_DRIVE_STRING)){
+      tankdrive(rightY, leftY);
+    }
+
+
     }
   private void tankdrive(double leftSpeed, double rightSpeed){
       drivetrain.tankDrive(leftSpeed, rightSpeed);

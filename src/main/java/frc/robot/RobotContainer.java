@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -43,7 +44,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings();
     //create shuffleboardinfo.java
-
+    drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(), m_driverController.getRightX(),m_driverController.getRightY()), drivetrain));
     ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
     //YOUR CODE HERE |   |   |
     //               \/ \/  \/ 

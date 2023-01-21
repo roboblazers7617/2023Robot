@@ -33,6 +33,6 @@ public final class Constants {
     public static final int CURRENT_LIMIT = 40;
     public static final double MAX_SPEED = 0.5;
     public static final double SLOW_SPEED = 0.25;
-    public static final double FAST_SPEED = 0.9;
+    public static final double FAST_SPEED = 1;
   }
 }
