@@ -7,7 +7,13 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.shuffleboard.ExampleSubsystemTab;
+import frc.robot.shuffleboard.ShuffleboardInfo;
+import frc.robot.shuffleboard.ShuffleboardTabBase;
 import frc.robot.subsystems.ExampleSubsystem;
+
+import java.util.ArrayList;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -30,6 +36,20 @@ public class RobotContainer {
   public RobotContainer() {
     // Configure the trigger bindings
     configureBindings();
+    //create shuffleboardinfo.java
+
+    ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
+    //YOUR CODE HERE |   |   |
+    //               \/ \/  \/ 
+    tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
+    //STOP HERE
+
+    ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
+    shuffleboardInfo.addTabs(tabs);
+    
+    
+    //create some tabs
+
   }
 
   /**
