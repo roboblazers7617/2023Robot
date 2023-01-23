@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -16,23 +17,40 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
   public static class OperatorConstants {
-    public static final int kDriverControllerPort = 0;
+    public static final int DRIVER_CONTROLLER_PORT = 0;
   }
     public static class DrivetrainConstants{
     public static final int LEFT_WHEEL_PORT = 4;
     public static final int RIGHT_WHEEL_PORT = 3;
     public static final int LEFT_FOLLOWER_WHEEL_PORT = 31;
     public static final int RIGHT_FOLLOWER_WHEEL_PORT = 32;
+
     public static final double DRIVE_TRAIN_SPEED = .25;
-    public static final int CONTROLLER_PORT = 0;
+
     public static final String ARCADE_DRIVE_STRING = "ARCADE";
     public static final String TANK_DRIVE_STRING = "TANK";
+
     public static final double WHEEL_RADIUS = Units.inchesToMeters(3.0);
     public static final double WHEEL_GEAR_RATIO = 1/12.75;
     public static final double DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION = (2*Math.PI*WHEEL_RADIUS*WHEEL_GEAR_RATIO);
+
     public static final int CURRENT_LIMIT = 40;
+
     public static final double MAX_SPEED = 0.5;
     public static final double SLOW_SPEED = 0.25;
     public static final double FAST_SPEED = 1;
+
+    public static final double KP_LIN = 0;
+    public static final double KI_LIN = 0;
+    public static final double KD_LIN = 0;
+    public static final double KP_ROT = 0;
+    public static final double KI_ROT = 0;
+    public static final double KD_ROT = 0;
   }
+   public static class VisionConstants {
+    public static final Transform3d CAMERA_POSITION = null;
+    public static final double[] TAG_HEIGHT = null;
+    public static final double CAMERA_HEIGHT = 0;
+    public static final double CAMERA_PITCH = 0;
+   }
 }

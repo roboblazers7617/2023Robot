@@ -58,18 +58,19 @@ public class Drivetrain extends SubsystemBase {
   } 
    public void drive(double leftY, double rightX, double rightY ){
     if (mode.equals(DrivetrainConstants.ARCADE_DRIVE_STRING)){
-      arcadedrive(-leftY, -rightX);
+      arcadeDrive(-leftY, -rightX);
     }
     else if (mode.equals(DrivetrainConstants.TANK_DRIVE_STRING)){
-      tankdrive(-leftY, -rightY);
+      tankDrive(-leftY, -rightY);
     }
 
 
     }
-  private void tankdrive(double leftSpeed, double rightSpeed){
+  private void tankDrive(double leftSpeed, double rightSpeed){
       drivetrain.tankDrive(leftSpeed, rightSpeed);
   }
-  private void arcadedrive(double xSpeed, double zRotation){
+  
+  public void arcadeDrive(double xSpeed, double zRotation){
     drivetrain.arcadeDrive(xSpeed, zRotation);
 }
 
