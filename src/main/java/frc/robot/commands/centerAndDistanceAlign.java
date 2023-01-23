@@ -45,7 +45,7 @@ public class centerAndDistanceAlign extends CommandBase {
 
     if(mVision.getBestTagDistance() > 0){   
     mDrivetrain.arcadeDrive(MathUtil.clamp(-distanceController.calculate(mVision.getBestTagDistance(),distanceToAlign), -.5, .5),
-     MathUtil.clamp(-rotationalController.calculate(mVision.getBestTagYaw()), -.5, .5));
+     MathUtil.clamp(rotationalController.calculate(mVision.getBestTagYaw()), -.5, .5));
      }
     else{
       mDrivetrain.arcadeDrive(0, 0);

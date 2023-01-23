@@ -45,7 +45,8 @@ public class VisionTab extends ShuffleboardTabBase{
         //add the network table to shuffleboard, the name must be the same, the default value does not matter. 
         visionTab.add("Angle To Tag", 0);
         visionTab.add("Distance From Tag", 0);
-        visionTab.add("Best Tab ID", "No tag found.");
+        visionTab.add("Best Tag ID", "No tag found.");
+        visionTab.add(mDrivetrain);
         
     }
     public void update(){

@@ -16,7 +16,6 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -35,8 +34,6 @@ public class Vision extends SubsystemBase {
   ShuffleboardTab vision;
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
   NetworkTable datatable = inst.getTable("Vision");
-  DoublePublisher angleToTarget;
-  DoublePublisher distanceToTarget;
   
   public Vision() {
   try{
@@ -52,15 +49,16 @@ public class Vision extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     result = camera.getLatestResult();
-    if(result.hasTargets()){
-    bestTag = result.getBestTarget();
-    }
-    angleToTarget.set(getBestTagYaw());
+    if(result.hasTargets())
+      bestTag = result.getBestTarget();
+    else
+      bestTag = null;
   }
 
 public double getBestTagDistance() {
   if(bestTag != null)
-  return PhotonUtils.calculateDistanceToTargetMeters(VisionConstants.CAMERA_HEIGHT, VisionConstants.TAG_HEIGHT[bestTag.getFiducialId()], VisionConstants.CAMERA_PITCH, Units.degreesToRadians(bestTag.getPitch()));
+  return bestTag.getBestCameraToTarget().getX();
+  //return PhotonUtils.calculateDistanceToTargetMeters(Units.inchesToMeters(VisionConstants.CAMERA_HEIGHT), Units.inchesToMeters(VisionConstants.TAG_HEIGHT[bestTag.getFiducialId()]), VisionConstants.CAMERA_PITCH, Units.degreesToRadians(bestTag.getPitch()));
   else
     return 0;
 }
