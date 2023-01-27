@@ -16,10 +16,13 @@ import frc.robot.Constants.DrivetrainConstants;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
-  private final CANSparkMax leftFrontMotor = new CANSparkMax(DrivetrainConstants.LEFT_WHEEL_PORT,MotorType.kBrushless);
-  private final CANSparkMax rightFrontMotor = new CANSparkMax(DrivetrainConstants.RIGHT_WHEEL_PORT,MotorType.kBrushless);
-  private final CANSparkMax leftFollowerMotor = new CANSparkMax(DrivetrainConstants.LEFT_FOLLOWER_WHEEL_PORT,MotorType.kBrushless);
-  private final CANSparkMax rightFollowerMotor = new CANSparkMax(DrivetrainConstants.RIGHT_FOLLOWER_WHEEL_PORT,MotorType.kBrushless);
+  private final CANSparkMax leftFrontMotor = new CANSparkMax(DrivetrainConstants.LEFT_WHEEL_PORT, MotorType.kBrushless);
+  private final CANSparkMax rightFrontMotor = new CANSparkMax(DrivetrainConstants.RIGHT_WHEEL_PORT,
+      MotorType.kBrushless);
+  private final CANSparkMax leftFollowerMotor = new CANSparkMax(DrivetrainConstants.LEFT_FOLLOWER_WHEEL_PORT,
+      MotorType.kBrushless);
+  private final CANSparkMax rightFollowerMotor = new CANSparkMax(DrivetrainConstants.RIGHT_FOLLOWER_WHEEL_PORT,
+      MotorType.kBrushless);
   private final MotorControllerGroup leftMotorGroup = new MotorControllerGroup(leftFrontMotor, leftFollowerMotor);
   private final MotorControllerGroup rightMotorGroup = new MotorControllerGroup(rightFrontMotor, rightFollowerMotor);
   private final RelativeEncoder leftFrontEncoder = leftFrontMotor.getEncoder();
@@ -30,18 +33,26 @@ public class Drivetrain extends SubsystemBase {
   private final DifferentialDrive drivetrain;
   private String mode;
   private double maxDrivetrainspeed = DrivetrainConstants.MAX_SPEED;
-  public void setDriveTrainMode (String mode){
+
+  public void setDriveTrainMode(String mode) {
     this.mode = mode;
   }
+
   public Drivetrain() {
-    drivetrain = new DifferentialDrive(leftMotorGroup,rightMotorGroup);
+    drivetrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
     drivetrain.setMaxOutput(DrivetrainConstants.MAX_SPEED);
     mode = DrivetrainConstants.TANK_DRIVE_STRING;
+    
+    leftFrontMotor.restoreFactoryDefaults();
+    rightFrontMotor.restoreFactoryDefaults();
+    leftFollowerMotor.restoreFactoryDefaults();
+    rightFollowerMotor.restoreFactoryDefaults();
+
     configureEncoder(leftFrontEncoder);
     configureEncoder(rightFrontEncoder);
     configureEncoder(leftFollowerEncoder);
     configureEncoder(rightFollowerEncoder);
-    
+
     configureMotor(leftFrontMotor);
     configureMotor(rightFrontMotor);
     configureMotor(leftFollowerMotor);
@@ -50,47 +61,62 @@ public class Drivetrain extends SubsystemBase {
     rightMotorGroup.setInverted(true);
     drivetrain.setDeadband(.1);
 
-
   }
 
   @Override
   public void periodic() {
-  } 
-   public void drive(double leftY, double rightX, double rightY ){
-    if (mode.equals(DrivetrainConstants.ARCADE_DRIVE_STRING)){
+  }
+
+  public void drive(double leftY, double rightX, double rightY) {
+    if (mode.equals(DrivetrainConstants.ARCADE_DRIVE_STRING)) {
       arcadeDrive(-leftY, -rightX);
-    }
-    else if (mode.equals(DrivetrainConstants.TANK_DRIVE_STRING)){
+    } else if (mode.equals(DrivetrainConstants.TANK_DRIVE_STRING)) {
       tankDrive(-leftY, -rightY);
     }
-
-
-    }
-  private void tankDrive(double leftSpeed, double rightSpeed){
-      drivetrain.tankDrive(leftSpeed, rightSpeed);
   }
-  
-  public void arcadeDrive(double xSpeed, double zRotation){
+
+  private void tankDrive(double leftSpeed, double rightSpeed) {
+    drivetrain.tankDrive(leftSpeed, rightSpeed);
+  }
+
+  public void arcadeDrive(double xSpeed, double zRotation) {
     drivetrain.arcadeDrive(xSpeed, zRotation);
-}
+  }
 
-public void setDrivetrainSpeed(double maxSpeed){
-  maxDrivetrainspeed = maxSpeed;
-  drivetrain.setMaxOutput(maxSpeed);
-}
+  public void setDrivetrainSpeed(double maxSpeed) {
+    maxDrivetrainspeed = maxSpeed;
+    drivetrain.setMaxOutput(maxSpeed);
+  }
 
-public double getCarmax(){
-  return maxDrivetrainspeed;
-}
+  public double getCarmax() {
+    return maxDrivetrainspeed;
+  }
 
-private void configureMotor (CANSparkMax motorController){
-  motorController.restoreFactoryDefaults();
-  motorController.setIdleMode(IdleMode.kCoast);
-  motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
-}
+  private void configureMotor(CANSparkMax motorController) {
+    
+    motorController.setIdleMode(IdleMode.kCoast);
+    motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
+  }
 
-private void configureEncoder(RelativeEncoder motorEncoder){
-  motorEncoder.setPositionConversionFactor(DrivetrainConstants.DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION);
-  motorEncoder.setPosition(0);
-}
+  private void configureEncoder(RelativeEncoder motorEncoder) {
+    motorEncoder.setPositionConversionFactor(DrivetrainConstants.DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION);
+    motorEncoder.setPosition(0);
+    motorEncoder.setVelocityConversionFactor(DrivetrainConstants.DRIVETRAIN_ENCODER_VELOCITY);
+  }
+
+  public double getLeftVelocity() {
+    return leftFrontEncoder.getVelocity();
+  }
+
+  public double getRigthVelocity() {
+    return rightFrontEncoder.getVelocity();
+  }
+
+  public double getLeftDistance() {
+    return leftFrontEncoder.getPosition();
+  }
+
+  public double getRightDistance() {
+    return rightFrontEncoder.getPosition();
+  }
 }
