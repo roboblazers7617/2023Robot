@@ -49,12 +49,6 @@ public class Drivetrain extends SubsystemBase {
     drivetrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
     drivetrain.setMaxOutput(DrivetrainConstants.MAX_SPEED);
     mode = DrivetrainConstants.TANK_DRIVE_STRING;
-    
-    leftFrontMotor.restoreFactoryDefaults();
-    rightFrontMotor.restoreFactoryDefaults();
-    leftFollowerMotor.restoreFactoryDefaults();
-    rightFollowerMotor.restoreFactoryDefaults();
-
     configureEncoder(leftFrontEncoder);
     configureEncoder(rightFrontEncoder);
     configureEncoder(leftFollowerEncoder);
@@ -83,6 +77,7 @@ public class Drivetrain extends SubsystemBase {
     } else if (mode.equals(DrivetrainConstants.TANK_DRIVE_STRING)) {
       tankDrive(-leftY, -rightY);
     }
+
   }
 
   private void tankDrive(double leftSpeed, double rightSpeed) {
@@ -103,7 +98,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private void configureMotor(CANSparkMax motorController) {
-    
+    motorController.restoreFactoryDefaults();
     motorController.setIdleMode(IdleMode.kCoast);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
   }

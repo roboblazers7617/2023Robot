@@ -31,9 +31,8 @@ public final class Constants {
     public static final String TANK_DRIVE_STRING = "TANK";
 
     public static final double WHEEL_RADIUS = Units.inchesToMeters(3.0);
-    public static final double WHEEL_GEAR_RATIO = 1.0/10.71;
-    public static final double DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION = (2.0*Math.PI*WHEEL_RADIUS*WHEEL_GEAR_RATIO);
-    public static final double DRIVETRAIN_ENCODER_VELOCITY = (DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION/60.0);
+    public static final double WHEEL_GEAR_RATIO = 1/12.75;
+    public static final double DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION = (2*Math.PI*WHEEL_RADIUS*WHEEL_GEAR_RATIO);
 
     public static final int CURRENT_LIMIT = 40;
 
