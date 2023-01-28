@@ -9,6 +9,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.PIDTagDistance;
+import frc.robot.commands.ScoreGridSelection;
 import frc.robot.commands.TurnToTag;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
@@ -55,7 +56,8 @@ public class RobotContainer {
    */
   public RobotContainer() {
     // Configure the trigger bindings
-    configureBindings();
+    configureDriverBindings();
+    configureOperatorBindings();
     // create shuffleboardinfo.java
     drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
         m_driverController.getRightX(), m_driverController.getRightY()), drivetrain));
@@ -89,7 +91,7 @@ public class RobotContainer {
    * {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
    * joysticks}.
    */
-  private void configureBindings() {
+  private void configureDriverBindings() {
     // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
     new Trigger(m_exampleSubsystem::exampleCondition)
         .onTrue(new ExampleCommand(m_exampleSubsystem));
@@ -101,11 +103,46 @@ public class RobotContainer {
     rightTop.onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED)))
         .onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.MAX_SPEED)));
 
-    // Trigger rightTopOperator = m_operatorController.rightBumper();
-    // rightTopOperator.onTrue(new InstantCommand(() ->  m_exampleSubsystem.yPressed()))
-    //     .onFalse(new InstantCommand(() -> m_exampleSubsystem.yPressed()));
+        // Schedule `exampleMethodCommand` when the Xbox controller's B button is
+        // pressed,
+        // cancelling on release.
+        m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+        m_driverController.a().whileTrue(new TurnToTag(vision, drivetrain));
+        m_driverController.x().whileTrue(new PIDTagDistance(vision, drivetrain, 1));
 
-    //set height to high
+    //this code calls the score grid selection command for the correct input
+    m_driverController.x()
+        .and(m_driverController.povLeft())
+        .onTrue(new ScoreGridSelection(0, 0));
+    m_driverController.y()
+        .and(m_driverController.povLeft())
+        .onTrue(new ScoreGridSelection(0, 1));
+    m_driverController.b()
+        .and(m_driverController.povLeft())
+        .onTrue(new ScoreGridSelection(0, 2));
+    m_driverController.x()
+        .and(m_driverController.povUp())
+        .onTrue(new ScoreGridSelection(1, 0));
+    m_driverController.y()
+        .and(m_driverController.povUp())
+        .onTrue(new ScoreGridSelection(1, 1));
+    m_driverController.b()
+        .and(m_driverController.povUp())
+        .onTrue(new ScoreGridSelection(1, 2));
+    m_driverController.x()
+        .and(m_driverController.povRight())
+        .onTrue(new ScoreGridSelection(2, 0));
+    m_driverController.y()
+        .and(m_driverController.povRight())
+        .onTrue(new ScoreGridSelection(2, 1));
+    m_driverController.b()
+        .and(m_driverController.povRight())
+        .onTrue(new ScoreGridSelection(2, 2));
+  }
+
+  private void configureOperatorBindings() {
+
+    // set height to high
     m_operatorController.rightBumper()
         .and(m_operatorController.y())
         .whileTrue(new InstantCommand(() -> m_exampleSubsystem.yPressed()));
@@ -113,12 +150,6 @@ public class RobotContainer {
     m_operatorController.rightBumper()
         .and(m_operatorController.povDown())
         .whileTrue(new InstantCommand(() -> m_exampleSubsystem.povDownPressed()));
-    // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-    // pressed,
-    // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    m_driverController.a().whileTrue(new TurnToTag(vision, drivetrain));
-    m_driverController.x().whileTrue(new PIDTagDistance(vision, drivetrain, 1));
   }
 
   /**
