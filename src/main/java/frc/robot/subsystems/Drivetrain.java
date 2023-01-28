@@ -49,17 +49,17 @@ public class Drivetrain extends SubsystemBase {
   private final Vision mVision;
 
   private final DifferentialDrive drivetrain;
-  private String mode;
+  private DrivetrainMode mode;
   private double maxDrivetrainspeed = DrivetrainConstants.MAX_SPEED;
 
-  public void setDriveTrainMode(String mode) {
+  public void setDriveTrainMode(DrivetrainMode mode) {
     this.mode = mode;
   }
 
   public Drivetrain(Vision vision) {
     drivetrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
     drivetrain.setMaxOutput(DrivetrainConstants.MAX_SPEED);
-    mode = DrivetrainConstants.TANK_DRIVE_STRING;
+    mode = DrivetrainMode.tankDrive;
 
     leftFrontMotor.restoreFactoryDefaults();
     rightFrontMotor.restoreFactoryDefaults();
@@ -93,9 +93,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(double leftY, double rightX, double rightY) {
-    if (mode.equals(DrivetrainConstants.ARCADE_DRIVE_STRING)) {
+    if (mode == DrivetrainMode.arcadeDrive) {
       arcadeDrive(-leftY, -rightX);
-    } else if (mode.equals(DrivetrainConstants.TANK_DRIVE_STRING)) {
+    } else if (mode == DrivetrainMode.tankDrive) {
       tankDrive(-leftY, -rightY);
     }
   }
