@@ -49,6 +49,12 @@ public class Drivetrain extends SubsystemBase {
     drivetrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
     drivetrain.setMaxOutput(DrivetrainConstants.MAX_SPEED);
     mode = DrivetrainConstants.TANK_DRIVE_STRING;
+
+    leftFrontMotor.restoreFactoryDefaults();
+    rightFrontMotor.restoreFactoryDefaults();
+    leftFollowerMotor.restoreFactoryDefaults();
+    rightFollowerMotor.restoreFactoryDefaults();
+
     configureEncoder(leftFrontEncoder);
     configureEncoder(rightFrontEncoder);
     configureEncoder(leftFollowerEncoder);
@@ -59,7 +65,8 @@ public class Drivetrain extends SubsystemBase {
     configureMotor(leftFollowerMotor);
     configureMotor(rightFollowerMotor);
 
-    rightMotorGroup.setInverted(true);
+    rightFrontMotor.setInverted(true);
+    rightFollowerMotor.setInverted(true);
     drivetrain.setDeadband(.1);
 
     mVision = vision;
@@ -77,7 +84,6 @@ public class Drivetrain extends SubsystemBase {
     } else if (mode.equals(DrivetrainConstants.TANK_DRIVE_STRING)) {
       tankDrive(-leftY, -rightY);
     }
-
   }
 
   private void tankDrive(double leftSpeed, double rightSpeed) {
@@ -98,7 +104,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   private void configureMotor(CANSparkMax motorController) {
-    motorController.restoreFactoryDefaults();
+
     motorController.setIdleMode(IdleMode.kCoast);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
   }
@@ -106,16 +112,36 @@ public class Drivetrain extends SubsystemBase {
   private void configureEncoder(RelativeEncoder motorEncoder) {
     motorEncoder.setPositionConversionFactor(DrivetrainConstants.DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION);
     motorEncoder.setPosition(0);
+    motorEncoder.setVelocityConversionFactor(DrivetrainConstants.DRIVETRAIN_ENCODER_VELOCITY);
+  }
+
+  public double getLeftVelocity() {
+    return leftFrontEncoder.getVelocity();
+  }
+
+  public double getRightVelocity() {
+    return rightFrontEncoder.getVelocity();
+  }
+
+  public double getLeftDistance() {
+    return leftFrontEncoder.getPosition();
+  }
+
+  public double getRightDistance() {
+    return rightFrontEncoder.getPosition();
   }
 
   private void updatePose() {
-    //Write code for local Odometry here:
+    // Write code for local Odometry here:
     String yourCode = "lorum ipsum jaskfd;asdf;as;dlkfj;";
 
-    // TODO: Optional<EstimatedRobotPose> cameraPose = mVision.getEstimatedGlobalPose("Put in your pose estimator pose");
-    //TODO: Add code below back in once there is a pose estimator above
-    //if(cameraPose.isPresent()){
-      // TODO: Put code here to use pose estimator function .addVisionMesurement(camerapose.get().estimatedPose.toPose2d(), cameraPose.get().timestampSeconds);
-  //  }
+    // TODO: Optional<EstimatedRobotPose> cameraPose =
+    // mVision.getEstimatedGlobalPose("Put in your pose estimator pose");
+    // TODO: Add code below back in once there is a pose estimator above
+    // if(cameraPose.isPresent()){
+    // TODO: Put code here to use pose estimator function
+    // .addVisionMesurement(camerapose.get().estimatedPose.toPose2d(),
+    // cameraPose.get().timestampSeconds);
+    // }
   }
 }

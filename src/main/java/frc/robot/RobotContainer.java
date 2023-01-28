@@ -11,6 +11,7 @@ import frc.robot.commands.DriveToTag;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.TurnToTag;
 import frc.robot.commands.centerAndDistanceAlign;
+import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
 import frc.robot.shuffleboard.ShuffleboardInfo;
@@ -56,7 +57,8 @@ public class RobotContainer {
     tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
     tabs.add(new DriverStationTab(drivetrain));
     tabs.add(new VisionTab(vision, drivetrain));
-    //STOP HERE
+    tabs.add(new DriveTrainTab(drivetrain));
+    //STOP HERE OR DIE
 
     ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
     shuffleboardInfo.addTabs(tabs);
@@ -92,7 +94,7 @@ public class RobotContainer {
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     m_driverController.a().whileTrue(new TurnToTag(vision, drivetrain));
     m_driverController.x().whileTrue(new DriveToTag(vision, drivetrain, 1));
-    m_driverController.rightBumper().whileTrue(new centerAndDistanceAlign(vision, drivetrain, 1));
+    m_driverController.rightTrigger().whileTrue(new centerAndDistanceAlign(vision, drivetrain, 1));
   }
 
   /**
