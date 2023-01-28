@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 
@@ -50,9 +52,11 @@ public final class Constants {
     public static final double KI_ROT = 0;
     public static final double KD_ROT = 0.0004;
     public static final double KS_ROT = 0.2;
+    public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0); 
   }
    public static class VisionConstants {
-    public static final Transform3d CAMERA_POSITION = null;
+    public static final Transform3d CAMERA_POSITION = new Transform3d(new Pose3d(0, 0, 0, new Rotation3d()),
+    new Pose3d(Units.inchesToMeters(16-(1+7/8)), 0, Units.inchesToMeters(2.25), new Rotation3d()));
     public static final double[] TAG_HEIGHT = {17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25};
     public static final double CAMERA_HEIGHT = 8;
     public static final double CAMERA_PITCH = 0;

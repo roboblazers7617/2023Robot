@@ -12,8 +12,13 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-
+import com.kauailabs.navx.frc.AHRS;
+import edu.wpi.first.wpilibj.SerialPort;
+import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -28,12 +33,18 @@ public class Drivetrain extends SubsystemBase {
       MotorType.kBrushless);
   private final CANSparkMax rightFollowerMotor = new CANSparkMax(DrivetrainConstants.RIGHT_FOLLOWER_WHEEL_PORT,
       MotorType.kBrushless);
+
   private final MotorControllerGroup leftMotorGroup = new MotorControllerGroup(leftFrontMotor, leftFollowerMotor);
   private final MotorControllerGroup rightMotorGroup = new MotorControllerGroup(rightFrontMotor, rightFollowerMotor);
+
   private final RelativeEncoder leftFrontEncoder = leftFrontMotor.getEncoder();
   private final RelativeEncoder rightFrontEncoder = rightFrontMotor.getEncoder();
   private final RelativeEncoder leftFollowerEncoder = leftFollowerMotor.getEncoder();
   private final RelativeEncoder rightFollowerEncoder = rightFollowerMotor.getEncoder();
+
+  private final AHRS mGyro = new AHRS(SerialPort.Port.kUSB);  
+  private final DifferentialDrivePoseEstimator mOdometry;
+  private final DifferentialDriveKinematics mKinematics;
 
   private final Vision mVision;
 
@@ -70,6 +81,9 @@ public class Drivetrain extends SubsystemBase {
     drivetrain.setDeadband(.1);
 
     mVision = vision;
+    mGyro.reset();
+    mKinematics = new DifferentialDriveKinematics(DrivetrainConstants.TRACK_WIDTH_METERS);
+    mOdometry = new DifferentialDrivePoseEstimator(mKinematics, getRotation2d(), getLeftDistance(), getRightDistance(), new Pose2d());
 
   }
 
@@ -131,17 +145,44 @@ public class Drivetrain extends SubsystemBase {
     return rightFrontEncoder.getPosition();
   }
 
+  public Pose2d getPose2d(){
+    return mOdometry.getEstimatedPosition();
+  }
+
+  public Rotation2d getRotation2d(){
+    return mGyro.getRotation2d();
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds(){
+    return new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity());
+  }
+
+  public void resetOdometry(Pose2d pose){
+    mOdometry.resetPosition(getRotation2d(), getLeftDistance(), getRightDistance(), pose);
+  }
+
+  public void tankDriveVolts(double leftVolts, double rightVolts)
+  {
+    leftFrontMotor.setVoltage(leftVolts*12); // Convert this from percent of battery to volts by multiply by 12
+    rightFrontMotor.setVoltage(rightVolts*12); // Convert this from percent of battery to volts by multiply by 12
+  }
+
+  public void resetEncoders(){
+    leftFrontEncoder.setPosition(0);
+    rightFrontEncoder.setPosition(0);
+  }
+
+  public void zeroHeading(){
+    mGyro.reset();
+  }
+
   private void updatePose() {
     // Write code for local Odometry here:
-    String yourCode = "lorum ipsum jaskfd;asdf;as;dlkfj;";
+      mOdometry.update(mGyro.getRotation2d(), getLeftDistance(), getRightDistance());
 
-    // TODO: Optional<EstimatedRobotPose> cameraPose =
-    // mVision.getEstimatedGlobalPose("Put in your pose estimator pose");
-    // TODO: Add code below back in once there is a pose estimator above
-    // if(cameraPose.isPresent()){
-    // TODO: Put code here to use pose estimator function
-    // .addVisionMesurement(camerapose.get().estimatedPose.toPose2d(),
-    // cameraPose.get().timestampSeconds);
-    // }
+    Optional<EstimatedRobotPose> cameraPose = mVision.getEstimatedGlobalPose(getPose2d());
+    if(cameraPose.isPresent()){
+    mOdometry.addVisionMeasurement(cameraPose.get().estimatedPose.toPose2d(), cameraPose.get().timestampSeconds);
+    }
   }
 }

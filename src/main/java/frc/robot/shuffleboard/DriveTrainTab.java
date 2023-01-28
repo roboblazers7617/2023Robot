@@ -12,6 +12,9 @@ public class DriveTrainTab extends ShuffleboardTabBase {
     DoublePublisher leftVelocityPub;
     DoublePublisher leftDistancePub;
     DoublePublisher rightDistancePub;
+    DoublePublisher xPosPub;
+    DoublePublisher yPosPub;
+
     Drivetrain drivetrain;
 
     public void update() {
@@ -20,6 +23,8 @@ public class DriveTrainTab extends ShuffleboardTabBase {
         leftVelocityPub.set(drivetrain.getLeftVelocity());
         rightDistancePub.set(drivetrain.getRightDistance());
         leftDistancePub.set(drivetrain.getLeftDistance());
+        xPosPub.set(drivetrain.getPose2d().getX());
+        yPosPub.set(drivetrain.getPose2d().getY());
     }
 
     public DriveTrainTab(Drivetrain subsystem) {
@@ -47,6 +52,14 @@ public class DriveTrainTab extends ShuffleboardTabBase {
         leftDistancePub = networkTable.getDoubleTopic("left position").publish();
 
         shuffleboardTabTesting.add("left position", 3);
+
+        xPosPub = networkTable.getDoubleTopic("X Cord(m)").publish();
+
+        shuffleboardTabTesting.add("X Cord(m)", 0);
+
+        yPosPub = networkTable.getDoubleTopic("Y Cord(m)").publish();
+
+        shuffleboardTabTesting.add("Y Cord(m)", 0);
 
     }
 }

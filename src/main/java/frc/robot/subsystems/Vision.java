@@ -17,6 +17,7 @@ import org.photonvision.targeting.PhotonTrackedTarget;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -76,6 +77,13 @@ public class Vision extends SubsystemBase {
       return bestTag.getYaw();
     else
       return 0;
+  }
+
+  public Transform3d getTransformToTag(){
+    if(bestTag != null)
+      return bestTag.getBestCameraToTarget();
+    else 
+      return null;
   }
 
   public double getBestTagId() {
