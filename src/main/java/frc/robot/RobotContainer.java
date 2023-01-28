@@ -105,6 +105,7 @@ public class RobotContainer {
     // rightTopOperator.onTrue(new InstantCommand(() ->  m_exampleSubsystem.yPressed()))
     //     .onFalse(new InstantCommand(() -> m_exampleSubsystem.yPressed()));
 
+    //set height to high
     m_operatorController.rightBumper()
         .and(m_operatorController.y())
         .whileTrue(new InstantCommand(() -> m_exampleSubsystem.yPressed()));
