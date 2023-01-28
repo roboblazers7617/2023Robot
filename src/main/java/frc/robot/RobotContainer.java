@@ -106,10 +106,10 @@ public class RobotContainer {
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
-    m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    m_driverController.a().whileTrue(new TurnToTag(vision, drivetrain));
-    m_driverController.x().whileTrue(new DriveToTag(vision, drivetrain, 1));
-    m_driverController.rightTrigger().whileTrue(new centerAndDistanceAlign(vision, drivetrain, 1));
+    // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
+    // m_driverController.a().whileTrue(new TurnToTag(vision, drivetrain));
+    // m_driverController.x().whileTrue(new DriveToTag(vision, drivetrain, 1));
+    // m_driverController.rightTrigger().whileTrue(new centerAndDistanceAlign(vision, drivetrain, 1));
         // Schedule `exampleMethodCommand` when the Xbox controller's B button is
         // pressed,
         // cancelling on release.
