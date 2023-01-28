@@ -40,6 +40,15 @@ public class ExampleSubsystem extends SubsystemBase {
     return x;
   }
 
+  public void yPressed(){
+    System.out.println("Y was pressed!!!");
+  }
+
+  public void povDownPressed(){
+    System.out.println("pov down was pressed!!!");
+
+  }
+
   @Override
   public void periodic() {
     x++;
