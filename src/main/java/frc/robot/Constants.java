@@ -54,6 +54,11 @@ public final class Constants {
     public static final double KI_ROT = 0;
     public static final double KD_ROT = 0.0004;
     public static final double KS_ROT = 0.2;
+
+    public static final double KS = 0.015;
+    public static final double KV = 0.21;
+
+
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0); 
   }
    public static class VisionConstants {

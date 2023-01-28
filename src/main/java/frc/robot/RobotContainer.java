@@ -24,6 +24,16 @@ import frc.robot.subsystems.Vision;
 
 import java.util.ArrayList;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPRamseteCommand;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -162,7 +172,20 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    drivetrain.resetOdometry(new Pose2d(1,3,new Rotation2d(0)));
+    PathPlannerTrajectory test_path = PathPlanner.loadPath("reversePath", new PathConstraints(2, .5));
+    PPRamseteCommand returnCommand = new PPRamseteCommand(
+        test_path, 
+        drivetrain::getPose2d, 
+        new RamseteController(), 
+        new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV),
+        drivetrain.getKinematics(),
+        drivetrain::getWheelSpeeds,
+        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+        drivetrain::tankDriveVolts,
+        false,
+        drivetrain);
+    return returnCommand;
   }
 }

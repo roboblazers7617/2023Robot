@@ -157,14 +157,18 @@ public class Drivetrain extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity());
   }
 
+  public DifferentialDriveKinematics getKinematics(){
+    return mKinematics;
+  }
+
   public void resetOdometry(Pose2d pose){
     mOdometry.resetPosition(getRotation2d(), getLeftDistance(), getRightDistance(), pose);
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts)
   {
-    leftFrontMotor.setVoltage(leftVolts*12); // Convert this from percent of battery to volts by multiply by 12
-    rightFrontMotor.setVoltage(rightVolts*12); // Convert this from percent of battery to volts by multiply by 12
+    leftFrontMotor.setVoltage(leftVolts * 12); // Convert this from percent of battery to volts by multiply by 12
+    rightFrontMotor.setVoltage(rightVolts * 12); // Convert this from percent of battery to volts by multiply by 12
   }
 
   public void resetEncoders(){
@@ -178,7 +182,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void updatePose() {
     // Write code for local Odometry here:
-      mOdometry.update(mGyro.getRotation2d(), getLeftDistance(), getRightDistance());
+    mOdometry.update(mGyro.getRotation2d(), getLeftDistance(), getRightDistance());
 
     Optional<EstimatedRobotPose> cameraPose = mVision.getEstimatedGlobalPose(getPose2d());
     if(cameraPose.isPresent()){
