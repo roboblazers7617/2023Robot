@@ -33,7 +33,7 @@ public class TurnToTag extends PIDCommand {
         // This uses the output
         (output) -> {
           // Use the output (and setpoint, if desired) here
-          mDrivetrain.arcadeDrive(0.0,MathUtil.clamp(output, -.5, .5));
+          mDrivetrain.arcadeDrive(0.0,MathUtil.clamp(output+Math.copySign(DrivetrainConstants.KS_ROT, output), -.5, .5));
         });
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.

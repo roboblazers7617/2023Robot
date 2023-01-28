@@ -40,12 +40,15 @@ public final class Constants {
     public static final double SLOW_SPEED = 0.25;
     public static final double FAST_SPEED = 1;
 
-    public static final double KP_LIN = 0.12;
+    public static final double KP_LIN = 0.5;
     public static final double KI_LIN = 0;
     public static final double KD_LIN = 0;
-    public static final double KP_ROT = 0.027;
+    public static final double KS_LIN = .25;
+
+    public static final double KP_ROT = 0.015;
     public static final double KI_ROT = 0;
     public static final double KD_ROT = 0.0004;
+    public static final double KS_ROT = 0.2;
   }
    public static class VisionConstants {
     public static final Transform3d CAMERA_POSITION = null;

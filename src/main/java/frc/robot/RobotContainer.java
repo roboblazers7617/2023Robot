@@ -7,9 +7,10 @@ package frc.robot;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
+import frc.robot.commands.DriveToTag;
 import frc.robot.commands.ExampleCommand;
-import frc.robot.commands.PIDTagDistance;
 import frc.robot.commands.TurnToTag;
+import frc.robot.commands.centerAndDistanceAlign;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
 import frc.robot.shuffleboard.ShuffleboardInfo;
@@ -36,8 +37,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
-  private final Drivetrain drivetrain = new Drivetrain();
   private final Vision vision = new Vision();
+  private final Drivetrain drivetrain = new Drivetrain(vision);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController =
@@ -90,7 +91,8 @@ public class RobotContainer {
     // cancelling on release.
     m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     m_driverController.a().whileTrue(new TurnToTag(vision, drivetrain));
-    m_driverController.x().whileTrue(new PIDTagDistance(vision, drivetrain, 1));
+    m_driverController.x().whileTrue(new DriveToTag(vision, drivetrain, 1));
+    m_driverController.rightBumper().whileTrue(new centerAndDistanceAlign(vision, drivetrain, 1));
   }
 
   /**

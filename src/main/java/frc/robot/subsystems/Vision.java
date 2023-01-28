@@ -5,17 +5,18 @@
 package frc.robot.subsystems;
 
 import java.io.IOException;
+import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
 import org.photonvision.PhotonPoseEstimator;
-import org.photonvision.PhotonUtils;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -30,52 +31,58 @@ public class Vision extends SubsystemBase {
   AprilTagFieldLayout layout;
   PhotonPoseEstimator poseEstimator;
 
-
   ShuffleboardTab vision;
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
   NetworkTable datatable = inst.getTable("Vision");
-  
+
   public Vision() {
-  try{
-    layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
-    }
-    catch(IOException e){
+    try {
+      layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+    } catch (IOException e) {
       layout = null;
     }
-    poseEstimator =  new PhotonPoseEstimator(layout, PoseStrategy.CLOSEST_TO_LAST_POSE, camera, VisionConstants.CAMERA_POSITION);
+    poseEstimator = new PhotonPoseEstimator(layout, PoseStrategy.CLOSEST_TO_LAST_POSE, camera,
+        VisionConstants.CAMERA_POSITION);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     result = camera.getLatestResult();
-    if(result.hasTargets())
+    if (result.hasTargets())
       bestTag = result.getBestTarget();
     else
       bestTag = null;
   }
 
-public double getBestTagDistance() {
-  if(bestTag != null)
-  return bestTag.getBestCameraToTarget().getX();
-  //return PhotonUtils.calculateDistanceToTargetMeters(Units.inchesToMeters(VisionConstants.CAMERA_HEIGHT), Units.inchesToMeters(VisionConstants.TAG_HEIGHT[bestTag.getFiducialId()]), VisionConstants.CAMERA_PITCH, Units.degreesToRadians(bestTag.getPitch()));
-  else
-    return 0;
-}
+  public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
+    poseEstimator.setLastPose(prevEstimatedRobotPose);
+    return poseEstimator.update();
+  }
 
-public double getBestTagYaw() {
-  if(bestTag != null)
-    return bestTag.getYaw();
-  else
-    return 0;
-}
+  public double getBestTagDistance() {
+    if (bestTag != null)
+      return bestTag.getBestCameraToTarget().getX();
+    // return
+    // PhotonUtils.calculateDistanceToTargetMeters(Units.inchesToMeters(VisionConstants.CAMERA_HEIGHT),
+    // Units.inchesToMeters(VisionConstants.TAG_HEIGHT[bestTag.getFiducialId()]),
+    // VisionConstants.CAMERA_PITCH, Units.degreesToRadians(bestTag.getPitch()));
+    else
+      return 0;
+  }
 
-public double getBestTagId(){
-  if(bestTag != null)
-    return bestTag.getFiducialId();
-  else
-    return -1;
-}
+  public double getBestTagYaw() {
+    if (bestTag != null)
+      return bestTag.getYaw();
+    else
+      return 0;
+  }
 
+  public double getBestTagId() {
+    if (bestTag != null)
+      return bestTag.getFiducialId();
+    else
+      return -1;
+  }
 
 }

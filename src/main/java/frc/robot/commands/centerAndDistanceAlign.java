@@ -17,6 +17,8 @@ public class centerAndDistanceAlign extends CommandBase {
   Vision mVision;
   double distanceToAlign;
   boolean done = false;
+  double rotOutput;
+  double linOutput;
   PIDController rotationalController = new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
   PIDController distanceController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
   public centerAndDistanceAlign(Vision vision, Drivetrain drivetrain, double distance) {
@@ -35,17 +37,18 @@ public class centerAndDistanceAlign extends CommandBase {
     rotationalController.setTolerance(3);
     distanceController.setTolerance(0.03);
     rotationalController.setSetpoint(0);
-    distanceController.setSetpoint(2);
+    distanceController.setSetpoint(distanceToAlign);
     done = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
+    rotOutput = rotationalController.calculate(mVision.getBestTagYaw());
+    linOutput = distanceController.calculate(mVision.getBestTagDistance());
     if(mVision.getBestTagDistance() > 0){   
-    mDrivetrain.arcadeDrive(MathUtil.clamp(-distanceController.calculate(mVision.getBestTagDistance(),distanceToAlign), -.5, .5),
-     MathUtil.clamp(rotationalController.calculate(mVision.getBestTagYaw()), -.5, .5));
+    mDrivetrain.arcadeDrive(-MathUtil.clamp((linOutput + Math.copySign(DrivetrainConstants.KS_LIN, linOutput)), -0.5, .5),
+    MathUtil.clamp(rotOutput+Math.copySign(DrivetrainConstants.KS_ROT, rotOutput), -.5, .5));
      }
     else{
       mDrivetrain.arcadeDrive(0, 0);
@@ -64,7 +67,7 @@ public class centerAndDistanceAlign extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
-   // return (rotationalController.atSetpoint() && distanceController.atSetpoint());
+
+    return (rotationalController.atSetpoint() && distanceController.atSetpoint());
   }
 }
