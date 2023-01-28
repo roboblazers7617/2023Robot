@@ -101,9 +101,17 @@ public class RobotContainer {
     rightTop.onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED)))
         .onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.MAX_SPEED)));
 
+    // Trigger rightTopOperator = m_operatorController.rightBumper();
+    // rightTopOperator.onTrue(new InstantCommand(() ->  m_exampleSubsystem.yPressed()))
+    //     .onFalse(new InstantCommand(() -> m_exampleSubsystem.yPressed()));
+
     m_operatorController.rightBumper()
         .and(m_operatorController.y())
-        .onTrue(new InstantCommand(() -> m_exampleSubsystem.yPressed()));
+        .whileTrue(new InstantCommand(() -> m_exampleSubsystem.yPressed()));
+
+    m_operatorController.rightBumper()
+        .and(m_operatorController.povDown())
+        .whileTrue(new InstantCommand(() -> m_exampleSubsystem.povDownPressed()));
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is
     // pressed,
     // cancelling on release.

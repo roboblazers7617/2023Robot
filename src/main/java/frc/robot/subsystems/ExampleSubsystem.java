@@ -44,6 +44,11 @@ public class ExampleSubsystem extends SubsystemBase {
     System.out.println("Y was pressed!!!");
   }
 
+  public void povDownPressed(){
+    System.out.println("pov down was pressed!!!");
+
+  }
+
   @Override
   public void periodic() {
     x++;
