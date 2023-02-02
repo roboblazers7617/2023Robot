@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -58,8 +60,9 @@ public final class Constants {
     public static final double KS = 0.015;
     public static final double KV = 0.21;
 
-
-    public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0); 
+    public static final int GYRO_ID = 40; 
+    
+    public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
   }
    public static class VisionConstants {
     public static final Transform3d CAMERA_POSITION = new Transform3d(new Pose3d(0, 0, 0, new Rotation3d()),

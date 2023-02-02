@@ -172,8 +172,8 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    drivetrain.resetOdometry(new Pose2d(1,3,new Rotation2d(0)));
-    PathPlannerTrajectory test_path = PathPlanner.loadPath("reversePath", new PathConstraints(2, .5));
+    PathPlannerTrajectory test_path = PathPlanner.loadPath("h", new PathConstraints(1, .25));
+    drivetrain.resetOdometry(test_path.getInitialPose());
     PPRamseteCommand returnCommand = new PPRamseteCommand(
         test_path, 
         drivetrain::getPose2d, 

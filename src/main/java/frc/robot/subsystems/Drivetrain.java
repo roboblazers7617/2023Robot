@@ -12,8 +12,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SerialPort;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -42,7 +41,7 @@ public class Drivetrain extends SubsystemBase {
   private final RelativeEncoder leftFollowerEncoder = leftFollowerMotor.getEncoder();
   private final RelativeEncoder rightFollowerEncoder = rightFollowerMotor.getEncoder();
 
-  private final AHRS mGyro = new AHRS(SerialPort.Port.kUSB);  
+  private final WPI_Pigeon2 mGyro = new WPI_Pigeon2(40);  
   private final DifferentialDrivePoseEstimator mOdometry;
   private final DifferentialDriveKinematics mKinematics;
 
@@ -178,6 +177,9 @@ public class Drivetrain extends SubsystemBase {
 
   public void zeroHeading(){
     mGyro.reset();
+  }
+  public double getAngle(){
+    return mGyro.getAngle();
   }
 
   private void updatePose() {
