@@ -41,7 +41,7 @@ public class Drivetrain extends SubsystemBase {
   private final RelativeEncoder leftFollowerEncoder = leftFollowerMotor.getEncoder();
   private final RelativeEncoder rightFollowerEncoder = rightFollowerMotor.getEncoder();
 
-  private final WPI_Pigeon2 mGyro = new WPI_Pigeon2(40);  
+  private final WPI_Pigeon2 mGyro = new WPI_Pigeon2(DrivetrainConstants.GYRO_ID);  
   private final DifferentialDrivePoseEstimator mOdometry;
   private final DifferentialDriveKinematics mKinematics;
 
