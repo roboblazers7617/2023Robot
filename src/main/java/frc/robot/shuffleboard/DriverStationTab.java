@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.DrivetrainMode;
 
 
 /** Add your docs here. */
@@ -31,8 +30,8 @@ public class DriverStationTab extends ShuffleboardTabBase{
         NetworkTable networkTable = inst.getTable("Shuffleboard/Driver Station");
 
         // modeSub = networkTable.getIntegerTopic("Drive Train Mode").subscribe(1);
-        drivetrainMode.setDefaultOption("Tank Drive", DrivetrainMode.tankDrive.toString());
-        drivetrainMode.addOption("Arcade Drive", DrivetrainMode.arcadeDrive.toString());
+        drivetrainMode.setDefaultOption("Tank Drive", DrivetrainConstants.DrivetrainMode.tankDrive.toString());
+        drivetrainMode.addOption("Arcade Drive", DrivetrainConstants.DrivetrainMode.arcadeDrive.toString());
         tab.add(drivetrainMode);
 
         maxSpeedPub = networkTable.getDoubleTopic("max SPEED").publish();
@@ -43,7 +42,7 @@ public class DriverStationTab extends ShuffleboardTabBase{
 
 
     public void update(){
-        drivetrain.setDriveTrainMode(DrivetrainMode.valueOf(drivetrainMode.getSelected()));
+        drivetrain.setDriveTrainMode(DrivetrainConstants.DrivetrainMode.valueOf(drivetrainMode.getSelected()));
         maxSpeedPub.set(drivetrain.getCarmax());
 }
 }

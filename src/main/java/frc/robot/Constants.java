@@ -63,6 +63,11 @@ public final class Constants {
     public static final int GYRO_ID = 40; 
     
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
+    
+    public enum DrivetrainMode {
+      arcadeDrive,
+      tankDrive
+  }
   }
    public static class VisionConstants {
     public static final Transform3d CAMERA_POSITION = new Transform3d(new Pose3d(0, 0, 0, new Rotation3d()),
@@ -70,5 +75,6 @@ public final class Constants {
     public static final double[] TAG_HEIGHT = {17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25};
     public static final double CAMERA_HEIGHT = 8;
     public static final double CAMERA_PITCH = 0;
+    public static final String CAMERA_NAME = "eyeball";
    }
 }

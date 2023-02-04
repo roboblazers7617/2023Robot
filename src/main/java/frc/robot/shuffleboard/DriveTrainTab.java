@@ -25,6 +25,8 @@ public class DriveTrainTab extends ShuffleboardTabBase {
         leftDistancePub.set(drivetrain.getLeftDistance());
         xPosPub.set(drivetrain.getPose2d().getX());
         yPosPub.set(drivetrain.getPose2d().getY());
+        anglePub.set(Math.IEEEremainder(drivetrain.getAngle(), 360));
+
     }
 
     public DriveTrainTab(Drivetrain subsystem) {
@@ -64,6 +66,8 @@ public class DriveTrainTab extends ShuffleboardTabBase {
         anglePub = networkTable.getDoubleTopic("Angle").publish();
 
         shuffleboardTabTesting.add("Angle", 3);
+
+        
 
     }
 }

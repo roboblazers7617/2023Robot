@@ -26,7 +26,7 @@ import frc.robot.Constants.VisionConstants;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
-  PhotonCamera camera = new PhotonCamera("eyeball");
+  PhotonCamera camera = new PhotonCamera(VisionConstants.CAMERA_NAME);
   PhotonPipelineResult result;
   PhotonTrackedTarget bestTag;
   AprilTagFieldLayout layout;

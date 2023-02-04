@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.commands.PPRamseteCommand;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -34,6 +35,8 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -118,7 +121,7 @@ public class RobotContainer {
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     // m_driverController.a().whileTrue(new TurnToTag(vision, drivetrain));
-    // m_driverController.x().whileTrue(new DriveToTag(vision, drivetrain, 1));
+    //m_driverController.a().whileTrue(new RunCommand(PickPathWork(drivetrain, ()-> drivetrain.getPose2d().getX(), ()-> drivetrain.getPose2d().getY(),()-> drivetrain.getPose2d().getRotation().getDegrees())));
     // m_driverController.rightTrigger().whileTrue(new centerAndDistanceAlign(vision, drivetrain, 1));
         // Schedule `exampleMethodCommand` when the Xbox controller's B button is
         // pressed,
@@ -172,7 +175,34 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerTrajectory test_path = PathPlanner.loadPath("h", new PathConstraints(1, .25));
+    PathPlannerTrajectory test_path = PathPlanner.generatePath(
+        new PathConstraints(.5, .25),
+        new PathPoint(new Translation2d(drivetrain.getPose2d().getX(),drivetrain.getPose2d().getY()), 
+                new Rotation2d(drivetrain.getPose2d().getRotation().getDegrees())),
+       //new PathPoint(new Translation2d(12.75, 1), Rotation2d.fromDegrees(180)),
+        new PathPoint(new Translation2d(14.61, 1.07), Rotation2d.fromDegrees(0)));
+    
+      SmartDashboard.putNumber("x", drivetrain.getPose2d().getX());
+      SmartDashboard.putNumber("y", drivetrain.getPose2d().getY());
+      SmartDashboard.putNumber("angle", drivetrain.getRotation2d().getDegrees());
+    
+      PPRamseteCommand returnCommand = new PPRamseteCommand(
+          test_path, 
+          drivetrain::getPose2d, 
+          new RamseteController(), 
+          new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV),
+          drivetrain.getKinematics(),
+          drivetrain::getWheelSpeeds,
+          new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+          new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+          drivetrain::tankDriveVolts,
+          false,
+          drivetrain);
+      return returnCommand;
+   
+
+
+   /* PathPlannerTrajectory test_path = PathPlanner.loadPath("h", new PathConstraints(1, .25));
     drivetrain.resetOdometry(test_path.getInitialPose());
     PPRamseteCommand returnCommand = new PPRamseteCommand(
         test_path, 
@@ -187,5 +217,7 @@ public class RobotContainer {
         false,
         drivetrain);
     return returnCommand;
+    */
+    
   }
 }
