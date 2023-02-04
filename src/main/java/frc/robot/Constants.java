@@ -4,8 +4,6 @@
 
 package frc.robot;
 
-import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -79,6 +77,50 @@ public final class Constants {
     public static final int WRIST_POT_SCALE = 270;
     public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
     public static final int CURRENT_LIMIT = 40;
+    public static final double MAX_WRIST_ANGLE = 2.094;
+    public static final double MAX_WRIST_SPEED = 0.25;
+    public static final double MAX_WRIST_ACCEL = 0.12;
+    public static final double WRIST_KS = 0.5;
+    public static final double WRIST_KG = 0.5;
+    public static final double WRIST_KV = 0.5;
+    public static final double WRIST_KP = 2.0;
+    public static final double WRIST_KI = 0.0;
+    public static final double WRIST_KD = 0.0;
+    public static final double WRIST_ANGLE_TOLERANCE = 0.1;
+    public enum IntakeDirection
+    {
+      Stop (0.0),
+      PickCone (0.25),
+      PickCube (-0.25),
+      PlaceCone (-0.25),
+      PlaceCube (0.25);
+
+      private final double speed;
+      IntakeDirection (double speed) {
+        this.speed = speed;
+      }
+      public double speed(){
+        return speed;
+      }
+    } 
+    public enum WristPostion
+    {
+      Store (0.0),
+      FloorCubePickup (0.06),
+      FloorConePickup ( 0.07),
+      LevelThreePlace (0.04),
+      LevelTwoPlace (0.05),
+      LevelOnePlace (0.03);
+
+
+      private final double angle;
+      WristPostion (double angle) {
+        this.angle = angle;
+      }
+      public double angle(){
+        return angle;
+      }
+    } 
 
    }
 
