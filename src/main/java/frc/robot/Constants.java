@@ -25,7 +25,7 @@ public final class Constants {
     public static final int OPERATOR_CONTROLLER_PORT = 1;
 
   }
-    public static class DrivetrainConstants{
+  public static class DrivetrainConstants{
     public static final int LEFT_WHEEL_PORT = 4;
     public static final int RIGHT_WHEEL_PORT = 3;
     public static final int LEFT_FOLLOWER_WHEEL_PORT = 31;
@@ -70,5 +70,16 @@ public final class Constants {
     public static final double[] TAG_HEIGHT = {17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25};
     public static final double CAMERA_HEIGHT = 8;
     public static final double CAMERA_PITCH = 0;
+
    }
+   public static class IntakeConstants {
+    public static final int WRIST_CAN_ID = 22;
+    public static final int INTAKE_CAN_ID = 23;
+    public static final int POT_CHANEL = 1;
+    public static final int WRIST_POT_SCALE = 270;
+    public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
+    public static final int CURRENT_LIMIT = 40;
+
+   }
+
 }
