@@ -7,17 +7,16 @@ package frc.robot;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.DriveToTag;
+import frc.robot.commands.CenterRelativeTag;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ScoreGridSelection;
-import frc.robot.commands.TurnToTag;
-import frc.robot.commands.centerAndDistanceAlign;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
 import frc.robot.shuffleboard.ShuffleboardInfo;
 import frc.robot.shuffleboard.ShuffleboardTabBase;
 import frc.robot.shuffleboard.VisionTab;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Vision;
@@ -44,6 +43,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Vision vision = new Vision();
   private final Drivetrain drivetrain = new Drivetrain(vision);
+  private final Arm arm = new Arm();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -62,6 +62,8 @@ public class RobotContainer {
     // create shuffleboardinfo.java
     drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
         m_driverController.getRightX(), m_driverController.getRightY()), drivetrain));
+    arm.setDefaultCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftX()), arm));
+    
     ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
     // YOUR CODE HERE | | |
     // \/ \/ \/
@@ -142,6 +144,8 @@ public class RobotContainer {
     m_driverController.b()
         .and(m_driverController.povRight())
         .onTrue(new ScoreGridSelection(2, 2));
+
+    m_driverController.leftTrigger().whileTrue(new CenterRelativeTag(vision,drivetrain,0.25));
   }
 
   private void configureOperatorBindings() {
