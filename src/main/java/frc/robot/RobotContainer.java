@@ -10,6 +10,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.DriveToTag;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ScoreGridSelection;
+import frc.robot.commands.TargetDrive;
 import frc.robot.commands.TurnToTag;
 import frc.robot.commands.centerAndDistanceAlign;
 import frc.robot.shuffleboard.DriveTrainTab;
@@ -155,6 +156,11 @@ public class RobotContainer {
     m_driverController.b()
         .and(m_driverController.povRight())
         .onTrue(new ScoreGridSelection(2, 2));
+    m_driverController.leftTrigger().whileTrue(new TargetDrive(drivetrain, 
+        ()-> m_driverController.getLeftY(), 
+        ()-> m_driverController.getRightY(), 
+        ()-> m_driverController.getRightX(), 
+        new Pose2d(new Translation2d(1,1),new Rotation2d(0))));
   }
 
   private void configureOperatorBindings() {
@@ -175,34 +181,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    PathPlannerTrajectory test_path = PathPlanner.generatePath(
-        new PathConstraints(.5, .25),
-        new PathPoint(new Translation2d(drivetrain.getPose2d().getX(),drivetrain.getPose2d().getY()), 
-                new Rotation2d(drivetrain.getPose2d().getRotation().getDegrees())),
-       //new PathPoint(new Translation2d(12.75, 1), Rotation2d.fromDegrees(180)),
-        new PathPoint(new Translation2d(14.61, 1.07), Rotation2d.fromDegrees(0)));
-    
-      SmartDashboard.putNumber("x", drivetrain.getPose2d().getX());
-      SmartDashboard.putNumber("y", drivetrain.getPose2d().getY());
-      SmartDashboard.putNumber("angle", drivetrain.getRotation2d().getDegrees());
-    
-      PPRamseteCommand returnCommand = new PPRamseteCommand(
-          test_path, 
-          drivetrain::getPose2d, 
-          new RamseteController(), 
-          new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV),
-          drivetrain.getKinematics(),
-          drivetrain::getWheelSpeeds,
-          new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
-          new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
-          drivetrain::tankDriveVolts,
-          false,
-          drivetrain);
-      return returnCommand;
-   
-
-
-   /* PathPlannerTrajectory test_path = PathPlanner.loadPath("h", new PathConstraints(1, .25));
+    PathPlannerTrajectory test_path = PathPlanner.loadPath("h", new PathConstraints(1, .25));
     drivetrain.resetOdometry(test_path.getInitialPose());
     PPRamseteCommand returnCommand = new PPRamseteCommand(
         test_path, 
@@ -217,7 +196,6 @@ public class RobotContainer {
         false,
         drivetrain);
     return returnCommand;
-    */
     
   }
 }

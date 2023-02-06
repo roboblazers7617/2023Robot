@@ -64,6 +64,11 @@ public final class Constants {
     
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
     
+    
+    public static final double ERROR_TARGET_DRIVER = Units.inchesToMeters(3);
+    public static final double ROTATIONAL_ERROR_TARGET_DRIVER = 2;
+    public static final double LINEAR_ERROR_TARGET_DRIVER = Units.inchesToMeters(3);
+
     public enum DrivetrainMode {
       arcadeDrive,
       tankDrive
