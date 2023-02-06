@@ -18,7 +18,7 @@ public class ScoreGridSelection extends CommandBase {
     this.position = position;
     this.drivetrain = drivetrain;
     
-    drivetrain.setPathPlanningTarget(getPathPlanningTarget());
+    
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
@@ -29,12 +29,15 @@ public class ScoreGridSelection extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    drivetrain.setPathPlanningTarget(getPathPlanningTarget());
     System.out.println("The grid is " + grid + ". The position is " + position);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    System.out.println(getPathPlanningTarget());
+  }
 
   // Called once the command ends or is interrupted.
   @Override

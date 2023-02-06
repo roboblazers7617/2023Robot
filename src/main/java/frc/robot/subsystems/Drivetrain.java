@@ -86,6 +86,8 @@ public class Drivetrain extends SubsystemBase {
     mKinematics = new DifferentialDriveKinematics(DrivetrainConstants.TRACK_WIDTH_METERS);
     mOdometry = new DifferentialDrivePoseEstimator(mKinematics, getRotation2d(), getLeftDistance(), getRightDistance(), new Pose2d());
 
+
+    pathPlanningTarget = "other NA";
   }
 
   @Override
