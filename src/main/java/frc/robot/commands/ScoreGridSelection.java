@@ -5,17 +5,25 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Drivetrain;
 
 public class ScoreGridSelection extends CommandBase {
   private int grid;
   private int position;
+  private Drivetrain drivetrain;
 
   /** Creates a new GridSelection. */
-  public ScoreGridSelection(int grid, int position) {
+  public ScoreGridSelection(Drivetrain drivetrain,int grid, int position) {
     this.grid = grid;
     this.position = position;
+    this.drivetrain = drivetrain;
     
+    drivetrain.setPathPlanningTarget(getPathPlanningTarget());
     // Use addRequirements() here to declare subsystem dependencies.
+  }
+
+  private String getPathPlanningTarget(){
+    return "" + grid + position;
   }
 
   // Called when the command is initially scheduled.

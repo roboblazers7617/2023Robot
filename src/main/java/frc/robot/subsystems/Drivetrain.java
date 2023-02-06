@@ -51,6 +51,8 @@ public class Drivetrain extends SubsystemBase {
   private DrivetrainMode mode;
   private double maxDrivetrainspeed = DrivetrainConstants.MAX_SPEED;
 
+  private String pathPlanningTarget;
+
   public void setDriveTrainMode(DrivetrainMode mode) {
     this.mode = mode;
   }
@@ -89,6 +91,14 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     updatePose();
+  }
+
+  public void setPathPlanningTarget(String target){
+    pathPlanningTarget = target;
+  }
+
+  public String getPathPlanningTarget(){
+    return pathPlanningTarget;
   }
 
   public void drive(double leftY, double rightX, double rightY) {
