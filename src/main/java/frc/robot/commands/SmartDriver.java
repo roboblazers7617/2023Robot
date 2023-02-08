@@ -34,7 +34,7 @@ public class SmartDriver extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    drivetrain.drive(leftY.getAsDouble(), rightX.getAsDouble(), rightY.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

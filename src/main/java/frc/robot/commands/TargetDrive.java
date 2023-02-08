@@ -20,8 +20,8 @@ public class TargetDrive extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new SmartDriver(drivetrain, LeftY, rightY, rightX, targetPose),
-              new FaceTarget(drivetrain, targetPose.getTranslation()),
-              new GoToTarget(drivetrain, targetPose.getTranslation())
+              new FaceTarget(drivetrain, targetPose),
+              new GoToTarget(drivetrain, targetPose)
      );
   }
 }
