@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
@@ -13,13 +14,13 @@ import frc.robot.subsystems.Drivetrain;
 public class FaceTarget extends CommandBase {
   /** Creates a new FaceTarget. */
   private Drivetrain drivetrain;
-  private Pose2d targetpose;
+  private Translation2d targetTranslation;
   private double angleToGoal;
   private PIDController pidController;
-  public FaceTarget(Drivetrain drivetrain, Pose2d targetpose) {
+  public FaceTarget(Drivetrain drivetrain, Translation2d targetTranslation) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
-    this.targetpose = targetpose;
+    this.targetTranslation = targetTranslation;
     addRequirements(drivetrain);
     pidController = new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
     pidController.enableContinuousInput(-180, 180);
@@ -30,7 +31,7 @@ public class FaceTarget extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-  angleToGoal = findTheta(targetpose.getX(), targetpose.getY(), drivetrain.getPose2d().getX(), drivetrain.getPose2d().getX());
+  angleToGoal = findTheta(targetTranslation.getX(), targetTranslation.getY(), drivetrain.getPose2d().getX(), drivetrain.getPose2d().getX());
   pidController.setSetpoint(angleToGoal);
   }
   // Called every time the scheduler runs while the command is scheduled.

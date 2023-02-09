@@ -16,15 +16,17 @@ import frc.robot.subsystems.Drivetrain;
 public class GoToTarget extends CommandBase {
   /** Creates a new GoToTarget. */
   private Drivetrain drivetrain;
-  private Pose2d targetpose;
+  private Translation2d targetTranslation;
   private PIDController pidController;
   private Translation2d startTranslation2d;
   private double distanceToGoal;
-  public GoToTarget(Drivetrain drivetrain, Pose2d targetPose) {
+  private double endingEncoderValue;
+  
+  public GoToTarget(Drivetrain drivetrain, Translation2d targetTranslation) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
     this.drivetrain = drivetrain;
-    this.targetpose = targetpose;
+    this.targetTranslation = targetTranslation;
     pidController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
     pidController.setTolerance(DrivetrainConstants.LINEAR_ERROR_TARGET_DRIVER);
   }
@@ -33,14 +35,15 @@ public class GoToTarget extends CommandBase {
   @Override
   public void initialize() {
     startTranslation2d = drivetrain.getPose2d().getTranslation();
-    distanceToGoal = targetpose.getTranslation().getDistance(startTranslation2d);
-    pidController.setSetpoint(targetpose.getX());
+    distanceToGoal = targetTranslation.getDistance(startTranslation2d);
+    endingEncoderValue = drivetrain.getaverageEncoderDistance() + distanceToGoal;
+    pidController.setSetpoint(endingEncoderValue);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double output = pidController.calculate(drivetrain.getPose2d().getTranslation().getX());
+    double output = pidController.calculate(drivetrain.getaverageEncoderDistance());
     drivetrain.arcadeDrive(output, 0);
   }
 

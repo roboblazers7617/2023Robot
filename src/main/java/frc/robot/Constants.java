@@ -68,6 +68,11 @@ public final class Constants {
     public static final double ERROR_TARGET_DRIVER = Units.inchesToMeters(3);
     public static final double ROTATIONAL_ERROR_TARGET_DRIVER = 2;
     public static final double LINEAR_ERROR_TARGET_DRIVER = Units.inchesToMeters(3);
+    
+    public static final double MAX_AUTO_ACCELERATION = 0.25;
+    public static final double MAX_AUTO_VELOCITY = 1.0;
+
+    public static final double RAMP_TIME_SECONDS = 0.25;
 
     public enum DrivetrainMode {
       arcadeDrive,

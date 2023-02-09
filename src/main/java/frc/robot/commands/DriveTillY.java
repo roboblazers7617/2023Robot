@@ -7,17 +7,18 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.Constants.DrivetrainConstants;
-public class SmartDriver extends CommandBase {
+public class DriveTillY extends CommandBase {
   /** Creates a new SmartDriver. */
   private Drivetrain drivetrain;
   private DoubleSupplier leftY;
   private DoubleSupplier rightY;
   private DoubleSupplier rightX;
-  private Pose2d targetPose;
-  public SmartDriver(Drivetrain drivetrain, DoubleSupplier leftY, DoubleSupplier rightY, DoubleSupplier rightX, Pose2d targetPose) {
+  private Translation2d targetPose;
+  public DriveTillY(Drivetrain drivetrain, DoubleSupplier leftY, DoubleSupplier rightY, DoubleSupplier rightX, Translation2d targetPose) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.leftY = leftY;

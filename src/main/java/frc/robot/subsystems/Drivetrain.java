@@ -24,6 +24,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -64,6 +65,10 @@ public class Drivetrain extends SubsystemBase {
   private DrivetrainConstants.DrivetrainMode mode;
   private double maxDrivetrainspeed = DrivetrainConstants.MAX_SPEED;
 
+  private Translation2d targetTranslation;
+
+  private SlewRateLimiter slewRateFilterLeft = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
+  private SlewRateLimiter slewRateFilterRight = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
   public void setDriveTrainMode(DrivetrainConstants.DrivetrainMode mode) {
     this.mode = mode;
   }
@@ -105,10 +110,12 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(double leftY, double rightX, double rightY) {
+    double lForward = slewRateFilterLeft.calculate(leftY);
+    double rForward = slewRateFilterRight.calculate(rightY);
     if (mode == DrivetrainConstants.DrivetrainMode.arcadeDrive) {
-      arcadeDrive(-leftY, -rightX);
+      arcadeDrive(-lForward, -rightX);
     } else if (mode == DrivetrainConstants.DrivetrainMode.tankDrive) {
-      tankDrive(-leftY, -rightY);
+      tankDrive(-lForward, -rForward);
     }
   }
 
@@ -230,6 +237,12 @@ public class Drivetrain extends SubsystemBase {
         drivetrain);
     return returnCommand;
     }
-  
+    public Translation2d getTargetTranslation() {
+      return targetTranslation;
+    }
 
-}
+    public double getaverageEncoderDistance() {
+      return (getLeftDistance() + getRightDistance()) / 2;
+    }
+  }
+  
