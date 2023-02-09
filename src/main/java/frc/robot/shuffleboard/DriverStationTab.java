@@ -4,6 +4,7 @@
 
 package frc.robot.shuffleboard;
 
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.IntegerSubscriber;
 import edu.wpi.first.networktables.NetworkTable;
@@ -21,9 +22,12 @@ import frc.robot.subsystems.DrivetrainMode;
 public class DriverStationTab extends ShuffleboardTabBase {
     IntegerSubscriber modeSub;
     private final SendableChooser<String> drivetrainMode = new SendableChooser<>();
+    private final SendableChooser<Boolean> debugMode = new SendableChooser<>();
+
     private Drivetrain drivetrain;
     private DoublePublisher maxSpeedPub;
     private StringPublisher pathPlanningTargetPub;
+    private BooleanPublisher debugModePub;
 
     public DriverStationTab(Drivetrain drivetrain) {
         ShuffleboardTab tab = Shuffleboard.getTab("Driver Station");
@@ -32,10 +36,15 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
         NetworkTable networkTable = inst.getTable("Shuffleboard/Driver Station");
 
-
         drivetrainMode.setDefaultOption("Tank Drive", DrivetrainMode.tankDrive.toString());
         drivetrainMode.addOption("Arcade Drive", DrivetrainMode.arcadeDrive.toString());
         tab.add(drivetrainMode);
+
+        debugMode.setDefaultOption("True", true);
+        debugMode.addOption("false", false);
+        tab.add(debugMode);
+        NetworkTable debugNetworkTable = NetworkTableInstance.getDefault().getTable("debug mode table");
+        debugModePub = debugNetworkTable.getBooleanTopic("debug mode").publish();
 
         maxSpeedPub = networkTable.getDoubleTopic("max SPEED").publish();
         tab.add("max SPEED", 20.0);
@@ -48,5 +57,11 @@ public class DriverStationTab extends ShuffleboardTabBase {
         drivetrain.setDriveTrainMode(DrivetrainMode.valueOf(drivetrainMode.getSelected()));
         maxSpeedPub.set(drivetrain.getCarmax());
         pathPlanningTargetPub.set(drivetrain.getPathPlanningTarget());
+
+        System.out.println(debugMode.getSelected());
+        System.out.println("somethings happening");
+
+        debugModePub.set(debugMode.getSelected());
+
     }
 }
