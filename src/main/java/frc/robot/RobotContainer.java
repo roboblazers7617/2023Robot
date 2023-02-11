@@ -10,6 +10,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.CenterRelativeTag;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ScoreGridSelection;
+import frc.robot.commands.ToggleArmPnuematics;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
@@ -19,6 +20,7 @@ import frc.robot.shuffleboard.VisionTab;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Pnuematics;
 import frc.robot.subsystems.Vision;
 
 import java.util.ArrayList;
@@ -43,7 +45,8 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Vision vision = new Vision();
   private final Drivetrain drivetrain = new Drivetrain(vision);
-  private final Arm arm = new Arm();
+  private final Pnuematics pnuematics = new Pnuematics();
+  private final Arm arm = new Arm(pnuematics);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -158,6 +161,8 @@ public class RobotContainer {
     m_operatorController.rightBumper()
         .and(m_operatorController.povDown())
         .whileTrue(new InstantCommand(() -> m_exampleSubsystem.povDownPressed()));
+
+    m_operatorController.a().whileTrue(new ToggleArmPnuematics(arm));
   }
 
   /**

@@ -110,4 +110,20 @@ public final class Constants {
       }
     }
   }
+
+  public static class PnuematicsConstants{
+
+    public static final int LEFT_ARM_PISTON_EXTEND_PORT = 0;
+    public static final int LEFT_ARM_PISTON_RETRACT_PORT = 0;
+    public static final int RIGHT_ARM_PISTON_EXTEND_PORT = 0;
+    public static final int RIGHT_ARM_PISTON_RETRACT_PORT = 0;
+
+    public enum PnuematicPositions{
+      RETRACTED(),
+      EXTENDED();
+
+      PnuematicPositions(){}
+    }
+
+  }
 }
