@@ -13,13 +13,13 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 
-public class FaceTarget extends CommandBase {
+public class FaceTargetScore extends CommandBase {
   /** Creates a new FaceTarget. */
   private Drivetrain drivetrain;
   private Translation2d targetTranslation;
   private double angleToGoal;
   private PIDController pidController;
-  public FaceTarget(Drivetrain drivetrain, Translation2d targetTranslation) {
+  public FaceTargetScore(Drivetrain drivetrain, Translation2d targetTranslation) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.targetTranslation = targetTranslation;
@@ -34,8 +34,8 @@ public class FaceTarget extends CommandBase {
   @Override
   public void initialize() {
     pidController.reset();
-    angleToGoal = findTheta(targetTranslation.getX(), targetTranslation.getY(), drivetrain.getPose2d().getX(), drivetrain.getPose2d().getX());
-  pidController.setSetpoint(angleToGoal);
+    angleToGoal = drivetrain.findTargetAngle(targetTranslation.getX(), targetTranslation.getY(), drivetrain.getPose2d().getX(), drivetrain.getPose2d().getX());
+  pidController.setSetpoint(180);
   System.out.println("Starting Position" + drivetrain.getPose2d().getX() +  "Y" + drivetrain.getPose2d().getY());
   System.out.println("target Position" + targetTranslation.getX() +  "Y" + targetTranslation.getY());
   System.out.println("HERE, HERE, HERE" + angleToGoal);

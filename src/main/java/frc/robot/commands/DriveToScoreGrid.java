@@ -6,9 +6,7 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Drivetrain;
 
@@ -21,7 +19,7 @@ public class DriveToScoreGrid extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new DriveTillY(drivetrain, LeftY, rightY, rightX, targetTranslation),
-              new FaceTarget(drivetrain, targetTranslation),
+              new FaceTargetScore(drivetrain, targetTranslation),
               new GoToTarget(drivetrain, targetTranslation)
      );
   }

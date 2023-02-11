@@ -55,7 +55,7 @@ public final class Constants {
     public static final double KD_LIN = 0;
     public static final double KS_LIN = .25;
 
-    public static final double KP_ROT = 0.12;
+    public static final double KP_ROT = 0.06;
     public static final double KI_ROT = 0;
     public static final double KD_ROT = 0.0004;
     public static final double KS_ROT = 0.2;
@@ -68,8 +68,8 @@ public final class Constants {
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
     
     
-    public static final double ERROR_TARGET_DRIVER = Units.inchesToMeters(1.0);
-    public static final double ROTATIONAL_ERROR_TARGET_DRIVER = 2;
+    public static final double ERROR_TARGET_DRIVER = Units.inchesToMeters(5.0);
+    public static final double ROTATIONAL_ERROR_TARGET_DRIVER = 0.5;
     //public static final double LINEAR_ERROR_TARGET_DRIVER = Units.inchesToMeters(3);
     
     public static final double MAX_AUTO_ACCELERATION = 0.25;

@@ -37,6 +37,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -160,12 +161,13 @@ public class RobotContainer {
         ()-> m_driverController.getLeftY(), 
         ()-> m_driverController.getRightY(), 
         ()-> m_driverController.getRightX(), 
-        (new Translation2d(1,1))));
+        (new Translation2d((Units.inchesToMeters(20)),(Units.inchesToMeters(155))))));
+    m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
   }
 
   private void configureOperatorBindings() {
 
-    // set height to high
+    // set height to high 
     m_operatorController.rightBumper()
         .and(m_operatorController.y())
         .whileTrue(new InstantCommand(() -> m_exampleSubsystem.yPressed()));

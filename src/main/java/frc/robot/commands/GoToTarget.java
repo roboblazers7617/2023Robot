@@ -4,11 +4,8 @@
 
 package frc.robot.commands;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
@@ -46,7 +43,7 @@ public class GoToTarget extends CommandBase {
   public void execute() {
     double output = pidController.calculate(drivetrain.getaverageEncoderDistance());
     drivetrain.arcadeDrive(0.2 + MathUtil.clamp(output, -DrivetrainConstants.MAX_LINEAR_VELOCITY , DrivetrainConstants.MAX_LINEAR_VELOCITY), 0);
-    System.out.println(output);
+    //System.out.println(output);
   }
 
   // Called once the command ends or is interrupted.
@@ -58,6 +55,8 @@ public class GoToTarget extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    System.out.println("start" + startTranslation2d);
+    System.out.println("Dist" + distanceToGoal);
     return pidController.atSetpoint();
   }
 }

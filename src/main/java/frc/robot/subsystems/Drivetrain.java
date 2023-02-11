@@ -110,8 +110,10 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(double leftY, double rightX, double rightY) {
-    double lForward = slewRateFilterLeft.calculate(leftY);
-    double rForward = slewRateFilterRight.calculate(rightY);
+    double lForward = //slewRateFilterLeft.calculate
+    (leftY);
+    double rForward = //slewRateFilterRight.calculate
+    (rightY);
     if (mode == DrivetrainConstants.DrivetrainMode.arcadeDrive) {
       arcadeDrive(-lForward, -rightX);
     } else if (mode == DrivetrainConstants.DrivetrainMode.tankDrive) {
@@ -138,7 +140,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void configureMotor(CANSparkMax motorController) {
 
-    motorController.setIdleMode(IdleMode.kCoast);
+    motorController.setIdleMode(IdleMode.kBrake);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
   }
 
@@ -243,6 +245,12 @@ public class Drivetrain extends SubsystemBase {
 
     public double getaverageEncoderDistance() {
       return (getLeftDistance() + getRightDistance()) / 2;
+    }
+
+    public double findTargetAngle(double xTarget, double yTarget, double xStart, double yStart){
+      double angle = (Math.toDegrees(Math.atan2(xTarget - xStart, -(yTarget - yStart))) - 90);
+      //angle = angle - drivetrain.getRotation2d().getDegrees();
+      return angle <= 180? angle: (angle -360);
     }
   }
   
