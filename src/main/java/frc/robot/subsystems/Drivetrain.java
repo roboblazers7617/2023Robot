@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 
 import org.photonvision.EstimatedRobotPose;
 
@@ -13,13 +14,26 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.commands.PPRamseteCommand;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
 
@@ -48,19 +62,23 @@ public class Drivetrain extends SubsystemBase {
   private final Vision mVision;
 
   private final DifferentialDrive drivetrain;
-  private DrivetrainMode mode;
-  private double maxDrivetrainspeed = DrivetrainConstants.MAX_SPEED;
+  private DrivetrainConstants.DrivetrainMode mode;
+  private double maxDrivetrainspeed = DrivetrainConstants.REG_SPEED;
 
   private String pathPlanningTarget;
 
-  public void setDriveTrainMode(DrivetrainMode mode) {
+  private Translation2d targetTranslation;
+
+  private SlewRateLimiter slewRateFilterLeft = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
+  private SlewRateLimiter slewRateFilterRight = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
+  public void setDriveTrainMode(DrivetrainConstants.DrivetrainMode mode) {
     this.mode = mode;
   }
 
   public Drivetrain(Vision vision) {
     drivetrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
-    drivetrain.setMaxOutput(DrivetrainConstants.MAX_SPEED);
-    mode = DrivetrainMode.tankDrive;
+    drivetrain.setMaxOutput(DrivetrainConstants.REG_SPEED);
+    mode = DrivetrainConstants.DrivetrainMode.tankDrive;
 
     leftFrontMotor.restoreFactoryDefaults();
     rightFrontMotor.restoreFactoryDefaults();
@@ -104,10 +122,14 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(double leftY, double rightX, double rightY) {
-    if (mode == DrivetrainMode.arcadeDrive) {
-      arcadeDrive(-leftY, -rightX);
-    } else if (mode == DrivetrainMode.tankDrive) {
-      tankDrive(-leftY, -rightY);
+    double lForward = //slewRateFilterLeft.calculate
+    (leftY);
+    double rForward = //slewRateFilterRight.calculate
+    (rightY);
+    if (mode == DrivetrainConstants.DrivetrainMode.arcadeDrive) {
+      arcadeDrive(-lForward, -rightX);
+    } else if (mode == DrivetrainConstants.DrivetrainMode.tankDrive) {
+      tankDrive(-lForward, -rForward);
     }
   }
 
@@ -130,7 +152,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void configureMotor(CANSparkMax motorController) {
 
-    motorController.setIdleMode(IdleMode.kCoast);
+    motorController.setIdleMode(IdleMode.kBrake);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
   }
 
@@ -191,7 +213,7 @@ public class Drivetrain extends SubsystemBase {
     mGyro.reset();
   }
   public double getAngle(){
-    return mGyro.getAngle();
+    return -mGyro.getAngle();
   }
 
   private void updatePose() {
@@ -201,6 +223,46 @@ public class Drivetrain extends SubsystemBase {
     Optional<EstimatedRobotPose> cameraPose = mVision.getEstimatedGlobalPose(getPose2d());
     if(cameraPose.isPresent()){
     mOdometry.addVisionMeasurement(cameraPose.get().estimatedPose.toPose2d(), cameraPose.get().timestampSeconds);
+    mGyro.setYaw(cameraPose.get().estimatedPose.getRotation().getAngle());
     }
   }
-}
+  public Command PickPathWork(Drivetrain drivetrain, DoubleSupplier x, DoubleSupplier y, DoubleSupplier angle) {
+    PathPlannerTrajectory test_path = PathPlanner.generatePath(
+      new PathConstraints(.1, .1),
+      new PathPoint(new Translation2d(x.getAsDouble(),y.getAsDouble()), new Rotation2d(angle.getAsDouble())),
+     //new PathPoint(new Translation2d(12.75, 1), Rotation2d.fromDegrees(180)),
+      new PathPoint(new Translation2d(14.61, 1.07), Rotation2d.fromDegrees(0)));
+  
+    SmartDashboard.putNumber("x", x.getAsDouble());
+    SmartDashboard.putNumber("y", y.getAsDouble());
+    SmartDashboard.putNumber("angle", angle.getAsDouble());
+  
+    PPRamseteCommand returnCommand = new PPRamseteCommand(
+        test_path, 
+        drivetrain::getPose2d, 
+        new RamseteController(), 
+        new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV),
+        drivetrain.getKinematics(),
+        drivetrain::getWheelSpeeds,
+        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+        drivetrain::tankDriveVolts,
+        false,
+        drivetrain);
+    return returnCommand;
+    }
+    public Translation2d getTargetTranslation() {
+      return new Translation2d(1,1);
+    }
+
+    public double getaverageEncoderDistance() {
+      return (getLeftDistance() + getRightDistance()) / 2;
+    }
+
+    public double findTargetAngle(double xTarget, double yTarget, double xStart, double yStart){
+      double angle = (Math.toDegrees(Math.atan2(xTarget - xStart, -(yTarget - yStart))) - 90);
+      //angle = angle - drivetrain.getRotation2d().getDegrees();
+      return angle <= 180? angle: (angle -360);
+    }
+  }
+  

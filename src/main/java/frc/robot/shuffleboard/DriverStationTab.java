@@ -13,8 +13,9 @@ import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.DrivetrainConstants.DrivetrainMode;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.DrivetrainMode;
 
 //if auto things are happining
 
@@ -36,7 +37,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
         NetworkTable networkTable = inst.getTable("Shuffleboard/Driver Station");
 
-        drivetrainMode.setDefaultOption("Tank Drive", DrivetrainMode.tankDrive.toString());
+        drivetrainMode.setDefaultOption("Tank Drive", DrivetrainConstants.DrivetrainMode.tankDrive.toString());
         drivetrainMode.addOption("Arcade Drive", DrivetrainMode.arcadeDrive.toString());
         tab.add(drivetrainMode);
 
