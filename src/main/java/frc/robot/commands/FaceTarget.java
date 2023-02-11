@@ -4,6 +4,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -38,7 +39,7 @@ public class FaceTarget extends CommandBase {
   @Override
   public void execute() {
     double output = pidController.calculate(drivetrain.getRotation2d().getDegrees());
-    drivetrain.arcadeDrive(0, output);
+    drivetrain.arcadeDrive(0, MathUtil.clamp(output, -DrivetrainConstants.MAX_ANGULAR_VELOCITY, DrivetrainConstants.MAX_ANGULAR_VELOCITY));
   }
 
   // Called once the command ends or is interrupted.

@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -28,7 +29,7 @@ public class GoToTarget extends CommandBase {
     this.drivetrain = drivetrain;
     this.targetTranslation = targetTranslation;
     pidController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
-    pidController.setTolerance(DrivetrainConstants.LINEAR_ERROR_TARGET_DRIVER);
+    pidController.setTolerance(DrivetrainConstants.ERROR_TARGET_DRIVER);
   }
 
   // Called when the command is initially scheduled.
@@ -44,7 +45,8 @@ public class GoToTarget extends CommandBase {
   @Override
   public void execute() {
     double output = pidController.calculate(drivetrain.getaverageEncoderDistance());
-    drivetrain.arcadeDrive(output, 0);
+    drivetrain.arcadeDrive(0.2 + MathUtil.clamp(output, -DrivetrainConstants.MAX_LINEAR_VELOCITY , DrivetrainConstants.MAX_LINEAR_VELOCITY), 0);
+    System.out.println(output);
   }
 
   // Called once the command ends or is interrupted.

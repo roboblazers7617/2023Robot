@@ -63,7 +63,7 @@ public class Drivetrain extends SubsystemBase {
 
   private final DifferentialDrive drivetrain;
   private DrivetrainConstants.DrivetrainMode mode;
-  private double maxDrivetrainspeed = DrivetrainConstants.MAX_SPEED;
+  private double maxDrivetrainspeed = DrivetrainConstants.REG_SPEED;
 
   private Translation2d targetTranslation;
 
@@ -75,7 +75,7 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain(Vision vision) {
     drivetrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
-    drivetrain.setMaxOutput(DrivetrainConstants.MAX_SPEED);
+    drivetrain.setMaxOutput(DrivetrainConstants.REG_SPEED);
     mode = DrivetrainConstants.DrivetrainMode.tankDrive;
 
     leftFrontMotor.restoreFactoryDefaults();
@@ -169,7 +169,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Rotation2d getRotation2d(){
-    return mGyro.getRotation2d().unaryMinus();
+    return mGyro.getRotation2d();
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds(){
@@ -204,7 +204,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void updatePose() {
     // Write code for local Odometry here:
-    mOdometry.update(mGyro.getRotation2d().unaryMinus(), getLeftDistance(), getRightDistance());
+    mOdometry.update(mGyro.getRotation2d(), getLeftDistance(), getRightDistance());
 
     Optional<EstimatedRobotPose> cameraPose = mVision.getEstimatedGlobalPose(getPose2d());
     if(cameraPose.isPresent()){
@@ -238,7 +238,7 @@ public class Drivetrain extends SubsystemBase {
     return returnCommand;
     }
     public Translation2d getTargetTranslation() {
-      return targetTranslation;
+      return new Translation2d(1,1);
     }
 
     public double getaverageEncoderDistance() {
