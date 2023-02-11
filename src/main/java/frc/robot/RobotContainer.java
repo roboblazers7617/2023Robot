@@ -15,18 +15,23 @@ import frc.robot.commands.centerAndDistanceAlign;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
+import frc.robot.shuffleboard.IntakeTab;
 import frc.robot.shuffleboard.ShuffleboardInfo;
 import frc.robot.shuffleboard.ShuffleboardTabBase;
 import frc.robot.shuffleboard.VisionTab;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
+import frc.robot.subsystems.Intake.WristPosition;
 
 import java.util.ArrayList;
+import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.commands.PPRamseteCommand;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -34,9 +39,13 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -54,6 +63,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Vision vision = new Vision();
   private final Drivetrain drivetrain = new Drivetrain(vision);
+  private final Intake intake = new Intake();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -72,6 +82,7 @@ public class RobotContainer {
     // create shuffleboardinfo.java
     drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
         m_driverController.getRightX(), m_driverController.getRightY()), drivetrain));
+    intake.setDefaultCommand(new RunCommand(() -> intake.setWristSpeed(m_driverController.getLeftY()), intake ));
     ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
     // YOUR CODE HERE | | |
     // \/ \/ \/
@@ -79,6 +90,7 @@ public class RobotContainer {
     tabs.add(new DriverStationTab(drivetrain));
     tabs.add(new VisionTab(vision, drivetrain));
     tabs.add(new DriveTrainTab(drivetrain));
+    tabs.add(new IntakeTab(intake));
     // STOP HERE OR DIE
 
     ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
@@ -117,12 +129,18 @@ public class RobotContainer {
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-    // m_driverController.a().whileTrue(new TurnToTag(vision, drivetrain));
-    // m_driverController.x().whileTrue(new DriveToTag(vision, drivetrain, 1));
+     m_driverController.a().whileTrue(onTheFlyCommand(
+                onTheFlyPath(() -> drivetrain.getPose2d().getX(),
+                            () -> drivetrain.getPose2d().getY(),
+                            () -> drivetrain.getRotation2d().getDegrees())));
+     // m_driverController.x().whileTrue(new DriveToTag(vision, drivetrain, 1));
     // m_driverController.rightTrigger().whileTrue(new centerAndDistanceAlign(vision, drivetrain, 1));
         // Schedule `exampleMethodCommand` when the Xbox controller's B button is
         // pressed,
         // cancelling on release.
+    
+    
+    
 
     //this code calls the score grid selection command for the correct input
     m_driverController.x()
@@ -164,6 +182,9 @@ public class RobotContainer {
     m_operatorController.rightBumper()
         .and(m_operatorController.povDown())
         .whileTrue(new InstantCommand(() -> m_exampleSubsystem.povDownPressed()));
+    
+    m_operatorController.povUp().onTrue(intake.MoveWristCommand(WristPosition.THIRD_LEVEL));
+
   }
 
   /**
@@ -187,5 +208,35 @@ public class RobotContainer {
         false,
         drivetrain);
     return returnCommand;
+  }
+
+  public Command onTheFlyCommand(PathPlannerTrajectory traj){
+    PPRamseteCommand returnCommand = new PPRamseteCommand(
+        traj, 
+        drivetrain::getPose2d, 
+        new RamseteController(), 
+        new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV),
+        drivetrain.getKinematics(),
+        drivetrain::getWheelSpeeds,
+        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+        drivetrain::tankDriveVolts,
+        false,
+        drivetrain);
+    return returnCommand;
+  }
+  public PathPlannerTrajectory onTheFlyPath(DoubleSupplier x, DoubleSupplier y, DoubleSupplier angle)
+  {
+    PathPlannerTrajectory test_path = PathPlanner.generatePath(
+        new PathConstraints(.5, .25),
+        new PathPoint(new Translation2d(drivetrain.getPose2d().getX(),drivetrain.getPose2d().getY()), 
+                new Rotation2d(drivetrain.getPose2d().getRotation().getDegrees())),
+       //new PathPoint(new Translation2d(12.75, 1), Rotation2d.fromDegrees(180)),
+        new PathPoint(new Translation2d(14.61, 1.07), Rotation2d.fromDegrees(0)));
+    
+      SmartDashboard.putNumber("x", drivetrain.getPose2d().getX());
+      SmartDashboard.putNumber("y", drivetrain.getPose2d().getY());
+      SmartDashboard.putNumber("angle", drivetrain.getRotation2d().getDegrees());
+      return test_path;
   }
 }
