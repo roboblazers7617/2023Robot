@@ -4,7 +4,7 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Drivetrain;
 
@@ -13,11 +13,11 @@ import frc.robot.subsystems.Drivetrain;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DriveToTranslation extends SequentialCommandGroup {
   /** Creates a new DriveToDoublePickup. */
-  public DriveToTranslation(Drivetrain drivetrain, Translation2d targetTranslation) {
+  public DriveToTranslation(Drivetrain drivetrain, Pose2d targetPose) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new FaceTarget(drivetrain, targetTranslation),
-                new GoToTarget(drivetrain, targetTranslation)
+    addCommands(new FaceTarget(drivetrain, targetPose),
+                new GoToTarget(drivetrain, targetPose)
 );
   }
 }

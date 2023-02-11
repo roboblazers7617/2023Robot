@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
@@ -14,17 +15,17 @@ import frc.robot.subsystems.Drivetrain;
 public class GoToTarget extends CommandBase {
   /** Creates a new GoToTarget. */
   private Drivetrain drivetrain;
-  private Translation2d targetTranslation;
+  private Pose2d targetPose;
   private PIDController pidController;
   private Translation2d startTranslation2d;
   private double distanceToGoal;
   private double endingEncoderValue;
   
-  public GoToTarget(Drivetrain drivetrain, Translation2d targetTranslation) {
+  public GoToTarget(Drivetrain drivetrain, Pose2d targetPose) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
     this.drivetrain = drivetrain;
-    this.targetTranslation = targetTranslation;
+    this.targetPose = targetPose;
     pidController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
     pidController.setTolerance(DrivetrainConstants.ERROR_TARGET_DRIVER);
   }
@@ -33,7 +34,7 @@ public class GoToTarget extends CommandBase {
   @Override
   public void initialize() {
     startTranslation2d = drivetrain.getPose2d().getTranslation();
-    distanceToGoal = targetTranslation.getDistance(startTranslation2d);
+    distanceToGoal = targetPose.getTranslation().getDistance(startTranslation2d);
     endingEncoderValue = drivetrain.getaverageEncoderDistance() + distanceToGoal;
     pidController.setSetpoint(endingEncoderValue);
   }

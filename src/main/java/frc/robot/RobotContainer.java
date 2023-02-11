@@ -6,13 +6,9 @@ package frc.robot;
 
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.DriveToTag;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ScoreGridSelection;
 import frc.robot.commands.DriveToScoreGrid;
-import frc.robot.commands.TurnToTag;
-import frc.robot.commands.centerAndDistanceAlign;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
@@ -28,7 +24,6 @@ import java.util.ArrayList;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.commands.PPRamseteCommand;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -37,9 +32,6 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -161,7 +153,7 @@ public class RobotContainer {
         ()-> m_driverController.getLeftY(), 
         ()-> m_driverController.getRightY(), 
         ()-> m_driverController.getRightX(), 
-        (new Translation2d((Units.inchesToMeters(20)),(Units.inchesToMeters(155))))));
+        new Pose2d(new Translation2d(0,0), new Rotation2d(0))));
     m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
   }
 
