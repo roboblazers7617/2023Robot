@@ -29,7 +29,7 @@ public class ScoreGridSelection extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.setPathPlanningTarget(getPathPlanningTarget());
+    drivetrain.setTargetPose(getPathPlanningTarget());
     System.out.println("The grid is " + grid + ". The position is " + position);
   }
 

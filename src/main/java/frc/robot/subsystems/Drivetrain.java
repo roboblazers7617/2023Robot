@@ -65,7 +65,7 @@ public class Drivetrain extends SubsystemBase {
   private DrivetrainConstants.DrivetrainMode mode;
   private double maxDrivetrainspeed = DrivetrainConstants.REG_SPEED;
 
-  private String pathPlanningTarget;
+  private String targetPose;
 
   private Translation2d targetTranslation;
 
@@ -105,7 +105,7 @@ public class Drivetrain extends SubsystemBase {
     mOdometry = new DifferentialDrivePoseEstimator(mKinematics, getRotation2d(), getLeftDistance(), getRightDistance(), new Pose2d());
 
 
-    pathPlanningTarget = "other NA";
+    targetPose = "other NA";
   }
 
   @Override
@@ -113,12 +113,12 @@ public class Drivetrain extends SubsystemBase {
     updatePose();
   }
 
-  public void setPathPlanningTarget(String target){
-    pathPlanningTarget = target;
+  public void setTargetPose(String target){
+    targetPose = target;
   }
 
-  public String getPathPlanningTarget(){
-    return pathPlanningTarget;
+  public String getTargetPose(){
+    return targetPose;
   }
 
   public void drive(double leftY, double rightX, double rightY) {

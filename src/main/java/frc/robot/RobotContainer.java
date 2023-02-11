@@ -80,8 +80,8 @@ public class RobotContainer {
     ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
     // YOUR CODE HERE | | |
     // \/ \/ \/
-    tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
     tabs.add(new DriverStationTab(drivetrain));
+    tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
     tabs.add(new VisionTab(vision, drivetrain));
     tabs.add(new DriveTrainTab(drivetrain));
     // STOP HERE OR DIE

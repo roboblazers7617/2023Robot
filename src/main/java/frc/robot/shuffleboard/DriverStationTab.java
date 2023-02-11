@@ -57,7 +57,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
     public void update() {
         drivetrain.setDriveTrainMode(DrivetrainMode.valueOf(drivetrainMode.getSelected()));
         maxSpeedPub.set(drivetrain.getCarmax());
-        pathPlanningTargetPub.set(drivetrain.getPathPlanningTarget());
+        pathPlanningTargetPub.set(drivetrain.getTargetPose());
 
         System.out.println(debugMode.getSelected());
         System.out.println("somethings happening");
