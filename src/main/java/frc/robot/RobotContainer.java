@@ -32,6 +32,7 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -58,6 +59,8 @@ public class RobotContainer {
 
   private final CommandXboxController m_operatorController = new CommandXboxController(
       OperatorConstants.OPERATOR_CONTROLLER_PORT);
+  private Pose2d targetPose = new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(42.19)),
+  new Rotation2d(180));
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -122,7 +125,7 @@ public class RobotContainer {
         // cancelling on release.
 
     //this code calls the score grid selection command for the correct input
-    m_driverController.x()
+    /*m_driverController.x()
         .and(m_driverController.povLeft())
         .onTrue(new ScoreGridSelection(0, 0));
     m_driverController.y()
@@ -148,13 +151,23 @@ public class RobotContainer {
         .onTrue(new ScoreGridSelection(2, 1));
     m_driverController.b()
         .and(m_driverController.povRight())
-        .onTrue(new ScoreGridSelection(2, 2));
+        .onTrue(new ScoreGridSelection(2, 2));*/
+    m_driverController.povLeft().onTrue(
+        new InstantCommand(()-> setTargetPose(
+            new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(42.19)),
+            new Rotation2d(180)))));
+    m_driverController.povUp().onTrue(new InstantCommand(()-> setTargetPose(
+        new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(108.19)),
+        new Rotation2d(180)))));
+    m_driverController.povRight().onTrue(new InstantCommand(()-> setTargetPose(
+        new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(21)),
+        new Rotation2d(180)))));
     m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain, 
         ()-> m_driverController.getLeftY(), 
         ()-> m_driverController.getRightY(), 
         ()-> m_driverController.getRightX(), 
-        new Pose2d(new Translation2d(0,0), new Rotation2d(0))));
-    m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
+        ()->getTargetPose()));
+    m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(20),Units.inchesToMeters(17),new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
   }
 
   private void configureOperatorBindings() {
@@ -168,27 +181,32 @@ public class RobotContainer {
         .and(m_operatorController.povDown())
         .whileTrue(new InstantCommand(() -> m_exampleSubsystem.povDownPressed()));
   }
-
+  public void setTargetPose(Pose2d targetPose) {
+    this.targetPose = targetPose;
+    }
+  public Pose2d getTargetPose() {
+    return targetPose;
+  }
     /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */   
   public Command getAutonomousCommand() {
-        return null;
+        return pickAutonomousCommand("New Path");
     }
   public Command pickAutonomousCommand(String pathName) {    
-    PathPlannerTrajectory test_path = PathPlanner.loadPath(pathName, new PathConstraints(Constants.DrivetrainConstants.MAX_AUTO_VELOCITY, Constants.DrivetrainConstants.MAX_AUTO_ACCELERATION));
+    PathPlannerTrajectory test_path = PathPlanner.loadPath(pathName, new PathConstraints(2, 0.5));
   drivetrain.resetOdometry(test_path.getInitialPose());
   PPRamseteCommand returnCommand = new PPRamseteCommand(
       test_path, 
       drivetrain::getPose2d, 
       new RamseteController(), 
-      new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV),
+      new SimpleMotorFeedforward(0.015, 0.21),
       drivetrain.getKinematics(),
       drivetrain::getWheelSpeeds,
-      new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
-      new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+      new PIDController(0.5, 0, 0),
+      new PIDController(0.5, 0, 0),
       drivetrain::tankDriveVolts,
       false,
       drivetrain);

@@ -27,6 +27,7 @@ import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
@@ -65,7 +66,7 @@ public class Drivetrain extends SubsystemBase {
   private DrivetrainConstants.DrivetrainMode mode;
   private double maxDrivetrainspeed = DrivetrainConstants.REG_SPEED;
 
-  private Translation2d targetTranslation;
+  private Pose2d targetPose;
 
   private SlewRateLimiter slewRateFilterLeft = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
   private SlewRateLimiter slewRateFilterRight = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
@@ -140,7 +141,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void configureMotor(CANSparkMax motorController) {
 
-    motorController.setIdleMode(IdleMode.kBrake);
+    motorController.setIdleMode(IdleMode.kCoast);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
   }
 
@@ -208,7 +209,7 @@ public class Drivetrain extends SubsystemBase {
     // Write code for local Odometry here:
     mOdometry.update(mGyro.getRotation2d(), getLeftDistance(), getRightDistance());
 
-    Optional<EstimatedRobotPose> cameraPose = mVision.getEstimatedGlobalPose(getPose2d());
+    Optional<EstimatedRobotPose> cameraPose = mVision.getEstimatedGlobalPose(getPose2d().plus(new Transform2d(new Translation2d(0, 0), new Rotation2d(180))));
     if(cameraPose.isPresent()){
     mOdometry.addVisionMeasurement(cameraPose.get().estimatedPose.toPose2d(), cameraPose.get().timestampSeconds);
     mGyro.setYaw(cameraPose.get().estimatedPose.getRotation().getAngle());

@@ -5,6 +5,7 @@
 package frc.robot.commands;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
@@ -16,20 +17,23 @@ public class DriveTillY extends CommandBase {
   private DoubleSupplier leftY;
   private DoubleSupplier rightY;
   private DoubleSupplier rightX;
+  private Supplier<Pose2d> targetPoseSupplier;
   private Pose2d targetPose;
-  public DriveTillY(Drivetrain drivetrain, DoubleSupplier leftY, DoubleSupplier rightY, DoubleSupplier rightX, Pose2d targetPose) {
+  public DriveTillY(Drivetrain drivetrain, DoubleSupplier leftY, DoubleSupplier rightY, DoubleSupplier rightX, Supplier<Pose2d> targetPoseSupplier) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.drivetrain = drivetrain;
     this.leftY = leftY;
     this.rightY = rightY;
     this.rightX = rightX;
-    this.targetPose = targetPose;
+    this.targetPoseSupplier = targetPoseSupplier;
     addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    targetPose = targetPoseSupplier.get();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

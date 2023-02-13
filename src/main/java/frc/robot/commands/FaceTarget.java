@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -17,6 +19,7 @@ public class FaceTarget extends CommandBase {
   private Drivetrain drivetrain;
   private Pose2d targetPose;
   private double angleToGoal;
+  private Supplier<Pose2d> targetPoseSupplier;
   private PIDController pidController;
   public FaceTarget(Drivetrain drivetrain, Pose2d targetPose) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -28,16 +31,31 @@ public class FaceTarget extends CommandBase {
     pidController.setTolerance(DrivetrainConstants.ROTATIONAL_ERROR_TARGET_DRIVER);
     
   }
-
+  
+  public FaceTarget(Drivetrain drivetrain, Supplier<Pose2d> targetPose) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.drivetrain = drivetrain;
+    this.targetPoseSupplier = targetPose;
+    addRequirements(drivetrain);
+    pidController = new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
+    pidController.enableContinuousInput(-180, 180);
+    pidController.setTolerance(DrivetrainConstants.ROTATIONAL_ERROR_TARGET_DRIVER);
+  }
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if(targetPoseSupplier != null){
+      targetPose = targetPoseSupplier.get();
+    }
     pidController.reset();
-    angleToGoal = findTheta(targetPose.getX(), targetPose.getY(), drivetrain.getPose2d().getX(), drivetrain.getPose2d().getX());
+    if(targetPoseSupplier != null){
+      targetPose = targetPoseSupplier.get();
+    }
+    angleToGoal = targetPose.getTranslation().minus(drivetrain.getPose2d().getTranslation()).getAngle().getDegrees();
   pidController.setSetpoint(angleToGoal);
-  System.out.println("Starting Position" + drivetrain.getPose2d().getX() +  "Y" + drivetrain.getPose2d().getY());
-  System.out.println("target Position" + targetPose.getX() +  "Y" + targetPose.getY());
-  System.out.println("HERE, HERE, HERE" + angleToGoal);
+  //System.out.println("Starting Position" + drivetrain.getPose2d().getX() +  "Y" + drivetrain.getPose2d().getY());
+  //System.out.println("target Position" + targetPose.getX() +  "Y" + targetPose.getY());
+  //System.out.println("HERE, HERE, HERE" + angleToGoal);
   }
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -58,11 +76,5 @@ public class FaceTarget extends CommandBase {
     return pidController.atSetpoint();
   }
 
-  public double findTheta(double xTarget, double yTarget, double xStart, double yStart){
-    double angle = (Math.toDegrees(Math.atan2(xTarget - xStart, -(yTarget - yStart))) - 90);
-    //angle = angle - drivetrain.getRotation2d().getDegrees();
-    SmartDashboard.putNumber("ANGLE", angle <= 180? angle: (angle -360));
-    return angle <= 180? angle: (angle -360);
-
-  }
+  
 }

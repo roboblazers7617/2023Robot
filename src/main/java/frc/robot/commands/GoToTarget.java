@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -15,6 +17,7 @@ import frc.robot.subsystems.Drivetrain;
 public class GoToTarget extends CommandBase {
   /** Creates a new GoToTarget. */
   private Drivetrain drivetrain;
+  private Supplier<Pose2d> targetPoseSupplier;
   private Pose2d targetPose;
   private PIDController pidController;
   private Translation2d startTranslation2d;
@@ -29,10 +32,21 @@ public class GoToTarget extends CommandBase {
     pidController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
     pidController.setTolerance(DrivetrainConstants.ERROR_TARGET_DRIVER);
   }
+  public GoToTarget(Drivetrain drivetrain, Supplier<Pose2d> targetPoseSupplier) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drivetrain);
+    this.drivetrain = drivetrain;
+    this.targetPoseSupplier = targetPoseSupplier;
+    pidController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
+    pidController.setTolerance(DrivetrainConstants.ERROR_TARGET_DRIVER);
+  }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (targetPoseSupplier != null) {
+      targetPose = targetPoseSupplier.get();
+    }
     startTranslation2d = drivetrain.getPose2d().getTranslation();
     distanceToGoal = targetPose.getTranslation().getDistance(startTranslation2d);
     endingEncoderValue = drivetrain.getaverageEncoderDistance() + distanceToGoal;
@@ -56,8 +70,8 @@ public class GoToTarget extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    System.out.println("start" + startTranslation2d);
-    System.out.println("Dist" + distanceToGoal);
+    //System.out.println("start" + startTranslation2d);
+    //System.out.println("Dist" + distanceToGoal);
     return pidController.atSetpoint();
   }
 }
