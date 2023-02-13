@@ -10,6 +10,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.DriveToTag;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ScoreGridSelection;
+import frc.robot.commands.DriveToScoreGrid;
 import frc.robot.commands.TurnToTag;
 import frc.robot.commands.centerAndDistanceAlign;
 import frc.robot.shuffleboard.DriveTrainTab;
@@ -29,6 +30,7 @@ import java.util.ArrayList;
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.PathPoint;
 import com.pathplanner.lib.commands.PPRamseteCommand;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -36,6 +38,10 @@ import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -79,8 +85,8 @@ public class RobotContainer {
     ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
     // YOUR CODE HERE | | |
     // \/ \/ \/
-    tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
     tabs.add(new DriverStationTab(drivetrain));
+    tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
     tabs.add(new VisionTab(vision, drivetrain));
     tabs.add(new DriveTrainTab(drivetrain));
     tabs.add(new IntakeTab(intake));
@@ -113,17 +119,17 @@ public class RobotContainer {
         .onTrue(new ExampleCommand(m_exampleSubsystem));
     Trigger leftTop = m_driverController.leftBumper();
     leftTop.onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED)))
-        .onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.MAX_SPEED)));
+        .onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
 
     Trigger rightTop = m_driverController.rightBumper();
     rightTop.onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED)))
-        .onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.MAX_SPEED)));
+        .onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
 
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
     // m_driverController.a().whileTrue(new TurnToTag(vision, drivetrain));
-    // m_driverController.x().whileTrue(new DriveToTag(vision, drivetrain, 1));
+    //m_driverController.a().whileTrue(new RunCommand(PickPathWork(drivetrain, ()-> drivetrain.getPose2d().getX(), ()-> drivetrain.getPose2d().getY(),()-> drivetrain.getPose2d().getRotation().getDegrees())));
     // m_driverController.rightTrigger().whileTrue(new centerAndDistanceAlign(vision, drivetrain, 1));
         // Schedule `exampleMethodCommand` when the Xbox controller's B button is
         // pressed,
@@ -132,36 +138,42 @@ public class RobotContainer {
     //this code calls the score grid selection command for the correct input
     m_driverController.x()
         .and(m_driverController.povLeft())
-        .onTrue(new ScoreGridSelection(0, 0));
+        .onTrue(new ScoreGridSelection(drivetrain, 0, 0));
     m_driverController.y()
         .and(m_driverController.povLeft())
-        .onTrue(new ScoreGridSelection(0, 1));
+        .onTrue(new ScoreGridSelection(drivetrain, 0, 1));
     m_driverController.b()
         .and(m_driverController.povLeft())
-        .onTrue(new ScoreGridSelection(0, 2));
+        .onTrue(new ScoreGridSelection(drivetrain, 0, 2));
     m_driverController.x()
         .and(m_driverController.povUp())
-        .onTrue(new ScoreGridSelection(1, 0));
+        .onTrue(new ScoreGridSelection(drivetrain, 1, 0));
     m_driverController.y()
         .and(m_driverController.povUp())
-        .onTrue(new ScoreGridSelection(1, 1));
+        .onTrue(new ScoreGridSelection(drivetrain, 1, 1));
     m_driverController.b()
         .and(m_driverController.povUp())
-        .onTrue(new ScoreGridSelection(1, 2));
+        .onTrue(new ScoreGridSelection(drivetrain, 1, 2));
     m_driverController.x()
         .and(m_driverController.povRight())
-        .onTrue(new ScoreGridSelection(2, 0));
+        .onTrue(new ScoreGridSelection(drivetrain, 2, 0));
     m_driverController.y()
         .and(m_driverController.povRight())
-        .onTrue(new ScoreGridSelection(2, 1));
+        .onTrue(new ScoreGridSelection(drivetrain, 2, 1));
     m_driverController.b()
         .and(m_driverController.povRight())
-        .onTrue(new ScoreGridSelection(2, 2));
+        .onTrue(new ScoreGridSelection(drivetrain, 2, 2));
+    m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain, 
+        ()-> m_driverController.getLeftY(), 
+        ()-> m_driverController.getRightY(), 
+        ()-> m_driverController.getRightX(), 
+        (new Translation2d((Units.inchesToMeters(20)),(Units.inchesToMeters(155))))));
+    m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
   }
 
   private void configureOperatorBindings() {
 
-    // set height to high
+    // set height to high 
     m_operatorController.rightBumper()
         .and(m_operatorController.y())
         .whileTrue(new InstantCommand(() -> m_exampleSubsystem.yPressed()));
@@ -171,26 +183,31 @@ public class RobotContainer {
         .whileTrue(new InstantCommand(() -> m_exampleSubsystem.povDownPressed()));
   }
 
-  /**
+    /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
-   */
+   */   
   public Command getAutonomousCommand() {
-    PathPlannerTrajectory test_path = PathPlanner.loadPath("h", new PathConstraints(1, .25));
-    drivetrain.resetOdometry(test_path.getInitialPose());
-    PPRamseteCommand returnCommand = new PPRamseteCommand(
-        test_path, 
-        drivetrain::getPose2d, 
-        new RamseteController(), 
-        new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV),
-        drivetrain.getKinematics(),
-        drivetrain::getWheelSpeeds,
-        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
-        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
-        drivetrain::tankDriveVolts,
-        false,
-        drivetrain);
-    return returnCommand;
+        return null;
+    }
+  public Command pickAutonomousCommand(String pathName) {    
+    PathPlannerTrajectory test_path = PathPlanner.loadPath(pathName, new PathConstraints(Constants.DrivetrainConstants.MAX_AUTO_VELOCITY, Constants.DrivetrainConstants.MAX_AUTO_ACCELERATION));
+  drivetrain.resetOdometry(test_path.getInitialPose());
+  PPRamseteCommand returnCommand = new PPRamseteCommand(
+      test_path, 
+      drivetrain::getPose2d, 
+      new RamseteController(), 
+      new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV),
+      drivetrain.getKinematics(),
+      drivetrain::getWheelSpeeds,
+      new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+      new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+      drivetrain::tankDriveVolts,
+      false,
+      drivetrain);
+  return returnCommand;
+
   }
 }
+
