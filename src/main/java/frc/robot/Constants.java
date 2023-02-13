@@ -74,6 +74,8 @@ public final class Constants {
     public static final int WRIST_CAN_ID = 22;
     public static final int INTAKE_CAN_ID = 23;
     public static final int POT_CHANEL = 1;
+    public static final int DISTANCE_SENSOR_CHANEL = 5;
+    public static final int INTAKE_LIMIT_SWITCH_ID = 2;
     public static final int WRIST_POT_SCALE = 270;
     public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
     public static final int CURRENT_LIMIT = 40;
@@ -103,7 +105,7 @@ public final class Constants {
         return speed;
       }
     } 
-    public enum WristPostion
+    public enum WristPosition
     {
       Store (0.0),
       FloorCubePickup (0.06),
@@ -114,14 +116,15 @@ public final class Constants {
 
 
       private final double angle;
-      WristPostion (double angle) {
+      WristPosition (double angle) {
         this.angle = angle;
       }
       public double angle(){
         return angle;
       }
-    } 
+
 
    }
+  }
 
 }
