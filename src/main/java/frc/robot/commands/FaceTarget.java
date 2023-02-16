@@ -52,7 +52,7 @@ public class FaceTarget extends CommandBase {
     if(targetPoseSupplier != null){
       targetPose = targetPoseSupplier.get();
     }
-    angleToGoal = 180;//targetPose.minus(drivetrain.getPose2d()).getRotation().getRadians();
+    angleToGoal = -targetPose.minus(drivetrain.getPose2d()).getRotation().getRadians();
   pidController.setSetpoint(angleToGoal);
   //System.out.println("Starting Position" + drivetrain.getPose2d().getX() +  "Y" + drivetrain.getPose2d().getY());
   //System.out.println("target Position" + targetPose.getX() +  "Y" + targetPose.getY());
