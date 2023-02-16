@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.FaceTarget;
 import frc.robot.commands.ScoreGridSelection;
 import frc.robot.commands.DriveToScoreGrid;
 import frc.robot.shuffleboard.DriveTrainTab;
@@ -152,16 +153,16 @@ public class RobotContainer {
     m_driverController.b()
         .and(m_driverController.povRight())
         .onTrue(new ScoreGridSelection(2, 2));*/
-    m_driverController.povLeft().onTrue(
-        new InstantCommand(()-> setTargetPose(
-            new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(42.19)),
-            new Rotation2d(180)))));
+    m_driverController.povLeft().whileTrue(new FaceTarget(drivetrain, new Pose2d(0, 0, Rotation2d.fromDegrees(180))));
+        //new InstantCommand(()-> setTargetPose(
+        //    new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(42.19)),
+        //    new Rotation2d(Units.degreesToRadians(180))))));
     m_driverController.povUp().onTrue(new InstantCommand(()-> setTargetPose(
         new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(108.19)),
-        new Rotation2d(180)))));
+        new Rotation2d((Units.degreesToRadians(180)))))));
     m_driverController.povRight().onTrue(new InstantCommand(()-> setTargetPose(
         new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(21)),
-        new Rotation2d(180)))));
+        new Rotation2d(Units.degreesToRadians(180))))));
     m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain, 
         ()-> m_driverController.getLeftY(), 
         ()-> m_driverController.getRightY(), 
@@ -193,20 +194,20 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */   
   public Command getAutonomousCommand() {
-        return pickAutonomousCommand("New Path");
+        return pickAutonomousCommand("reversePath");
     }
   public Command pickAutonomousCommand(String pathName) {    
-    PathPlannerTrajectory test_path = PathPlanner.loadPath(pathName, new PathConstraints(2, 0.5));
+    PathPlannerTrajectory test_path = PathPlanner.loadPath(pathName, new PathConstraints(5, 0.5));
   drivetrain.resetOdometry(test_path.getInitialPose());
   PPRamseteCommand returnCommand = new PPRamseteCommand(
       test_path, 
       drivetrain::getPose2d, 
       new RamseteController(), 
-      new SimpleMotorFeedforward(0.015, 0.21),
+      new SimpleMotorFeedforward(DrivetrainConstants.KS_LIN, DrivetrainConstants.KV),
       drivetrain.getKinematics(),
       drivetrain::getWheelSpeeds,
-      new PIDController(0.5, 0, 0),
-      new PIDController(0.5, 0, 0),
+      new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+      new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
       drivetrain::tankDriveVolts,
       false,
       drivetrain);

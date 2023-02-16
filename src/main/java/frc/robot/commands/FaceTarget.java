@@ -9,6 +9,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
@@ -27,8 +28,8 @@ public class FaceTarget extends CommandBase {
     this.targetPose = targetPose;
     addRequirements(drivetrain);
     pidController = new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
-    pidController.enableContinuousInput(-180, 180);
-    pidController.setTolerance(DrivetrainConstants.ROTATIONAL_ERROR_TARGET_DRIVER);
+    pidController.enableContinuousInput(-Math.PI, Math.PI);
+    pidController.setTolerance(Units.degreesToRadians(3.0));
     
   }
   
@@ -38,8 +39,8 @@ public class FaceTarget extends CommandBase {
     this.targetPoseSupplier = targetPose;
     addRequirements(drivetrain);
     pidController = new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
-    pidController.enableContinuousInput(-180, 180);
-    pidController.setTolerance(DrivetrainConstants.ROTATIONAL_ERROR_TARGET_DRIVER);
+    pidController.enableContinuousInput(-Math.PI, Math.PI);
+    pidController.setTolerance(Units.degreesToRadians(3.0));
   }
   // Called when the command is initially scheduled.
   @Override
@@ -51,7 +52,7 @@ public class FaceTarget extends CommandBase {
     if(targetPoseSupplier != null){
       targetPose = targetPoseSupplier.get();
     }
-    angleToGoal = targetPose.getTranslation().minus(drivetrain.getPose2d().getTranslation()).getAngle().getDegrees();
+    angleToGoal = 180;//targetPose.minus(drivetrain.getPose2d()).getRotation().getRadians();
   pidController.setSetpoint(angleToGoal);
   //System.out.println("Starting Position" + drivetrain.getPose2d().getX() +  "Y" + drivetrain.getPose2d().getY());
   //System.out.println("target Position" + targetPose.getX() +  "Y" + targetPose.getY());
@@ -60,8 +61,12 @@ public class FaceTarget extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double output = pidController.calculate(drivetrain.getRotation2d().getDegrees());
-    drivetrain.arcadeDrive(0, MathUtil.clamp(output, -DrivetrainConstants.MAX_ANGULAR_VELOCITY, DrivetrainConstants.MAX_ANGULAR_VELOCITY));
+    double output = pidController.calculate(drivetrain.getRotation2d().getRadians());
+    System.out.println("Angular speed is " + output);
+    System.out.println("Setpoint is " + pidController.getSetpoint());
+    System.out.println("Drivetrain value is " + drivetrain.getPose2d().getRotation().getRadians());
+    //drivetrain.arcadeDrive(0, MathUtil.clamp(output, -DrivetrainConstants.MAX_ANGULAR_VELOCITY, DrivetrainConstants.MAX_ANGULAR_VELOCITY));
+    drivetrain.driveWithVelocity(0, output );
   }
 
   // Called once the command ends or is interrupted.
