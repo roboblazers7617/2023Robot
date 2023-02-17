@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
+import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -73,6 +74,21 @@ public final class Constants {
     public static final double CAMERA_PITCH = 0;
   }
 
+  public static class PnuematicsConstants{
+
+    public static final int LEFT_ARM_PISTON_EXTEND_PORT = 0;
+    public static final int LEFT_ARM_PISTON_RETRACT_PORT = 0;
+    public static final int RIGHT_ARM_PISTON_EXTEND_PORT = 0;
+    public static final int RIGHT_ARM_PISTON_RETRACT_PORT = 0;
+
+    public enum PnuematicPositions{
+      RETRACTED(),
+      EXTENDED();
+
+      PnuematicPositions(){}
+    }
+  }
+
   public static class ArmConstants {
 
     public static final int SHOULDER_MOTOR_PORT = 0;
@@ -91,39 +107,30 @@ public final class Constants {
     public static final double UPPER_ANGLE_LIMIT = 0;
     public static final double MAX_SPEED = 0;
 
-    public enum Positions {
-      HIGH_GOAL(0),
-      MID_GOAL(0),
-      LOW_GOAL(0),
-      STOW(0),
-      FLOOR_PICKUP(0),
-      STATION_PICKUP(0);
+    public enum ArmPositions {
+      HIGH_GOAL(0, PnuematicPositions.EXTENDED),
+      MID_GOAL(0, PnuematicPositions.RETRACTED),
+      LOW_GOAL(0, PnuematicPositions.RETRACTED),
+      STOW(0, PnuematicPositions.RETRACTED),
+      FLOOR_PICKUP(0, PnuematicPositions.RETRACTED),
+      STATION_PICKUP(0, PnuematicPositions.EXTENDED);
 
       private final double shoulderAngle;
+      private final PnuematicPositions pistonPosition;
 
-      Positions(double shoulderAngle) {
+      ArmPositions(double shoulderAngle, PnuematicPositions pistonPosition) {
         this.shoulderAngle = shoulderAngle;
+        this.pistonPosition = pistonPosition;
       }
 
       public double getShoulderAngle() {
         return shoulderAngle;
       }
+      public PnuematicPositions getPistonPosition() {
+          return pistonPosition;
+      }
     }
   }
 
-  public static class PnuematicsConstants{
 
-    public static final int LEFT_ARM_PISTON_EXTEND_PORT = 0;
-    public static final int LEFT_ARM_PISTON_RETRACT_PORT = 0;
-    public static final int RIGHT_ARM_PISTON_EXTEND_PORT = 0;
-    public static final int RIGHT_ARM_PISTON_RETRACT_PORT = 0;
-
-    public enum PnuematicPositions{
-      RETRACTED(),
-      EXTENDED();
-
-      PnuematicPositions(){}
-    }
-
-  }
 }

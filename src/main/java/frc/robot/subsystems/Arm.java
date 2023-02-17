@@ -18,9 +18,12 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 
 public class Arm extends SubsystemBase {
@@ -48,7 +51,7 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public Command moveToPosition(ArmConstants.Positions position) {
+  public Command moveToPosition(ArmConstants.ArmPositions position) {
     ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
     ProfiledPIDCommand command = new ProfiledPIDCommand(
         new ProfiledPIDController(ArmConstants.KP, ArmConstants.KI, ArmConstants.KD, shoulderConstraints),
@@ -75,17 +78,37 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public void actuateSuperstructure(PnuematicPositions position) {
-    if (position == PnuematicPositions.EXTENDED) {
-      leftPiston.set(Value.kForward);
-      rightPiston.set(Value.kForward);
-    } else if (position == PnuematicPositions.RETRACTED) {
-      leftPiston.set(Value.kReverse);
-      rightPiston.set(Value.kReverse);
+  public Command actuateSuperstructure(ArmPositions position) {
+    if (position.getPistonPosition() == PnuematicPositions.EXTENDED) {
+      return new ParallelCommandGroup(new RunCommand(() -> leftPiston.set(Value.kForward)), new RunCommand(() -> leftPiston.set(Value.kForward), this));
+      
+    } else if (position.getPistonPosition() == PnuematicPositions.RETRACTED) {
+      return new ParallelCommandGroup(new RunCommand(() -> leftPiston.set(Value.kReverse)), new RunCommand(() -> leftPiston.set(Value.kReverse), this));
     }
+    else 
+      return null;
   }
 
-  public Value superstructureState(){
+  public Command actuateSuperstructure(PnuematicPositions position) {
+    if (position == PnuematicPositions.EXTENDED) {
+      return new ParallelCommandGroup(new RunCommand(() -> leftPiston.set(Value.kForward)), new RunCommand(() -> leftPiston.set(Value.kForward), this));
+      
+    } else if (position == PnuematicPositions.RETRACTED) {
+      return new ParallelCommandGroup(new RunCommand(() -> leftPiston.set(Value.kReverse)), new RunCommand(() -> leftPiston.set(Value.kReverse), this));
+    }
+    else 
+      return null;
+  }
+
+  public Value getSuperstructureState(){
     return leftPiston.get();
+  }
+
+  public double getShoulderAngle(){
+    return shoulderAngle.get();
+  }
+
+  public boolean isArmStowed(){
+    return isArmStowed.get();
   }
 }
