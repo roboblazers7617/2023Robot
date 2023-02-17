@@ -29,7 +29,7 @@ public class FaceTarget extends CommandBase {
     addRequirements(drivetrain);
     pidController = new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
     pidController.enableContinuousInput(-Math.PI, Math.PI);
-    pidController.setTolerance(Units.degreesToRadians(3.0));
+    pidController.setTolerance(Units.degreesToRadians(0.666666666666666666666666666666666666));
     
   }
   
@@ -45,6 +45,7 @@ public class FaceTarget extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    pidController.reset();
     if(targetPoseSupplier != null){
       targetPose = targetPoseSupplier.get();
     }
@@ -52,7 +53,7 @@ public class FaceTarget extends CommandBase {
     if(targetPoseSupplier != null){
       targetPose = targetPoseSupplier.get();
     }
-    angleToGoal = -targetPose.minus(drivetrain.getPose2d()).getRotation().getRadians();
+    angleToGoal = targetPose.getTranslation().minus(drivetrain.getPose2d().getTranslation()).getAngle().getRadians();
   pidController.setSetpoint(angleToGoal);
   //System.out.println("Starting Position" + drivetrain.getPose2d().getX() +  "Y" + drivetrain.getPose2d().getY());
   //System.out.println("target Position" + targetPose.getX() +  "Y" + targetPose.getY());
@@ -63,10 +64,10 @@ public class FaceTarget extends CommandBase {
   public void execute() {
     double output = pidController.calculate(drivetrain.getRotation2d().getRadians());
     System.out.println("Angular speed is " + output);
-    System.out.println("Setpoint is " + pidController.getSetpoint());
+    System.out.println("Setpoint is " + Units.radiansToDegrees(pidController.getSetpoint()));
     System.out.println("Drivetrain value is " + drivetrain.getPose2d().getRotation().getRadians());
     //drivetrain.arcadeDrive(0, MathUtil.clamp(output, -DrivetrainConstants.MAX_ANGULAR_VELOCITY, DrivetrainConstants.MAX_ANGULAR_VELOCITY));
-    drivetrain.driveWithVelocity(0, output );
+    drivetrain.driveWithVelocity(0, /*Math.copySign(.15, output)+*/output );
   }
 
   // Called once the command ends or is interrupted.

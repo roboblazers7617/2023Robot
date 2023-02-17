@@ -105,7 +105,7 @@ public class Drivetrain extends SubsystemBase {
     mVision = vision;
     mGyro.reset();
     mKinematics = new DifferentialDriveKinematics(DrivetrainConstants.TRACK_WIDTH_METERS);
-    mOdometry = new DifferentialDrivePoseEstimator(mKinematics, getRotation2d(), getLeftDistance(), getRightDistance(), new Pose2d());
+    mOdometry = new DifferentialDrivePoseEstimator(mKinematics, mGyro.getRotation2d(), getLeftDistance(), getRightDistance(), new Pose2d());
 
   }
 
@@ -145,7 +145,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void configureMotor(CANSparkMax motorController) {
 
-    motorController.setIdleMode(IdleMode.kBrake);
+    motorController.setIdleMode(IdleMode.kCoast);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
   }
 
@@ -176,7 +176,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Rotation2d getRotation2d(){
-    return mGyro.getRotation2d();
+    return mOdometry.getEstimatedPosition().getRotation();
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds(){
@@ -200,6 +200,7 @@ public class Drivetrain extends SubsystemBase {
   public void driveWithVelocity(double xVelocity, double rotationVelocity){
     var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(xVelocity, 0.0, rotationVelocity));
     setSpeeds(wheelSpeeds);
+
   }
 
   public void setSpeeds(DifferentialDriveWheelSpeeds speeds){
@@ -207,6 +208,7 @@ public class Drivetrain extends SubsystemBase {
     var rightFeedforward = feedForward.calculate(speeds.rightMetersPerSecond);
     leftFrontMotor.setVoltage(leftFeedforward);
     rightFrontMotor.setVoltage(rightFeedforward);
+    drivetrain.feed();
   }
 
   public void resetEncoders(){
@@ -217,7 +219,7 @@ public class Drivetrain extends SubsystemBase {
   public void zeroHeading(){
     mGyro.reset();
   }
-  public double getAngle(){
+  public double getGyroAngle(){
     return -mGyro.getAngle();
   }
 

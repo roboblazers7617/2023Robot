@@ -68,7 +68,7 @@ public final class Constants {
     public static final double KD_LIN = 0.0;
     public static final double KS_LIN = .192;
 
-    public static final double KP_ROT = 3.68;
+    public static final double KP_ROT = 3.3;
     public static final double KI_ROT = 0.0;
     public static final double KD_ROT = 0.0;
     public static final double KS_ROT = 0.192;

@@ -31,7 +31,7 @@ public class DriveTrainTab extends ShuffleboardTabBase {
         leftDistancePub.set(drivetrain.getLeftDistance());
         xPosPub.set(drivetrain.getPose2d().getX());
         yPosPub.set(drivetrain.getPose2d().getY());
-        anglePub.set(Math.IEEEremainder(drivetrain.getAngle(), 360));
+        anglePub.set(Math.IEEEremainder(drivetrain.getGyroAngle(), 360));
         yTargetPose.set(drivetrain.getTargetTranslation().getY());
         xTargetPose.set(drivetrain.getTargetTranslation().getX());
         poseAnglePub.set(drivetrain.getPose2d().getRotation().getDegrees());

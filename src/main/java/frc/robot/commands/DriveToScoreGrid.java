@@ -20,8 +20,8 @@ public class DriveToScoreGrid extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new DriveTillY(drivetrain, LeftY, rightY, rightX, targetPose),
-              new FaceTarget(drivetrain, targetPose)
-              //new GoToTarget(drivetrain, targetPose)
+              new FaceTarget(drivetrain, targetPose),
+              new GoToTarget(drivetrain, targetPose)
      );
   }
 }
