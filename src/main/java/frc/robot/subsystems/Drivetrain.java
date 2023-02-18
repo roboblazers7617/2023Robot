@@ -116,11 +116,12 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setTargetPose(String target){
-    targetPose = target;
+    //targetPose = target;
   }
 
   public String getTargetPose(){
-    return targetPose;
+    //return targetPose;
+    return "we gonna fix dis later I swears";
   }
 
   public void drive(double leftY, double rightX, double rightY) {
