@@ -95,6 +95,7 @@ public final class Constants {
         17.25, 17.25, 17.25 };
     public static final double CAMERA_HEIGHT = 8;
     public static final double CAMERA_PITCH = 0;
+    public static final String CAMERA_NAME = "eyeball";
   }
 
   public static class PnuematicsConstants{

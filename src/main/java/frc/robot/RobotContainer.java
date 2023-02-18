@@ -65,9 +65,9 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Vision vision = new Vision();
   private final Drivetrain drivetrain = new Drivetrain(vision);
-  private final Pnuematics pnuematics = new Pnuematics();
-  private final Arm arm = new Arm(pnuematics);
-  private final Intake intake = new Intake(); 
+//   private final Pnuematics pnuematics = new Pnuematics();
+//   private final Arm arm = new Arm(pnuematics);
+//   private final Intake intake = new Intake(); 
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -86,9 +86,9 @@ public class RobotContainer {
     // create shuffleboardinfo.java
     drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
         m_driverController.getRightX(), m_driverController.getRightY()), drivetrain));
-    arm.setDefaultCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftY()), arm));
+    // arm.setDefaultCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftY()), arm));
     
-    intake.setDefaultCommand(new RunCommand(()->intake.setWristSpeed( m_operatorController.getRightY()),intake));
+    // intake.setDefaultCommand(new RunCommand(()->intake.setWristSpeed( m_operatorController.getRightY()),intake));
     ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
     // YOUR CODE HERE | | |
     // \/ \/ \/
@@ -96,7 +96,7 @@ public class RobotContainer {
     tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
     tabs.add(new VisionTab(vision, drivetrain));
     tabs.add(new DriveTrainTab(drivetrain));
-    tabs.add(new IntakeTab(intake));
+    // tabs.add(new IntakeTab(intake));
     // STOP HERE OR DIE
 
     ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
@@ -189,7 +189,7 @@ public class RobotContainer {
         .and(m_operatorController.povDown())
         .whileTrue(new InstantCommand(() -> m_exampleSubsystem.povDownPressed()));
 
-    m_operatorController.a().whileTrue(new ToggleArmPnuematics(arm));
+    // m_operatorController.a().whileTrue(new ToggleArmPnuematics(arm));
   }
 
     /**
