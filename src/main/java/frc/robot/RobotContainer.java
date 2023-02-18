@@ -75,8 +75,6 @@ public class RobotContainer {
     configureDriverBindings();
     configureOperatorBindings();
     // create shuffleboardinfo.java
-    drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
-        m_driverController.getRightX(), m_driverController.getRightY()), drivetrain));
     ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
     // YOUR CODE HERE | | |
     // \/ \/ \/
@@ -108,17 +106,6 @@ public class RobotContainer {
    * joysticks}.
    */
   private void configureDriverBindings() {
-    // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
-    new Trigger(m_exampleSubsystem::exampleCondition)
-        .onTrue(new ExampleCommand(m_exampleSubsystem));
-    Trigger leftTop = m_driverController.leftBumper();
-    leftTop.onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED)))
-        .onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
-
-    Trigger rightTop = m_driverController.rightBumper();
-    rightTop.onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED)))
-        .onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
-
     // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
     // cancelling on release.
     // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
@@ -128,7 +115,7 @@ public class RobotContainer {
         // Schedule `exampleMethodCommand` when the Xbox controller's B button is
         // pressed,
         // cancelling on release.
-
+    /* 
     //this code calls the score grid selection command for the correct input
     m_driverController.x()
         .and(m_driverController.povLeft())
@@ -156,25 +143,52 @@ public class RobotContainer {
         .onTrue(new ScoreGridSelection(drivetrain, 2, 1));
     m_driverController.b()
         .and(m_driverController.povRight())
-        .onTrue(new ScoreGridSelection(drivetrain, 2, 2));
+        .onTrue(new ScoreGridSelection(drivetrain, 2, 2));*/
+
+    drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
+        m_driverController.getRightX(), m_driverController.getRightY()), drivetrain));
+    // TODO: Imptement whatever system to select node to go to
     m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain, 
         ()-> m_driverController.getLeftY(), 
         ()-> m_driverController.getRightY(), 
         ()-> m_driverController.getRightX(), 
         (new Translation2d((Units.inchesToMeters(20)),(Units.inchesToMeters(155))))));
+    m_driverController.rightTrigger().whileTrue(null/*TODO:  go to double substation*/);
+    m_driverController.rightTrigger().and(m_driverController.leftTrigger()).whileTrue(null /*TODO  go to single substation*/);
     m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
+
+    m_driverController.rightBumper().onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED)));
+    m_driverController.rightBumper().onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
+
+    m_driverController.leftBumper().onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED)));
+    m_driverController.leftBumper().onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
+
+    m_driverController.b().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d())));
+    //TODO: Adressable LEDS
+    
   }
 
   private void configureOperatorBindings() {
+    //TODO: Arm.setDefaultCommand(use L joy to move);
+    //TODO Intake.setDefaultCommand(use R joy to move);
+   m_operatorController.leftBumper().whileTrue(null/*TODO: Pick up cube double substation */);
+   m_operatorController.rightBumper().whileTrue(null/*TODO: Pick up cone double substation */);
+   m_operatorController.leftBumper().whileTrue(null/*TODO: Pick up cube floor */);
+   m_operatorController.rightBumper().whileTrue(null/*TODO: Pick up cone floor */);
 
-    // set height to high 
-    m_operatorController.rightBumper()
-        .and(m_operatorController.y())
-        .whileTrue(new InstantCommand(() -> m_exampleSubsystem.yPressed()));
+   m_operatorController.a().onTrue(null /*TODO: Toggle Arm pnuematic */);
+   m_operatorController.b().whileTrue(null /*TODO: move arm to directed score level */);
+   m_operatorController.y().whileTrue(null /*TODO: Spin intake to pick-up cube/ spit cone */);
+   m_operatorController.x().whileTrue(null /*TODO: Spin intake to spit cube/ pick-up cone */);
 
-    m_operatorController.rightBumper()
-        .and(m_operatorController.povDown())
-        .whileTrue(new InstantCommand(() -> m_exampleSubsystem.povDownPressed()));
+   m_operatorController.povLeft(/*TODO: Store Arm */);
+
+   m_operatorController.povDown().onTrue(null /*TODO: set to hybrid node position */);
+   m_operatorController.povLeft().onTrue(null /*TODO: set to level 2 node position */);
+   m_operatorController.povDown().onTrue(null /*TODO: set to level 3 node position */);
+
+
+
   }
 
     /**
