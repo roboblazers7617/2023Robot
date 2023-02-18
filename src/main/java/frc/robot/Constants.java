@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 /**
@@ -88,9 +89,9 @@ public final class Constants {
   }
    public static class VisionConstants {
     public static final double CAMERA_PITCH = 0;
-    public static final Transform3d CAMERA_POSITION = new Transform3d(new Pose3d(0, 0, 0, new Rotation3d()),
-    new Pose3d(Units.inchesToMeters(16+(3/4)), 0, Units.inchesToMeters(2.25), new Rotation3d(0,0,CAMERA_PITCH)));
-    public static final double[] TAG_HEIGHT = {17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25};
+    public static final Transform3d CAMERA_POSITION = new Transform3d(new Translation3d(Units.inchesToMeters(17.5),
+              Units.inchesToMeters(-.5), Units.inchesToMeters(6.875)), new Rotation3d(0,CAMERA_PITCH,0));
+     public static final double[] TAG_HEIGHT = {17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25};
     public static final double CAMERA_HEIGHT = (7.0+(5.0/8.0));
     public static final String CAMERA_NAME = "eyeball";
     

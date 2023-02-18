@@ -189,7 +189,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose){
-    mOdometry.resetPosition(getRotation2d(), getLeftDistance(), getRightDistance(), pose);
+    mOdometry.resetPosition(mGyro.getRotation2d(), getLeftDistance(), getRightDistance(), pose);
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts)

@@ -156,13 +156,13 @@ public class RobotContainer {
         .onTrue(new ScoreGridSelection(2, 2));*/
     m_driverController.povLeft().whileTrue(
     new InstantCommand(()-> setTargetPose(
-        new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(42.19)),
+        new Pose2d(new Translation2d(Units.inchesToMeters(40.45+38),Units.inchesToMeters(108.19)),
        new Rotation2d(Units.degreesToRadians(0))))));
     m_driverController.povUp().onTrue(new InstantCommand(()-> setTargetPose(
-        new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(108.19)),
+        new Pose2d(new Translation2d(Units.inchesToMeters(40.45+38),Units.inchesToMeters(42.19)),
         new Rotation2d((Units.degreesToRadians(0)))))));
     m_driverController.povRight().onTrue(new InstantCommand(()-> setTargetPose(
-        new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(21)),
+        new Pose2d(new Translation2d(Units.inchesToMeters(40.45+38),Units.inchesToMeters(42.19)),
         new Rotation2d(Units.degreesToRadians(0))))));
     m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain, 
         ()-> m_driverController.getLeftY(), 
