@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Drivetrain;
 
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
@@ -48,7 +48,7 @@ public class DriveTillY extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    if ((targetPose.getY() - DrivetrainConstants.ERROR_TARGET_DRIVER) <= drivetrain.getPose2d().getY() && (targetPose.getY() + DrivetrainConstants.ERROR_TARGET_DRIVER) >= drivetrain.getPose2d().getY()) 
+    if ((targetPose.getY() - DrivetrainConstants.MAX_ERROR_LINEAR) <= drivetrain.getPose2d().getY() && (targetPose.getY() + DrivetrainConstants.MAX_ERROR_LINEAR) >= drivetrain.getPose2d().getY()) 
       return true;
     return false;
   }
