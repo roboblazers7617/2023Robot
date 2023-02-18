@@ -45,15 +45,15 @@ public final class Constants {
     public static final double REG_SPEED = 0.5;
     public static final double SLOW_SPEED = 0.25;
     public static final double FAST_SPEED = 1;
-    public static final double MAX_ANGULAR_VELOCITY = 0.5;
-    public static final double MAX_LINEAR_VELOCITY = 0.5;
+    public static final double MAX_ANGULAR_VELOCITY = 0.65;//.5
+    public static final double MAX_LINEAR_VELOCITY = 0.7;//.5
     /* 
     public static final double KP_LIN = 1.5;
     public static final double KI_LIN = 0;
     public static final double KD_LIN = 0;
     public static final double KS_LIN = .25;
 
-    public static final double KP_ROT = 0.06;
+    public static final double KP_ROT = 0.12;//0.06
     public static final double KI_ROT = 0;
     public static final double KD_ROT = 0.0004;
     public static final double KS_ROT = 0.2;
@@ -68,13 +68,13 @@ public final class Constants {
     public static final double KD_LIN = 0.0;
     public static final double KS_LIN = .192;
 
-    public static final double KP_ROT = 0.4;
+    public static final double KP_ROT = 0.015;//0.015
     public static final double KI_ROT = 0.0;
     public static final double KD_ROT = 0.0;
-    public static final double KS_ROT = 0.192;
+    public static final double KS_ROT = 0.3;
 
     public static final double KS = 0.192;
-    public static final double KV = 4.0;//2.788;
+    public static final double KV = 4.0;
     public static final double KA = 0.424;
 
     
@@ -92,7 +92,7 @@ public final class Constants {
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
     
     
-    public static final double ERROR_TARGET_DRIVER = Units.inchesToMeters(2.0);
+    public static final double ERROR_TARGET_DRIVER = Units.inchesToMeters(1.0);
     public static final double ROTATIONAL_ERROR_TARGET_DRIVER = 0.5;
     //public static final double LINEAR_ERROR_TARGET_DRIVER = Units.inchesToMeters(3);
     

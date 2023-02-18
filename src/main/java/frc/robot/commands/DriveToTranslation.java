@@ -16,8 +16,8 @@ public class DriveToTranslation extends SequentialCommandGroup {
   public DriveToTranslation(Drivetrain drivetrain, Pose2d targetPose) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new FaceTarget(drivetrain, targetPose),
-                new GoToTarget(drivetrain, targetPose)
+    addCommands(new FaceTarget(drivetrain, targetPose)//,
+               // new GoToTarget(drivetrain, targetPose)
 );
   }
 }

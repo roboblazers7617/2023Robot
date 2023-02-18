@@ -171,8 +171,9 @@ public class RobotContainer {
         ()-> m_driverController.getRightX(), 
         ()->getTargetPose(),
         Alliance.Blue));
-    m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(0),Units.inchesToMeters(0),new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
-  }
+    //m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(0),Units.inchesToMeters(0),new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
+    m_driverController.rightTrigger().onTrue(drivetrain.ResetRobotToStartPosition());
+}
 
   private void configureOperatorBindings() {
 

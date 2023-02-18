@@ -36,6 +36,7 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
 
@@ -247,6 +248,17 @@ public class Drivetrain extends SubsystemBase {
 
     public double getaverageEncoderDistance() {
       return (getLeftDistance() + getRightDistance()) / 2;
+    }
+
+    public Command ResetRobotToStartPosition()
+    {
+      return Commands.runOnce(
+
+       () -> { 
+          resetEncoders();
+          zeroHeading();
+          resetOdometry(new Pose2d(0,0, Rotation2d.fromDegrees(0)));
+      }); 
     }
   }
   

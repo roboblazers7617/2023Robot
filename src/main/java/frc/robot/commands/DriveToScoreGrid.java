@@ -21,8 +21,10 @@ public class DriveToScoreGrid extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new DriveTillY(drivetrain, LeftY, rightY, rightX, targetPose),
-              new FaceToTargetScore(drivetrain, color),
-              new GoToTarget(drivetrain, targetPose)
+              //new FaceToTargetScore(drivetrain, color),
+              new FaceScoreLocation(drivetrain, color),
+              new GoToTarget(drivetrain, targetPose, color),
+              new FaceScoreLocation(drivetrain, color)
      );
   }
 }
