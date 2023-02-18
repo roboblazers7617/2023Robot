@@ -14,6 +14,7 @@ import frc.robot.commands.ToggleArmPnuematics;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
+import frc.robot.shuffleboard.IntakeTab;
 import frc.robot.shuffleboard.ShuffleboardInfo;
 import frc.robot.shuffleboard.ShuffleboardTabBase;
 import frc.robot.shuffleboard.VisionTab;
@@ -21,10 +22,21 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Pnuematics;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 
 import java.util.ArrayList;
 
+import com.pathplanner.lib.PathConstraints;
+import com.pathplanner.lib.PathPlanner;
+import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.PPRamseteCommand;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.RamseteController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -47,6 +59,7 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain(vision);
   private final Pnuematics pnuematics = new Pnuematics();
   private final Arm arm = new Arm(pnuematics);
+  private final Intake intake = new Intake(); 
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -65,8 +78,9 @@ public class RobotContainer {
     // create shuffleboardinfo.java
     drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
         m_driverController.getRightX(), m_driverController.getRightY()), drivetrain));
-    arm.setDefaultCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftX()), arm));
+    arm.setDefaultCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftY()), arm));
     
+    intake.setDefaultCommand(new RunCommand(()->intake.setWristSpeed( m_operatorController.getRightY()),intake));
     ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
     // YOUR CODE HERE | | |
     // \/ \/ \/
@@ -74,6 +88,7 @@ public class RobotContainer {
     tabs.add(new DriverStationTab(drivetrain));
     tabs.add(new VisionTab(vision, drivetrain));
     tabs.add(new DriveTrainTab(drivetrain));
+    tabs.add(new IntakeTab(intake));
     // STOP HERE OR DIE
 
     ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
@@ -171,7 +186,20 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
-    return Autos.exampleAuto(m_exampleSubsystem);
+    PathPlannerTrajectory test_path = PathPlanner.loadPath("h", new PathConstraints(1, .25));
+    drivetrain.resetOdometry(test_path.getInitialPose());
+    PPRamseteCommand returnCommand = new PPRamseteCommand(
+        test_path, 
+        drivetrain::getPose2d, 
+        new RamseteController(), 
+        new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV),
+        drivetrain.getKinematics(),
+        drivetrain::getWheelSpeeds,
+        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+        drivetrain::tankDriveVolts,
+        false,
+        drivetrain);
+    return returnCommand;
   }
 }

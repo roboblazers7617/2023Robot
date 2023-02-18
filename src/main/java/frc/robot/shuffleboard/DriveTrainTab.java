@@ -14,7 +14,7 @@ public class DriveTrainTab extends ShuffleboardTabBase {
     DoublePublisher rightDistancePub;
     DoublePublisher xPosPub;
     DoublePublisher yPosPub;
-
+    DoublePublisher anglePub;
     Drivetrain drivetrain;
 
     public void update() {
@@ -60,6 +60,10 @@ public class DriveTrainTab extends ShuffleboardTabBase {
         yPosPub = networkTable.getDoubleTopic("Y Cord(m)").publish();
 
         shuffleboardTabTesting.add("Y Cord(m)", 0);
+
+        anglePub = networkTable.getDoubleTopic("Angle").publish();
+
+        shuffleboardTabTesting.add("Angle", 3);
 
     }
 }

@@ -17,7 +17,7 @@ import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
  * constants. This class should not be used for any other purpose. All constants
  * should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
- *
+ * 
  * <p>
  * It is advised to statically import this class (or one of its inner classes)
  * wherever the
@@ -62,6 +62,12 @@ public final class Constants {
     public static final double KI_ROT = 0;
     public static final double KD_ROT = 0.0004;
     public static final double KS_ROT = 0.2;
+
+    public static final double KS = 0.015;
+    public static final double KV = 0.21;
+
+    public static final int GYRO_ID = 40; 
+    
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
   }
 
@@ -132,5 +138,64 @@ public final class Constants {
     }
   }
 
+
+
+   }
+   public static class IntakeConstants {
+    public static final int WRIST_CAN_ID = 22;
+    public static final int INTAKE_CAN_ID = 23;
+    public static final int POT_CHANEL = 1;
+    public static final int DISTANCE_SENSOR_CHANEL = 5;
+    public static final int INTAKE_LIMIT_SWITCH_ID = 2;
+    public static final int WRIST_POT_SCALE = 270;
+    public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
+    public static final int CURRENT_LIMIT = 40;
+    public static final double MAX_WRIST_ANGLE = 2.094;
+    public static final double MAX_WRIST_SPEED = 0.25;
+    public static final double MAX_WRIST_ACCEL = 0.12;
+    public static final double WRIST_KS = 0.5;
+    public static final double WRIST_KG = 0.5;
+    public static final double WRIST_KV = 0.5;
+    public static final double WRIST_KP = 2.0;
+    public static final double WRIST_KI = 0.0;
+    public static final double WRIST_KD = 0.0;
+    public static final double WRIST_ANGLE_TOLERANCE = 0.1;
+    public enum IntakeDirection
+    {
+      Stop (0.0),
+      PickCone (0.25),
+      PickCube (-0.25),
+      PlaceCone (-0.25),
+      PlaceCube (0.25);
+
+      private final double speed;
+      IntakeDirection (double speed) {
+        this.speed = speed;
+      }
+      public double speed(){
+        return speed;
+      }
+    } 
+    public enum WristPosition
+    {
+      Store (0.0),
+      FloorCubePickup (0.06),
+      FloorConePickup ( 0.07),
+      LevelThreePlace (0.04),
+      LevelTwoPlace (0.05),
+      LevelOnePlace (0.03);
+
+
+      private final double angle;
+      WristPosition (double angle) {
+        this.angle = angle;
+      }
+      public double angle(){
+        return angle;
+      }
+
+
+   }
+  }
 
 }

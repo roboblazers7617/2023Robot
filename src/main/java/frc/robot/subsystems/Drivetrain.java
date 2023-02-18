@@ -12,8 +12,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
-import com.kauailabs.navx.frc.AHRS;
-import edu.wpi.first.wpilibj.SerialPort;
+import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -42,24 +41,24 @@ public class Drivetrain extends SubsystemBase {
   private final RelativeEncoder leftFollowerEncoder = leftFollowerMotor.getEncoder();
   private final RelativeEncoder rightFollowerEncoder = rightFollowerMotor.getEncoder();
 
-  private final AHRS mGyro = new AHRS(SerialPort.Port.kUSB);  
+  private final WPI_Pigeon2 mGyro = new WPI_Pigeon2(DrivetrainConstants.GYRO_ID);  
   private final DifferentialDrivePoseEstimator mOdometry;
   private final DifferentialDriveKinematics mKinematics;
 
   private final Vision mVision;
 
   private final DifferentialDrive drivetrain;
-  private String mode;
+  private DrivetrainMode mode;
   private double maxDrivetrainspeed = DrivetrainConstants.MAX_SPEED;
 
-  public void setDriveTrainMode(String mode) {
+  public void setDriveTrainMode(DrivetrainMode mode) {
     this.mode = mode;
   }
 
   public Drivetrain(Vision vision) {
     drivetrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
     drivetrain.setMaxOutput(DrivetrainConstants.MAX_SPEED);
-    mode = DrivetrainConstants.TANK_DRIVE_STRING;
+    mode = DrivetrainMode.tankDrive;
 
     leftFrontMotor.restoreFactoryDefaults();
     rightFrontMotor.restoreFactoryDefaults();
@@ -93,9 +92,9 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void drive(double leftY, double rightX, double rightY) {
-    if (mode.equals(DrivetrainConstants.ARCADE_DRIVE_STRING)) {
+    if (mode == DrivetrainMode.arcadeDrive) {
       arcadeDrive(-leftY, -rightX);
-    } else if (mode.equals(DrivetrainConstants.TANK_DRIVE_STRING)) {
+    } else if (mode == DrivetrainMode.tankDrive) {
       tankDrive(-leftY, -rightY);
     }
   }
@@ -157,14 +156,18 @@ public class Drivetrain extends SubsystemBase {
     return new DifferentialDriveWheelSpeeds(getLeftVelocity(), getRightVelocity());
   }
 
+  public DifferentialDriveKinematics getKinematics(){
+    return mKinematics;
+  }
+
   public void resetOdometry(Pose2d pose){
     mOdometry.resetPosition(getRotation2d(), getLeftDistance(), getRightDistance(), pose);
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts)
   {
-    leftFrontMotor.setVoltage(leftVolts*12); // Convert this from percent of battery to volts by multiply by 12
-    rightFrontMotor.setVoltage(rightVolts*12); // Convert this from percent of battery to volts by multiply by 12
+    leftFrontMotor.setVoltage(leftVolts * 12); // Convert this from percent of battery to volts by multiply by 12
+    rightFrontMotor.setVoltage(rightVolts * 12); // Convert this from percent of battery to volts by multiply by 12
   }
 
   public void resetEncoders(){
@@ -175,10 +178,13 @@ public class Drivetrain extends SubsystemBase {
   public void zeroHeading(){
     mGyro.reset();
   }
+  public double getAngle(){
+    return mGyro.getAngle();
+  }
 
   private void updatePose() {
     // Write code for local Odometry here:
-      mOdometry.update(mGyro.getRotation2d(), getLeftDistance(), getRightDistance());
+    mOdometry.update(mGyro.getRotation2d(), getLeftDistance(), getRightDistance());
 
     Optional<EstimatedRobotPose> cameraPose = mVision.getEstimatedGlobalPose(getPose2d());
     if(cameraPose.isPresent()){
