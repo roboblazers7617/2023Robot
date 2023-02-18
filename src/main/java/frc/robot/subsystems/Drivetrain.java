@@ -115,6 +115,15 @@ public class Drivetrain extends SubsystemBase {
     updatePose();
   }
 
+  public void setTargetPose(String target){
+    //targetPose = target;
+  }
+
+  public String getTargetPose(){
+    //return targetPose;
+    return "we gonna fix dis later I swears";
+  }
+
   public void drive(double leftY, double rightX, double rightY) {
     double lForward = //slewRateFilterLeft.calculate
     (leftY);
@@ -189,6 +198,10 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose){
+<<<<<<< HEAD
+=======
+    resetEncoders();
+>>>>>>> aabc69b575334852fd56f21d9cde1a75ab301c85
     mOdometry.resetPosition(mGyro.getRotation2d(), getLeftDistance(), getRightDistance(), pose);
   }
 
