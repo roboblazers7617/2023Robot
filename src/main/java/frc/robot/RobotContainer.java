@@ -81,8 +81,8 @@ public class RobotContainer {
     ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
     // YOUR CODE HERE | | |
     // \/ \/ \/
-    tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
     tabs.add(new DriverStationTab(drivetrain));
+    tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
     tabs.add(new VisionTab(vision, drivetrain));
     tabs.add(new DriveTrainTab(drivetrain));
     // STOP HERE OR DIE
@@ -133,31 +133,31 @@ public class RobotContainer {
     //this code calls the score grid selection command for the correct input
     /*m_driverController.x()
         .and(m_driverController.povLeft())
-        .onTrue(new ScoreGridSelection(0, 0));
+        .onTrue(new ScoreGridSelection(drivetrain, 0, 0));
     m_driverController.y()
         .and(m_driverController.povLeft())
-        .onTrue(new ScoreGridSelection(0, 1));
+        .onTrue(new ScoreGridSelection(drivetrain, 0, 1));
     m_driverController.b()
         .and(m_driverController.povLeft())
-        .onTrue(new ScoreGridSelection(0, 2));
+        .onTrue(new ScoreGridSelection(drivetrain, 0, 2));
     m_driverController.x()
         .and(m_driverController.povUp())
-        .onTrue(new ScoreGridSelection(1, 0));
+        .onTrue(new ScoreGridSelection(drivetrain, 1, 0));
     m_driverController.y()
         .and(m_driverController.povUp())
-        .onTrue(new ScoreGridSelection(1, 1));
+        .onTrue(new ScoreGridSelection(drivetrain, 1, 1));
     m_driverController.b()
         .and(m_driverController.povUp())
-        .onTrue(new ScoreGridSelection(1, 2));
+        .onTrue(new ScoreGridSelection(drivetrain, 1, 2));
     m_driverController.x()
         .and(m_driverController.povRight())
-        .onTrue(new ScoreGridSelection(2, 0));
+        .onTrue(new ScoreGridSelection(drivetrain, 2, 0));
     m_driverController.y()
         .and(m_driverController.povRight())
-        .onTrue(new ScoreGridSelection(2, 1));
+        .onTrue(new ScoreGridSelection(drivetrain, 2, 1));
     m_driverController.b()
         .and(m_driverController.povRight())
-        .onTrue(new ScoreGridSelection(2, 2));*/
+        .onTrue(new ScoreGridSelection(drivetrain, 2, 2));*/
     m_driverController.povLeft().whileTrue(
     new InstantCommand(()-> setTargetPose(
         new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(42.19)),

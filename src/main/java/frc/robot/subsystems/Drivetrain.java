@@ -115,6 +115,14 @@ public class Drivetrain extends SubsystemBase {
     updatePose();
   }
 
+  public void setTargetPose(String target){
+    targetPose = target;
+  }
+
+  public String getTargetPose(){
+    return targetPose;
+  }
+
   public void drive(double leftY, double rightX, double rightY) {
     double lForward = //slewRateFilterLeft.calculate
     (leftY);

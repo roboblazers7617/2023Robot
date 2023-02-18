@@ -5,28 +5,39 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Drivetrain;
 
 public class ScoreGridSelection extends CommandBase {
   private int grid;
   private int position;
+  private Drivetrain drivetrain;
 
   /** Creates a new GridSelection. */
-  public ScoreGridSelection(int grid, int position) {
+  public ScoreGridSelection(Drivetrain drivetrain,int grid, int position) {
     this.grid = grid;
     this.position = position;
+    this.drivetrain = drivetrain;
+    
     
     // Use addRequirements() here to declare subsystem dependencies.
+  }
+
+  private String getPathPlanningTarget(){
+    return "" + grid + position;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    drivetrain.setTargetPose(getPathPlanningTarget());
     System.out.println("The grid is " + grid + ". The position is " + position);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    System.out.println(getPathPlanningTarget());
+  }
 
   // Called once the command ends or is interrupted.
   @Override
