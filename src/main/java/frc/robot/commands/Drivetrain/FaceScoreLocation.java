@@ -2,11 +2,10 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Drivetrain;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
@@ -21,8 +20,7 @@ public class FaceScoreLocation extends CommandBase {
   private Drivetrain drivetrain;
   private Alliance color;
   private double targetAngle;
-  private final double angleTolerance = 1.0;
-  ShuffleboardTab shuffleboardTabTesting = Shuffleboard.getTab("drivetrain");
+  private final double angleTolerance = DrivetrainConstants.MAX_ERROR_ROTATION;
 
   public FaceScoreLocation(Drivetrain drivetrain, Alliance color) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -37,11 +35,11 @@ public class FaceScoreLocation extends CommandBase {
   public void initialize() {
     if (color == Alliance.Blue)
     {
-      targetAngle = 180.0;
+      targetAngle = DrivetrainConstants.ALLIANCE_BLUE_ROTATION;
     }
     else
     {
-      targetAngle = 0.0;
+      targetAngle = DrivetrainConstants.ALLIANCE_RED_ROTATION;
     }
    turnController.setSetpoint(targetAngle);
   }
@@ -50,10 +48,10 @@ public class FaceScoreLocation extends CommandBase {
   @Override
   public void execute() {
     double output = turnController.calculate(drivetrain.getRotation2d().getDegrees());
-    double simpleFF = Math.copySign(DrivetrainConstants.KS_ROT, output);
+    double simpleFF = Math.copySign(DrivetrainConstants.SIMPLE_FF_ANGULAR, output);
     drivetrain.arcadeDrive(0.0,MathUtil.clamp(output+ simpleFF, -DrivetrainConstants.MAX_ANGULAR_VELOCITY, DrivetrainConstants.MAX_ANGULAR_VELOCITY));
-    System.out.println("**** Executing Turn: output is " + output + "    target angle is " + targetAngle + "  current angle is " + drivetrain.getRotation2d().getDegrees());
-    System.out.println("Simple FF is " + simpleFF); 
+    //System.out.println("**** Executing Turn: output is " + output + "    target angle is " + targetAngle + "  current angle is " + drivetrain.getRotation2d().getDegrees());
+    //System.out.println("Simple FF is " + simpleFF); 
 
   }
 
@@ -66,6 +64,7 @@ public class FaceScoreLocation extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
+    
     boolean isDone = false;
     double angle = Math.abs(drivetrain.getRotation2d().getDegrees());
     if ((angle >= (targetAngle - angleTolerance)) 

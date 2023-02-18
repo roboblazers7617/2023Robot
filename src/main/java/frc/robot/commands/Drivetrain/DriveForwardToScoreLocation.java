@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands;
+package frc.robot.commands.Drivetrain;
 
 import java.util.function.Supplier;
 
@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 
-public class GoToTarget extends CommandBase {
+public class DriveForwardToScoreLocation extends CommandBase {
   /** Creates a new GoToTarget. */
   private Drivetrain drivetrain;
   private Supplier<Pose2d> targetPoseSupplier;
@@ -33,7 +33,7 @@ public class GoToTarget extends CommandBase {
   private double linSimpleFF;
   private double rotSimpleFF;
   
-  public GoToTarget(Drivetrain drivetrain, Pose2d targetPose, Alliance color) {
+  public DriveForwardToScoreLocation(Drivetrain drivetrain, Pose2d targetPose, Alliance color) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
 
@@ -41,13 +41,9 @@ public class GoToTarget extends CommandBase {
     this.targetPose = targetPose;
     this.color = color;
 
-    pidController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
-    pidController.setTolerance(DrivetrainConstants.ERROR_TARGET_DRIVER);
-
-    turnPidController = new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
-    turnPidController.setTolerance(1);
+    configurePIDControllers();
   }
-  public GoToTarget(Drivetrain drivetrain, Supplier<Pose2d> targetPoseSupplier, Alliance color) {
+  public DriveForwardToScoreLocation(Drivetrain drivetrain, Supplier<Pose2d> targetPoseSupplier, Alliance color) {
     // Use addRequirements() here to declare subsystem dependencies.
     addRequirements(drivetrain);
 
@@ -55,14 +51,18 @@ public class GoToTarget extends CommandBase {
     this.targetPoseSupplier = targetPoseSupplier;
     this.color = color;
 
+    configurePIDControllers();
+  }
+
+  public void configurePIDControllers()
+  {
     pidController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
-    pidController.setTolerance(DrivetrainConstants.ERROR_TARGET_DRIVER);
+    pidController.setTolerance(DrivetrainConstants.MAX_ERROR_LINEAR);
 
     turnPidController = new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
     turnPidController.enableContinuousInput(-180, 180);
-    turnPidController.setTolerance(1);
+    turnPidController.setTolerance(DrivetrainConstants.MAX_ERROR_LINEAR);
   }
-
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
@@ -78,11 +78,11 @@ public class GoToTarget extends CommandBase {
 
     if (color == Alliance.Blue)
     {
-      targetAngle = 180.0;
+      targetAngle = DrivetrainConstants.ALLIANCE_BLUE_ROTATION;
     }
     else
     {
-      targetAngle = 0.0;
+      targetAngle = DrivetrainConstants.ALLIANCE_RED_ROTATION;
     }
    turnPidController.setSetpoint(targetAngle);
   }
@@ -93,14 +93,12 @@ public class GoToTarget extends CommandBase {
      linOutput = pidController.calculate(drivetrain.getaverageEncoderDistance());
      rotOutput = turnPidController.calculate(drivetrain.getRotation2d().getDegrees());
 
-     linSimpleFF = Math.copySign(0.5, linOutput);//0.3
-     rotSimpleFF = Math.copySign(0.3, rotOutput);
+     linSimpleFF = Math.copySign(DrivetrainConstants.SIMPLE_FF_LINEAR, linOutput);//0.3
+     rotSimpleFF = Math.copySign(DrivetrainConstants.SIMPLE_FF_ANGULAR, rotOutput);
 
     drivetrain.arcadeDrive( 
     MathUtil.clamp(linSimpleFF + linOutput, -DrivetrainConstants.MAX_LINEAR_VELOCITY , DrivetrainConstants.MAX_LINEAR_VELOCITY), 
     MathUtil.clamp((turnPidController.atSetpoint()) ? 0 : (rotOutput + rotSimpleFF), -DrivetrainConstants.MAX_ANGULAR_VELOCITY , DrivetrainConstants.MAX_ANGULAR_VELOCITY));
-    //drivetrain.driveWithVelocity(linSimpleFF + linOutput, (turnPidController.atSetpoint()) ? 0 : (rotOutput + rotSimpleFF));
-    System.out.println("Velocity is " + linOutput + " FF " + linSimpleFF);
   }
 
   // Called once the command ends or is interrupted.
@@ -112,8 +110,6 @@ public class GoToTarget extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //System.out.println("start" + startTranslation2d);
-    //System.out.println("Dist" + distanceToGoal);
     return pidController.atSetpoint();
   }
 }
