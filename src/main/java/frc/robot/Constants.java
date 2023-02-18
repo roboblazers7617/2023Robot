@@ -22,7 +22,7 @@ public final class Constants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int OPERATOR_CONTROLLER_PORT = 1;
     
-    public static final int THE_NUMBER_3 = 7;
+    public static final int THE_NUMBER_3 = 6;
     }
     public static class DrivetrainConstants{
     public static final int LEFT_WHEEL_PORT = 4;
@@ -68,13 +68,13 @@ public final class Constants {
     public static final double KD_LIN = 0.0;
     public static final double KS_LIN = .192;
 
-    public static final double KP_ROT = 3.3;
+    public static final double KP_ROT = 0.4;
     public static final double KI_ROT = 0.0;
     public static final double KD_ROT = 0.0;
     public static final double KS_ROT = 0.192;
 
     public static final double KS = 0.192;
-    public static final double KV = 2.788;
+    public static final double KV = 4.0;//2.788;
     public static final double KA = 0.424;
 
     
@@ -92,7 +92,7 @@ public final class Constants {
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
     
     
-    public static final double ERROR_TARGET_DRIVER = Units.inchesToMeters(5.0);
+    public static final double ERROR_TARGET_DRIVER = Units.inchesToMeters(2.0);
     public static final double ROTATIONAL_ERROR_TARGET_DRIVER = 0.5;
     //public static final double LINEAR_ERROR_TARGET_DRIVER = Units.inchesToMeters(3);
     

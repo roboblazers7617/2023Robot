@@ -26,6 +26,7 @@ import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.commands.PPRamseteCommand;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -34,6 +35,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -167,8 +169,9 @@ public class RobotContainer {
         ()-> m_driverController.getLeftY(), 
         ()-> m_driverController.getRightY(), 
         ()-> m_driverController.getRightX(), 
-        ()->getTargetPose()));
-    m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(20),Units.inchesToMeters(17),new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
+        ()->getTargetPose(),
+        Alliance.Blue));
+    m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(0),Units.inchesToMeters(0),new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
   }
 
   private void configureOperatorBindings() {
@@ -194,10 +197,14 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */   
   public Command getAutonomousCommand() {
-        return pickAutonomousCommand("reversePath");
+    drivetrain.setBrakeMode(IdleMode.kCoast);
+    return pickAutonomousCommand("ForwardAndBack").andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
     }
-  public Command pickAutonomousCommand(String pathName) {    
-    PathPlannerTrajectory test_path = PathPlanner.loadPath(pathName, new PathConstraints(5, 0.5));
+  public Command pickAutonomousCommand(String pathName) {   
+     
+ 
+    PathPlannerTrajectory test_path = PathPlanner.loadPath(
+        pathName, new PathConstraints(5, 0.5),true);
   drivetrain.resetOdometry(test_path.getInitialPose());
   PPRamseteCommand returnCommand = new PPRamseteCommand(
       test_path, 

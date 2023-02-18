@@ -8,6 +8,7 @@ import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.Drivetrain;
 
@@ -16,11 +17,11 @@ import frc.robot.subsystems.Drivetrain;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class DriveToScoreGrid extends SequentialCommandGroup {
   /** Creates a new TargetDrive. */
-  public DriveToScoreGrid(Drivetrain drivetrain, DoubleSupplier LeftY, DoubleSupplier rightY, DoubleSupplier rightX, Supplier<Pose2d> targetPose) {
+  public DriveToScoreGrid(Drivetrain drivetrain, DoubleSupplier LeftY, DoubleSupplier rightY, DoubleSupplier rightX, Supplier<Pose2d> targetPose, Alliance color) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new DriveTillY(drivetrain, LeftY, rightY, rightX, targetPose),
-              new FaceTarget(drivetrain, targetPose),
+              new FaceToTargetScore(drivetrain, color),
               new GoToTarget(drivetrain, targetPose)
      );
   }

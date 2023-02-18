@@ -57,8 +57,8 @@ public class GoToTarget extends CommandBase {
   @Override
   public void execute() {
     double output = pidController.calculate(drivetrain.getaverageEncoderDistance());
-    //drivetrain.arcadeDrive(0.2 + MathUtil.clamp(output, -DrivetrainConstants.MAX_LINEAR_VELOCITY , DrivetrainConstants.MAX_LINEAR_VELOCITY), 0);
-    drivetrain.driveWithVelocity(output, 0);
+    drivetrain.arcadeDrive( MathUtil.clamp(output, -DrivetrainConstants.MAX_LINEAR_VELOCITY , DrivetrainConstants.MAX_LINEAR_VELOCITY), 0);
+    //drivetrain.driveWithVelocity(output, 0);
     //System.out.println(output);
   }
 

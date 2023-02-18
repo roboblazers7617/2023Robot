@@ -145,7 +145,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void configureMotor(CANSparkMax motorController) {
 
-    motorController.setIdleMode(IdleMode.kCoast);
+    motorController.setIdleMode(IdleMode.kBrake);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
   }
 
@@ -211,13 +211,21 @@ public class Drivetrain extends SubsystemBase {
     drivetrain.feed();
   }
 
+  public void setBrakeMode(IdleMode mode)
+  {
+    leftFrontMotor.setIdleMode(mode);
+    rightFrontMotor.setIdleMode(mode);
+    leftFollowerMotor.setIdleMode(mode);
+    rightFollowerMotor.setIdleMode(mode);
+
+  }
   public void resetEncoders(){
     leftFrontEncoder.setPosition(0);
     rightFrontEncoder.setPosition(0);
   }
 
   public void zeroHeading(){
-    mGyro.reset();
+    mGyro.setYaw(0);
   }
   public double getGyroAngle(){
     return -mGyro.getAngle();
