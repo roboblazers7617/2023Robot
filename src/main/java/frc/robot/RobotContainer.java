@@ -8,6 +8,7 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.FaceTarget;
+import frc.robot.commands.IntakeDown;
 import frc.robot.commands.ScoreGridSelection;
 import frc.robot.commands.DriveToScoreGrid;
 import frc.robot.shuffleboard.DriveTrainTab;
@@ -21,10 +22,13 @@ import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Vision;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.RamseteAutoBuilder;
 import com.pathplanner.lib.commands.PPRamseteCommand;
 import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -199,28 +203,47 @@ public class RobotContainer {
    */   
   public Command getAutonomousCommand() {
     drivetrain.setBrakeMode(IdleMode.kCoast);
-    return pickAutonomousCommand("ForwardAndBack").andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
+    return pickAutonomousCommand("blue far 2 ball").andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
     }
   public Command pickAutonomousCommand(String pathName) {   
      
- 
-    PathPlannerTrajectory test_path = PathPlanner.loadPath(
-        pathName, new PathConstraints(5, 0.5),true);
-  drivetrain.resetOdometry(test_path.getInitialPose());
-  PPRamseteCommand returnCommand = new PPRamseteCommand(
-      test_path, 
-      drivetrain::getPose2d, 
-      new RamseteController(), 
-      new SimpleMotorFeedforward(DrivetrainConstants.KS_LIN, DrivetrainConstants.KV),
-      drivetrain.getKinematics(),
-      drivetrain::getWheelSpeeds,
-      new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
-      new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
-      drivetrain::tankDriveVolts,
-      false,
-      drivetrain);
-  return returnCommand;
+    HashMap<String, Command> eventMap = new HashMap<>();
+    eventMap.put("intakeDown", new IntakeDown());
 
+    PathPlannerTrajectory test_path = PathPlanner.loadPath(
+        pathName, new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY, 
+        DrivetrainConstants.MAX_AUTO_ACCELERATION),true);
+//   drivetrain.resetOdometry(test_path.getInitialPose());
+//    PPRamseteCommand returnCommand = new PPRamseteCommand(
+//       test_path, 
+//       drivetrain::getPose2d, 
+//       new RamseteController(), 
+//       new SimpleMotorFeedforward(DrivetrainConstants.KS_LIN, DrivetrainConstants.KV),
+//       drivetrain.getKinematics(),
+//       drivetrain::getWheelSpeeds,
+//       new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+//       new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+//       drivetrain::tankDriveVolts,
+//       false,
+//       drivetrain);
+//       return returnCommand;
+       RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
+        drivetrain::getPose2d, // Pose2d supplier
+        drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
+        new RamseteController(2.0,0.7),
+        drivetrain.getKinematics(),
+        new SimpleMotorFeedforward(DrivetrainConstants.KS_LIN, DrivetrainConstants.KV),
+        ()->drivetrain.getWheelSpeeds(), // WheelSpeeds supplier
+        new PIDConstants(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+        // PID constants to correct for rotation error (used to create the rotation controller)
+        drivetrain::tankDriveVolts, // Module states consumer used to output to the drive subsystem
+        eventMap,
+        false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+        drivetrain // The drive subsystem. Used to properly set the requirements of path following commands
+    );
+    
+
+  return autoBuilder.fullAuto(test_path);
   }
-}
+  }
 
