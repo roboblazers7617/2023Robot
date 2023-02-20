@@ -7,6 +7,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.Constants.DrivetrainConstants;
 
 public class FieldPositions {
     public enum FieldLocation {
@@ -29,25 +30,25 @@ public class FieldPositions {
     
       private static final Map<FieldLocation, Pose2d> BLUE_MAP = Map.ofEntries(
     
-        Map.entry(FieldLocation.NODE1, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(19.875)), Rotation2d.fromDegrees(0))),
+        Map.entry(FieldLocation.NODE1, new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(19.875)), Rotation2d.fromDegrees(180))),
     
-        Map.entry(FieldLocation.NODE2, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(41.875)), Rotation2d.fromDegrees(0))),
+        Map.entry(FieldLocation.NODE2, new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(41.875)), Rotation2d.fromDegrees(180))),
     
-        Map.entry(FieldLocation.NODE3, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(63.875)), Rotation2d.fromDegrees(0))),
+        Map.entry(FieldLocation.NODE3, new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(63.875)), Rotation2d.fromDegrees(180))),
     
-        Map.entry(FieldLocation.NODE4, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(85.875)), Rotation2d.fromDegrees(0))),
+        Map.entry(FieldLocation.NODE4, new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(85.875)), Rotation2d.fromDegrees(180))),
     
-        Map.entry(FieldLocation.NODE5, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(107.875)), Rotation2d.fromDegrees(0))),
+        Map.entry(FieldLocation.NODE5, new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(107.875)), Rotation2d.fromDegrees(180))),
     
-        Map.entry(FieldLocation.NODE6, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(129.875)), Rotation2d.fromDegrees(0))),
+        Map.entry(FieldLocation.NODE6, new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(129.875)), Rotation2d.fromDegrees(180))),
     
-        Map.entry(FieldLocation.NODE7, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(151.875)), Rotation2d.fromDegrees(0))),
+        Map.entry(FieldLocation.NODE7, new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(151.875)), Rotation2d.fromDegrees(180))),
     
-        Map.entry(FieldLocation.NODE8, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(173.875)), Rotation2d.fromDegrees(0))),
+        Map.entry(FieldLocation.NODE8, new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(173.875)), Rotation2d.fromDegrees(180))),
     
-        Map.entry(FieldLocation.NODE9, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(195.875)), Rotation2d.fromDegrees(0))),
+        Map.entry(FieldLocation.NODE9, new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(195.875)), Rotation2d.fromDegrees(180))),
     
-        Map.entry(FieldLocation.DOUBLE_STATION, new Pose2d(new Translation2d(), Rotation2d.fromDegrees(180))),
+        Map.entry(FieldLocation.DOUBLE_STATION, new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0))),
     
         Map.entry(FieldLocation.SINGLE_STATION, new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)))
     
@@ -57,25 +58,25 @@ public class FieldPositions {
     
     private static final Map<FieldLocation, Pose2d> RED_MAP = Map.ofEntries(
     
-      Map.entry(FieldLocation.NODE1, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(19.875)), Rotation2d.fromDegrees(180))),
+      Map.entry(FieldLocation.NODE1, new Pose2d(new Translation2d(Units.inchesToMeters(610.77 - DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(19.875)), Rotation2d.fromDegrees(0))),
     
-      Map.entry(FieldLocation.NODE2, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(41.875)), Rotation2d.fromDegrees(180))),
+      Map.entry(FieldLocation.NODE2, new Pose2d(new Translation2d(Units.inchesToMeters(610.77 - DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(41.875)), Rotation2d.fromDegrees(0))),
     
-      Map.entry(FieldLocation.NODE3, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(63.875)), Rotation2d.fromDegrees(180))),
+      Map.entry(FieldLocation.NODE3, new Pose2d(new Translation2d(Units.inchesToMeters(610.77 - DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(63.875)), Rotation2d.fromDegrees(0))),
     
-      Map.entry(FieldLocation.NODE4, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(85.875)), Rotation2d.fromDegrees(180))),
+      Map.entry(FieldLocation.NODE4, new Pose2d(new Translation2d(Units.inchesToMeters(610.77 - DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(85.875)), Rotation2d.fromDegrees(0))),
     
-      Map.entry(FieldLocation.NODE5, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(107.875)), Rotation2d.fromDegrees(180))),
+      Map.entry(FieldLocation.NODE5, new Pose2d(new Translation2d(Units.inchesToMeters(610.77 - DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(107.875)), Rotation2d.fromDegrees(0))),
     
-      Map.entry(FieldLocation.NODE6, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(129.875)), Rotation2d.fromDegrees(180))),
+      Map.entry(FieldLocation.NODE6, new Pose2d(new Translation2d(Units.inchesToMeters(610.77 - DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(129.875)), Rotation2d.fromDegrees(0))),
     
-      Map.entry(FieldLocation.NODE7, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(151.875)), Rotation2d.fromDegrees(180))),
+      Map.entry(FieldLocation.NODE7, new Pose2d(new Translation2d(Units.inchesToMeters(610.77 - DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(151.875)), Rotation2d.fromDegrees(0))),
     
-      Map.entry(FieldLocation.NODE8, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(173.875)), Rotation2d.fromDegrees(180))),
+      Map.entry(FieldLocation.NODE8, new Pose2d(new Translation2d(Units.inchesToMeters(610.77 - DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(173.875)), Rotation2d.fromDegrees(0))),
     
-      Map.entry(FieldLocation.NODE9, new Pose2d(new Translation2d(1.582 + 1, Units.inchesToMeters(195.875)), Rotation2d.fromDegrees(180))),
+      Map.entry(FieldLocation.NODE9, new Pose2d(new Translation2d(Units.inchesToMeters(610.77 - DrivetrainConstants.X_OFFSET_FROM_SCORE_LOCATION), Units.inchesToMeters(195.875)), Rotation2d.fromDegrees(0))),
     
-      Map.entry(FieldLocation.DOUBLE_STATION, new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0))),
+      Map.entry(FieldLocation.DOUBLE_STATION, new Pose2d(new Translation2d(), Rotation2d.fromDegrees(180))),
     
       Map.entry(FieldLocation.SINGLE_STATION, new Pose2d(new Translation2d(), Rotation2d.fromDegrees(90)))
     
