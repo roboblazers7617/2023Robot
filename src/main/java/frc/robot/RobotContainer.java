@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.IntakeDown;
 //import frc.robot.commands.IntakeDown;
 import frc.robot.commands.ScoreGridSelection;
 import frc.robot.commands.Drivetrain.DriveToScoreGrid;
@@ -207,7 +208,7 @@ public class RobotContainer {
   public Command pickAutonomousCommand(String pathName) {   
      
     HashMap<String, Command> eventMap = new HashMap<>();
-    eventMap.put("intakeDown", null);
+    eventMap.put("intakeDown", new IntakeDown());
 
     PathPlannerTrajectory test_path = PathPlanner.loadPath(
         pathName, new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY, 
