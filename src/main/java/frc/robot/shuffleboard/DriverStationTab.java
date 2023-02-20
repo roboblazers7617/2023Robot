@@ -4,6 +4,8 @@
 
 package frc.robot.shuffleboard;
 
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.IntegerSubscriber;
@@ -30,6 +32,8 @@ public class DriverStationTab extends ShuffleboardTabBase {
     private StringPublisher pathPlanningTargetPub;
     private BooleanPublisher debugModePub;
 
+    private UsbCamera camera;
+
     public DriverStationTab(Drivetrain drivetrain) {
         ShuffleboardTab tab = Shuffleboard.getTab("Driver Station");
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
@@ -52,6 +56,10 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
         pathPlanningTargetPub = networkTable.getStringTopic("target position for path planning").publish();
         tab.add("target position for path planning", "NA");
+
+        camera = CameraServer.startAutomaticCapture();
+        camera.setResolution(480, 320);
+        camera.setFPS(10);
     }
 
     public void update() {
