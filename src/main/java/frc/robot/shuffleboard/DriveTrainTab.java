@@ -5,7 +5,9 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
+
 
 public class DriveTrainTab extends ShuffleboardTabBase {
     DoublePublisher rightVelocityPub;
@@ -15,6 +17,8 @@ public class DriveTrainTab extends ShuffleboardTabBase {
     DoublePublisher xPosPub;
     DoublePublisher yPosPub;
     DoublePublisher anglePub;
+    DoublePublisher xTargetPose;
+    DoublePublisher yTargetPose;
     Drivetrain drivetrain;
 
     public void update() {
@@ -25,6 +29,10 @@ public class DriveTrainTab extends ShuffleboardTabBase {
         leftDistancePub.set(drivetrain.getLeftDistance());
         xPosPub.set(drivetrain.getPose2d().getX());
         yPosPub.set(drivetrain.getPose2d().getY());
+        anglePub.set(Math.IEEEremainder(drivetrain.getAngle(), 360));
+        yTargetPose.set(drivetrain.getTargetTranslation().getY());
+        xTargetPose.set(drivetrain.getTargetTranslation().getX());
+
     }
 
     public DriveTrainTab(Drivetrain subsystem) {
@@ -64,6 +72,17 @@ public class DriveTrainTab extends ShuffleboardTabBase {
         anglePub = networkTable.getDoubleTopic("Angle").publish();
 
         shuffleboardTabTesting.add("Angle", 3);
+
+        yTargetPose = networkTable.getDoubleTopic("yTargetTranslation").publish();
+
+        shuffleboardTabTesting.add("yTargetTranslation", 0);
+
+        xTargetPose = networkTable.getDoubleTopic("xTargetTranslation").publish();
+
+        shuffleboardTabTesting.add("xTargetTranslation", 3);
+
+
+        
 
     }
 }

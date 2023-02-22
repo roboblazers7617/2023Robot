@@ -46,7 +46,7 @@ public class DriveToTag extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    mDrivetrain.setDrivetrainSpeed(DrivetrainConstants.MAX_SPEED);
+    mDrivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED);
   }
 
   // Returns true when the command should end.

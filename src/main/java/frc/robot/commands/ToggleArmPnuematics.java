@@ -4,40 +4,35 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
+import frc.robot.subsystems.Arm;
 
-public class ScoreGridSelection extends CommandBase {
-  private int grid;
-  private int position;
-  private Drivetrain drivetrain;
-
-  /** Creates a new GridSelection. */
-  public ScoreGridSelection(Drivetrain drivetrain,int grid, int position) {
-    this.grid = grid;
-    this.position = position;
-    this.drivetrain = drivetrain;
-    
-    
+public class ToggleArmPnuematics extends CommandBase {
+  /** Creates a new ToggleArmPnuematics. */
+  Arm mArm;
+  public ToggleArmPnuematics(Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
-  }
-
-  private String getPathPlanningTarget(){
-    return "" + grid + position;
+    mArm = arm;
+    addRequirements(arm);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.setTargetPose(getPathPlanningTarget());
-    System.out.println("The grid is " + grid + ". The position is " + position);
+    if(mArm.getSuperstructureState() == Value.kForward){
+      mArm.actuateSuperstructure(PnuematicPositions.RETRACTED);
+    }
+
+    else if(mArm.getSuperstructureState() == Value.kReverse || mArm.getSuperstructureState() == Value.kOff){
+      mArm.actuateSuperstructure(PnuematicPositions.EXTENDED);
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-    System.out.println(getPathPlanningTarget());
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override
