@@ -7,20 +7,25 @@ package frc.robot;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
-import frc.robot.commands.DriveToTag;
+import frc.robot.commands.CenterRelativeTag;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ScoreGridSelection;
 import frc.robot.commands.DriveToScoreGrid;
 import frc.robot.commands.TurnToTag;
 import frc.robot.commands.centerAndDistanceAlign;
+import frc.robot.commands.ToggleArmPnuematics;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
+import frc.robot.shuffleboard.IntakeTab;
 import frc.robot.shuffleboard.ShuffleboardInfo;
 import frc.robot.shuffleboard.ShuffleboardTabBase;
 import frc.robot.shuffleboard.VisionTab;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Pnuematics;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 
 import java.util.ArrayList;
@@ -60,6 +65,10 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Vision vision = new Vision();
   private final Drivetrain drivetrain = new Drivetrain(vision);
+//   private final Pnuematics pnuematics = new Pnuematics();
+//   private final Arm arm = new Arm(pnuematics);
+//   private final Intake intake = new Intake(); 
+
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.DRIVER_CONTROLLER_PORT);
@@ -75,6 +84,11 @@ public class RobotContainer {
     configureDriverBindings();
     configureOperatorBindings();
     // create shuffleboardinfo.java
+    drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
+        m_driverController.getRightX(), m_driverController.getRightY()), drivetrain));
+    // arm.setDefaultCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftY()), arm));
+    
+    // intake.setDefaultCommand(new RunCommand(()->intake.setWristSpeed( m_operatorController.getRightY()),intake));
     ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
     // YOUR CODE HERE | | |
     // \/ \/ \/
@@ -82,6 +96,7 @@ public class RobotContainer {
     tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
     tabs.add(new VisionTab(vision, drivetrain));
     tabs.add(new DriveTrainTab(drivetrain));
+    // tabs.add(new IntakeTab(intake));
     // STOP HERE OR DIE
 
     ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
