@@ -15,7 +15,7 @@ import frc.robot.commands.ScoreGridSelection;
 import frc.robot.commands.Drivetrain.DriveToScoreGrid;
 import frc.robot.commands.TurnToTag;
 import frc.robot.commands.centerAndDistanceAlign;
-import frc.robot.commands.ToggleArmPnuematics;
+import frc.robot.shuffleboard.ColorSensorTab;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
@@ -23,7 +23,7 @@ import frc.robot.shuffleboard.IntakeTab;
 import frc.robot.shuffleboard.ShuffleboardInfo;
 import frc.robot.shuffleboard.ShuffleboardTabBase;
 import frc.robot.shuffleboard.VisionTab;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Leds;
@@ -98,7 +98,7 @@ public class RobotContainer {
     tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
     tabs.add(new VisionTab(vision, drivetrain));
     tabs.add(new DriveTrainTab(drivetrain));
-    // tabs.add(new IntakeTab(intake));
+    tabs.add(new ColorSensorTab(new ColorSensor()));
     // STOP HERE OR DIE
 
     ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
