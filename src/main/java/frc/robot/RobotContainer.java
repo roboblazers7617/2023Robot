@@ -26,8 +26,7 @@ import frc.robot.shuffleboard.VisionTab;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
-import frc.robot.subsystems.Pnuematics;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.Vision;
 
 import java.util.ArrayList;
@@ -69,10 +68,7 @@ public class RobotContainer {
   private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
   private final Vision vision = new Vision();
   private final Drivetrain drivetrain = new Drivetrain(vision);
-//   private final Pnuematics pnuematics = new Pnuematics();
-//   private final Arm arm = new Arm(pnuematics);
-//   private final Intake intake = new Intake(); 
-
+  private final Leds leds = new Leds();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.DRIVER_CONTROLLER_PORT);
