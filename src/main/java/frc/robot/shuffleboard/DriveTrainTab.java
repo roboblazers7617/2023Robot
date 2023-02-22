@@ -1,11 +1,12 @@
 package frc.robot.shuffleboard;
 
+import com.fasterxml.jackson.databind.ser.std.StdKeySerializers.Default;
+
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 
 
@@ -19,6 +20,7 @@ public class DriveTrainTab extends ShuffleboardTabBase {
     DoublePublisher anglePub;
     DoublePublisher xTargetPose;
     DoublePublisher yTargetPose;
+    DoublePublisher poseAnglePub;
     Drivetrain drivetrain;
 
     public void update() {
@@ -29,9 +31,10 @@ public class DriveTrainTab extends ShuffleboardTabBase {
         leftDistancePub.set(drivetrain.getLeftDistance());
         xPosPub.set(drivetrain.getPose2d().getX());
         yPosPub.set(drivetrain.getPose2d().getY());
-        anglePub.set(Math.IEEEremainder(drivetrain.getAngle(), 360));
+        anglePub.set(Math.IEEEremainder(drivetrain.getGyroAngle(), 360));
         yTargetPose.set(drivetrain.getTargetTranslation().getY());
         xTargetPose.set(drivetrain.getTargetTranslation().getX());
+        poseAnglePub.set(drivetrain.getPose2d().getRotation().getDegrees());
 
     }
 
@@ -69,9 +72,13 @@ public class DriveTrainTab extends ShuffleboardTabBase {
 
         shuffleboardTabTesting.add("Y Cord(m)", 0);
 
-        anglePub = networkTable.getDoubleTopic("Angle").publish();
+        anglePub = networkTable.getDoubleTopic("Gyro Angle").publish();
 
-        shuffleboardTabTesting.add("Angle", 3);
+        shuffleboardTabTesting.add("Gyro Angle", 3);
+
+        poseAnglePub = networkTable.getDoubleTopic("Pose Angle").publish();
+
+        shuffleboardTabTesting.add("Pose Angle", 3);
 
         yTargetPose = networkTable.getDoubleTopic("yTargetTranslation").publish();
 

@@ -27,13 +27,16 @@ import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
 
@@ -58,16 +61,17 @@ public class Drivetrain extends SubsystemBase {
   private final WPI_Pigeon2 mGyro = new WPI_Pigeon2(DrivetrainConstants.GYRO_ID);  
   private final DifferentialDrivePoseEstimator mOdometry;
   private final DifferentialDriveKinematics mKinematics;
-
-  private final Vision mVision;
+  
+  private final SimpleMotorFeedforward feedForward = new SimpleMotorFeedforward(DrivetrainConstants.KS,
+      DrivetrainConstants.KV, DrivetrainConstants.KA);
+  
+      private final Vision mVision;
 
   private final DifferentialDrive drivetrain;
   private DrivetrainConstants.DrivetrainMode mode;
   private double maxDrivetrainspeed = DrivetrainConstants.REG_SPEED;
 
-  private String targetPose;
-
-  private Translation2d targetTranslation;
+  private Pose2d targetPose;
 
   private SlewRateLimiter slewRateFilterLeft = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
   private SlewRateLimiter slewRateFilterRight = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
@@ -102,10 +106,8 @@ public class Drivetrain extends SubsystemBase {
     mVision = vision;
     mGyro.reset();
     mKinematics = new DifferentialDriveKinematics(DrivetrainConstants.TRACK_WIDTH_METERS);
-    mOdometry = new DifferentialDrivePoseEstimator(mKinematics, getRotation2d(), getLeftDistance(), getRightDistance(), new Pose2d());
+    mOdometry = new DifferentialDrivePoseEstimator(mKinematics, mGyro.getRotation2d(), getLeftDistance(), getRightDistance(), new Pose2d());
 
-
-    targetPose = "other NA";
   }
 
   @Override
@@ -114,18 +116,17 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void setTargetPose(String target){
-    targetPose = target;
+    //targetPose = target;
   }
 
   public String getTargetPose(){
-    return targetPose;
+    //return targetPose;
+    return "we gonna fix dis later I swears";
   }
 
   public void drive(double leftY, double rightX, double rightY) {
-    double lForward = //slewRateFilterLeft.calculate
-    (leftY);
-    double rForward = //slewRateFilterRight.calculate
-    (rightY);
+    double lForward = slewRateFilterLeft.calculate(leftY);
+    double rForward = slewRateFilterRight.calculate(rightY);
     if (mode == DrivetrainConstants.DrivetrainMode.arcadeDrive) {
       arcadeDrive(-lForward, -rightX);
     } else if (mode == DrivetrainConstants.DrivetrainMode.tankDrive) {
@@ -183,7 +184,7 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public Rotation2d getRotation2d(){
-    return mGyro.getRotation2d();
+    return mOdometry.getEstimatedPosition().getRotation();
   }
 
   public DifferentialDriveWheelSpeeds getWheelSpeeds(){
@@ -195,24 +196,47 @@ public class Drivetrain extends SubsystemBase {
   }
 
   public void resetOdometry(Pose2d pose){
-    mOdometry.resetPosition(getRotation2d(), getLeftDistance(), getRightDistance(), pose);
+    resetEncoders();
+    mOdometry.resetPosition(mGyro.getRotation2d(), getLeftDistance(), getRightDistance(), pose);
   }
 
   public void tankDriveVolts(double leftVolts, double rightVolts)
   {
-    leftFrontMotor.setVoltage(leftVolts * 12); // Convert this from percent of battery to volts by multiply by 12
-    rightFrontMotor.setVoltage(rightVolts * 12); // Convert this from percent of battery to volts by multiply by 12
+    leftFrontMotor.setVoltage(leftVolts);
+    rightFrontMotor.setVoltage(rightVolts);
   }
 
+  public void driveWithVelocity(double xVelocity, double rotationVelocity){
+    var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(xVelocity, 0.0, rotationVelocity));
+    setSpeeds(wheelSpeeds);
+
+  }
+
+  public void setSpeeds(DifferentialDriveWheelSpeeds speeds){
+    var leftFeedforward = feedForward.calculate(speeds.leftMetersPerSecond);
+    var rightFeedforward = feedForward.calculate(speeds.rightMetersPerSecond);
+    leftFrontMotor.setVoltage(leftFeedforward);
+    rightFrontMotor.setVoltage(rightFeedforward);
+    drivetrain.feed();
+  }
+
+  public void setBrakeMode(IdleMode mode)
+  {
+    leftFrontMotor.setIdleMode(mode);
+    rightFrontMotor.setIdleMode(mode);
+    leftFollowerMotor.setIdleMode(mode);
+    rightFollowerMotor.setIdleMode(mode);
+
+  }
   public void resetEncoders(){
     leftFrontEncoder.setPosition(0);
     rightFrontEncoder.setPosition(0);
   }
 
   public void zeroHeading(){
-    mGyro.reset();
+    mGyro.setYaw(0);
   }
-  public double getAngle(){
+  public double getGyroAngle(){
     return -mGyro.getAngle();
   }
 
@@ -220,37 +244,12 @@ public class Drivetrain extends SubsystemBase {
     // Write code for local Odometry here:
     mOdometry.update(mGyro.getRotation2d(), getLeftDistance(), getRightDistance());
 
-    Optional<EstimatedRobotPose> cameraPose = mVision.getEstimatedGlobalPose(getPose2d());
+    Optional<EstimatedRobotPose> cameraPose = mVision.getEstimatedGlobalPose(getPose2d().plus(new Transform2d(new Translation2d(0, 0), new Rotation2d(Math.PI))));
     if(cameraPose.isPresent()){
     mOdometry.addVisionMeasurement(cameraPose.get().estimatedPose.toPose2d(), cameraPose.get().timestampSeconds);
-    mGyro.setYaw(cameraPose.get().estimatedPose.getRotation().getAngle());
+    //mGyro.setYaw(mOdometry.getEstimatedPosition().getRotation().getDegrees());
     }
   }
-  public Command PickPathWork(Drivetrain drivetrain, DoubleSupplier x, DoubleSupplier y, DoubleSupplier angle) {
-    PathPlannerTrajectory test_path = PathPlanner.generatePath(
-      new PathConstraints(.1, .1),
-      new PathPoint(new Translation2d(x.getAsDouble(),y.getAsDouble()), new Rotation2d(angle.getAsDouble())),
-     //new PathPoint(new Translation2d(12.75, 1), Rotation2d.fromDegrees(180)),
-      new PathPoint(new Translation2d(14.61, 1.07), Rotation2d.fromDegrees(0)));
-  
-    SmartDashboard.putNumber("x", x.getAsDouble());
-    SmartDashboard.putNumber("y", y.getAsDouble());
-    SmartDashboard.putNumber("angle", angle.getAsDouble());
-  
-    PPRamseteCommand returnCommand = new PPRamseteCommand(
-        test_path, 
-        drivetrain::getPose2d, 
-        new RamseteController(), 
-        new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV),
-        drivetrain.getKinematics(),
-        drivetrain::getWheelSpeeds,
-        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
-        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
-        drivetrain::tankDriveVolts,
-        false,
-        drivetrain);
-    return returnCommand;
-    }
     public Translation2d getTargetTranslation() {
       return new Translation2d(1,1);
     }
@@ -259,10 +258,15 @@ public class Drivetrain extends SubsystemBase {
       return (getLeftDistance() + getRightDistance()) / 2;
     }
 
-    public double findTargetAngle(double xTarget, double yTarget, double xStart, double yStart){
-      double angle = (Math.toDegrees(Math.atan2(xTarget - xStart, -(yTarget - yStart))) - 90);
-      //angle = angle - drivetrain.getRotation2d().getDegrees();
-      return angle <= 180? angle: (angle -360);
+    public Command ResetRobotToStartPosition()
+    {
+      return Commands.runOnce(
+
+       () -> { 
+          resetEncoders();
+          zeroHeading();
+          resetOdometry(new Pose2d(0,0, Rotation2d.fromDegrees(0)));
+      }); 
     }
   }
   

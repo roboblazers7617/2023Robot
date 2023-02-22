@@ -9,8 +9,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Autos;
 import frc.robot.commands.CenterRelativeTag;
 import frc.robot.commands.ExampleCommand;
+import frc.robot.commands.IntakeDown;
+//import frc.robot.commands.IntakeDown;
 import frc.robot.commands.ScoreGridSelection;
-import frc.robot.commands.DriveToScoreGrid;
+import frc.robot.commands.Drivetrain.DriveToScoreGrid;
 import frc.robot.commands.TurnToTag;
 import frc.robot.commands.centerAndDistanceAlign;
 import frc.robot.commands.ToggleArmPnuematics;
@@ -29,12 +31,15 @@ import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Vision;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
+import com.pathplanner.lib.auto.PIDConstants;
+import com.pathplanner.lib.auto.RamseteAutoBuilder;
 import com.pathplanner.lib.commands.PPRamseteCommand;
+import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
@@ -43,8 +48,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -75,6 +79,8 @@ public class RobotContainer {
 
   private final CommandXboxController m_operatorController = new CommandXboxController(
       OperatorConstants.OPERATOR_CONTROLLER_PORT);
+  private Pose2d targetPose = new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(42.19)),
+  new Rotation2d(180));
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -143,7 +149,7 @@ public class RobotContainer {
         // cancelling on release.
 
     //this code calls the score grid selection command for the correct input
-    m_driverController.x()
+    /*m_driverController.x()
         .and(m_driverController.povLeft())
         .onTrue(new ScoreGridSelection(drivetrain, 0, 0));
     m_driverController.y()
@@ -169,14 +175,26 @@ public class RobotContainer {
         .onTrue(new ScoreGridSelection(drivetrain, 2, 1));
     m_driverController.b()
         .and(m_driverController.povRight())
-        .onTrue(new ScoreGridSelection(drivetrain, 2, 2));
+        .onTrue(new ScoreGridSelection(drivetrain, 2, 2));*/
+    m_driverController.povLeft().whileTrue(
+    new InstantCommand(()-> setTargetPose(
+        new Pose2d(new Translation2d(Units.inchesToMeters(40.45+38),Units.inchesToMeters(108.19)),
+       new Rotation2d(Units.degreesToRadians(0))))));
+    m_driverController.povUp().onTrue(new InstantCommand(()-> setTargetPose(
+        new Pose2d(new Translation2d(Units.inchesToMeters(40.45+38),Units.inchesToMeters(42.19)),
+        new Rotation2d((Units.degreesToRadians(0)))))));
+    m_driverController.povRight().onTrue(new InstantCommand(()-> setTargetPose(
+        new Pose2d(new Translation2d(Units.inchesToMeters(40.45+38),Units.inchesToMeters(42.19)),
+        new Rotation2d(Units.degreesToRadians(0))))));
     m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain, 
         ()-> m_driverController.getLeftY(), 
         ()-> m_driverController.getRightY(), 
         ()-> m_driverController.getRightX(), 
-        (new Translation2d((Units.inchesToMeters(20)),(Units.inchesToMeters(155))))));
-    m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
-  }
+        ()->getTargetPose(),
+        Alliance.Blue));
+    //m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(Units.inchesToMeters(0),Units.inchesToMeters(0),new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
+    m_driverController.rightTrigger().onTrue(drivetrain.ResetRobotToStartPosition());
+}
 
   private void configureOperatorBindings() {
 
@@ -191,32 +209,60 @@ public class RobotContainer {
 
     // m_operatorController.a().whileTrue(new ToggleArmPnuematics(arm));
   }
-
+  public void setTargetPose(Pose2d targetPose) {
+    this.targetPose = targetPose;
+    }
+  public Pose2d getTargetPose() {
+    return targetPose;
+  }
     /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
    * @return the command to run in autonomous
    */   
   public Command getAutonomousCommand() {
-        return null;
+    drivetrain.setBrakeMode(IdleMode.kCoast);
+    return pickAutonomousCommand("blue far 2 ball").andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
     }
-  public Command pickAutonomousCommand(String pathName) {    
-    PathPlannerTrajectory test_path = PathPlanner.loadPath(pathName, new PathConstraints(Constants.DrivetrainConstants.MAX_AUTO_VELOCITY, Constants.DrivetrainConstants.MAX_AUTO_ACCELERATION));
-  drivetrain.resetOdometry(test_path.getInitialPose());
-  PPRamseteCommand returnCommand = new PPRamseteCommand(
-      test_path, 
-      drivetrain::getPose2d, 
-      new RamseteController(), 
-      new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV),
-      drivetrain.getKinematics(),
-      drivetrain::getWheelSpeeds,
-      new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
-      new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
-      drivetrain::tankDriveVolts,
-      false,
-      drivetrain);
-  return returnCommand;
+  public Command pickAutonomousCommand(String pathName) {   
+     
+    HashMap<String, Command> eventMap = new HashMap<>();
+    eventMap.put("intakeDown", new IntakeDown());
 
+    PathPlannerTrajectory test_path = PathPlanner.loadPath(
+        pathName, new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY, 
+        DrivetrainConstants.MAX_AUTO_ACCELERATION),true);
+//   drivetrain.resetOdometry(test_path.getInitialPose());
+//    PPRamseteCommand returnCommand = new PPRamseteCommand(
+//       test_path, 
+//       drivetrain::getPose2d, 
+//       new RamseteController(), 
+//       new SimpleMotorFeedforward(DrivetrainConstants.KS_LIN, DrivetrainConstants.KV),
+//       drivetrain.getKinematics(),
+//       drivetrain::getWheelSpeeds,
+//       new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+//       new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+//       drivetrain::tankDriveVolts,
+//       false,
+//       drivetrain);
+//       return returnCommand;
+       RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
+        drivetrain::getPose2d, // Pose2d supplier
+        drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
+        new RamseteController(2.0,0.7),
+        drivetrain.getKinematics(),
+        new SimpleMotorFeedforward(DrivetrainConstants.KS_LIN, DrivetrainConstants.KV),
+        ()->drivetrain.getWheelSpeeds(), // WheelSpeeds supplier
+        new PIDConstants(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+        // PID constants to correct for rotation error (used to create the rotation controller)
+        drivetrain::tankDriveVolts, // Module states consumer used to output to the drive subsystem
+        eventMap,
+        false, // Should the path be automatically mirrored depending on alliance color. Optional, defaults to true
+        drivetrain // The drive subsystem. Used to properly set the requirements of path following commands
+    );
+    
+
+  return autoBuilder.fullAuto(test_path);
   }
-}
+  }
 

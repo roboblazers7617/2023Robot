@@ -7,6 +7,7 @@ package frc.robot;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
@@ -27,10 +28,10 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int OPERATOR_CONTROLLER_PORT = 1;
-
-  }
-
-  public static class DrivetrainConstants {
+    
+    public static final int THE_NUMBER_3 = 6;
+    }
+    public static class DrivetrainConstants{
     public static final int LEFT_WHEEL_PORT = 4;
     public static final int RIGHT_WHEEL_PORT = 3;
     public static final int LEFT_FOLLOWER_WHEEL_PORT = 31;
@@ -52,49 +53,56 @@ public final class Constants {
     public static final double REG_SPEED = 0.5;
     public static final double SLOW_SPEED = 0.25;
     public static final double FAST_SPEED = 1;
-    public static final double MAX_ANGULAR_VELOCITY = 0.5;
-    public static final double MAX_LINEAR_VELOCITY = 0.5;
+    public static final double MAX_ANGULAR_VELOCITY = 0.65;//.5
+    public static final double MAX_LINEAR_VELOCITY = 0.7;//.5
 
-    public static final double KP_LIN = 1.5;
-    public static final double KI_LIN = 0;
-    public static final double KD_LIN = 0;
-    public static final double KS_LIN = .25;
+    public static final double KP_LIN = 3.68;
+    public static final double KI_LIN = 0.0;
+    public static final double KD_LIN = 0.0;
+    public static final double KS_LIN = .192;
 
-    public static final double KP_ROT = 0.06;
-    public static final double KI_ROT = 0;
-    public static final double KD_ROT = 0.0004;
-    public static final double KS_ROT = 0.2;
+    public static final double KP_ROT = 0.015;//0.015
+    public static final double KI_ROT = 0.0;
+    public static final double KD_ROT = 0.0;
+    public static final double KS_ROT = 0.3;
 
-    public static final double KS = 0.015;
-    public static final double KV = 0.21;
+    public static final double KS = 0.192;
+    public static final double KV = 4.0;
+    public static final double KA = 0.424;
+
+    public static final double SIMPLE_FF_LINEAR = 0.5;
+    public static final double SIMPLE_FF_ANGULAR = 0.3;
 
     public static final int GYRO_ID = 40; 
     
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
     
-    
-    public static final double ERROR_TARGET_DRIVER = Units.inchesToMeters(5.0);
-    public static final double ROTATIONAL_ERROR_TARGET_DRIVER = 0.5;
+    public static final double MAX_ERROR_LINEAR = Units.inchesToMeters(1.0);
+    public static final double MAX_ERROR_ROTATION = 1.0; // in degrees
     //public static final double LINEAR_ERROR_TARGET_DRIVER = Units.inchesToMeters(3);
     
     public static final double MAX_AUTO_ACCELERATION = 0.25;
-    public static final double MAX_AUTO_VELOCITY = 1.0;
+    public static final double MAX_AUTO_VELOCITY = 0.4;
 
     public static final double RAMP_TIME_SECONDS = 0.25;
+
+    public static final double ALLIANCE_BLUE_ROTATION = 180.0;
+    public static final double ALLIANCE_RED_ROTATION = 0.0;
+
+    public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(39.0);
+    public static final double X_OFFSET_FROM_SCORE_LOCATION = LENGTH_OF_ROBOT/2.0 + Units.inchesToMeters(14.0);
 
     public enum DrivetrainMode {
       arcadeDrive,
       tankDrive
   }
   }
-
-  public static class VisionConstants {
-    public static final Transform3d CAMERA_POSITION = new Transform3d(new Pose3d(0, 0, 0, new Rotation3d()),
-        new Pose3d(Units.inchesToMeters(16 - (1 + 7 / 8)), 0, Units.inchesToMeters(2.25), new Rotation3d()));
-    public static final double[] TAG_HEIGHT = { 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25,
-        17.25, 17.25, 17.25 };
-    public static final double CAMERA_HEIGHT = 8;
+   public static class VisionConstants {
     public static final double CAMERA_PITCH = 0;
+    public static final Transform3d CAMERA_POSITION = new Transform3d(new Translation3d(Units.inchesToMeters(17.5),
+              Units.inchesToMeters(-.5), Units.inchesToMeters(6.875)), new Rotation3d(0,CAMERA_PITCH,0));
+     public static final double[] TAG_HEIGHT = {17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25};
+    public static final double CAMERA_HEIGHT = (7.0+(5.0/8.0));
     public static final String CAMERA_NAME = "eyeball";
   }
 
@@ -209,6 +217,10 @@ public final class Constants {
       }
 
 
+    }
+
+   public static class FieldConstants {
+
    }
-  }
+}
 }
