@@ -18,13 +18,19 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.FunctionalCommand;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.armIntakeCordinatorUtil;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
+import frc.robot.armIntakeCordinatorUtil.PickupPlaces;
+import frc.robot.armIntakeCordinatorUtil.PieceType;
 
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
@@ -51,7 +57,28 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public Command moveToPosition(ArmConstants.ArmPositions position) {
+  public Command moveArmPickupCommand(armIntakeCordinatorUtil cordinatorUtil, PickupPlaces location) {
+    SequentialCommandGroup command = null;
+    if (location.equals(PickupPlaces.FLOOR)) {
+      command = new SequentialCommandGroup(moveToPositionCommand(ArmPositions.FLOOR_PICKUP),
+          actuateSuperstructureCommand(ArmPositions.FLOOR_PICKUP));
+    }
+
+    else if (location.equals(PickupPlaces.DOUBLE)) {
+      command = new SequentialCommandGroup(moveToPositionCommand(ArmPositions.STATION_PICKUP),
+          actuateSuperstructureCommand(ArmPositions.STATION_PICKUP));
+    }
+    return command;
+  }
+
+  public Command moveArmScoreCommand(armIntakeCordinatorUtil cordinatorUtil) {
+    SequentialCommandGroup command = new SequentialCommandGroup(
+        moveToPositionCommand(cordinatorUtil.getScoreArmPosition()),
+        actuateSuperstructureCommand(cordinatorUtil.getScoreArmPosition()));
+    return command;
+  }
+
+  public Command moveToPositionCommand(ArmConstants.ArmPositions position) {
     ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
     ProfiledPIDCommand command = new ProfiledPIDCommand(
         new ProfiledPIDController(ArmConstants.KP, ArmConstants.KI, ArmConstants.KD, shoulderConstraints),
@@ -63,8 +90,11 @@ public class Arm extends SubsystemBase {
         this);
 
     command.getController().setTolerance(ArmConstants.POSITION_TOLERANCE);
-
     return command;
+
+  }
+
+  public void moveToPosition(){
 
   }
 
@@ -78,37 +108,28 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public Command actuateSuperstructure(ArmPositions position) {
-    if (position.getPistonPosition() == PnuematicPositions.EXTENDED) {
-      return new ParallelCommandGroup(new RunCommand(() -> leftPiston.set(Value.kForward)), new RunCommand(() -> leftPiston.set(Value.kForward), this));
-      
-    } else if (position.getPistonPosition() == PnuematicPositions.RETRACTED) {
-      return new ParallelCommandGroup(new RunCommand(() -> leftPiston.set(Value.kReverse)), new RunCommand(() -> leftPiston.set(Value.kReverse), this));
-    }
-    else 
-      return null;
+  public Command actuateSuperstructureCommand(ArmPositions position) {
+    return new InstantCommand(() -> actuateSuperstructure(position.getPistonPosition()), this);
   }
 
-  public Command actuateSuperstructure(PnuematicPositions position) {
-    if (position == PnuematicPositions.EXTENDED) {
-      return new ParallelCommandGroup(new RunCommand(() -> leftPiston.set(Value.kForward)), new RunCommand(() -> leftPiston.set(Value.kForward), this));
-      
-    } else if (position == PnuematicPositions.RETRACTED) {
-      return new ParallelCommandGroup(new RunCommand(() -> leftPiston.set(Value.kReverse)), new RunCommand(() -> leftPiston.set(Value.kReverse), this));
-    }
-    else 
-      return null;
+  public Command actuateSuperstructureCommand(PnuematicPositions position) {
+    return new InstantCommand(() -> actuateSuperstructure(position), this);
   }
 
-  public Value getSuperstructureState(){
+  public void actuateSuperstructure(PnuematicPositions positions) {
+    leftPiston.set(positions.getValue());
+    rightPiston.set(positions.getValue());
+  }
+
+  public Value getSuperstructureState() {
     return leftPiston.get();
   }
 
-  public double getShoulderAngle(){
+  public double getShoulderAngle() {
     return shoulderAngle.get();
   }
 
-  public boolean isArmStowed(){
+  public boolean isArmStowed() {
     return isArmStowed.get();
   }
 }

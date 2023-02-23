@@ -47,8 +47,8 @@ public class ArmTab extends ShuffleboardTabBase {
         mArm = arm;
 
         // add commands
-        shuffleboardTabTesting.add("Retract Pistons", mArm.actuateSuperstructure(PnuematicPositions.RETRACTED));
-        shuffleboardTabTesting.add("Extend Pistons", mArm.actuateSuperstructure(PnuematicPositions.EXTENDED));
+        shuffleboardTabTesting.add("Retract Pistons", mArm.actuateSuperstructureCommand(PnuematicPositions.RETRACTED));
+        shuffleboardTabTesting.add("Extend Pistons", mArm.actuateSuperstructureCommand(PnuematicPositions.EXTENDED));
 
         // create a publisher in the network table
         anglePub = networkTable.getDoubleTopic("Angle (Degrees)").publish();

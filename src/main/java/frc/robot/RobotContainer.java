@@ -10,7 +10,7 @@ import frc.robot.commands.Autos;
 import frc.robot.commands.CenterRelativeTag;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ScoreGridSelection;
-import frc.robot.commands.ToggleArmPnuematics;
+import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
@@ -60,6 +60,7 @@ public class RobotContainer {
   private final Pnuematics pnuematics = new Pnuematics();
   private final Arm arm = new Arm(pnuematics);
   private final Intake intake = new Intake(); 
+  private final armIntakeCordinatorUtil cordinatorUtil = new armIntakeCordinatorUtil();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(

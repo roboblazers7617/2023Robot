@@ -4,11 +4,17 @@
 
 package frc.robot;
 
+import java.util.Map;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 
 /**
@@ -69,6 +75,41 @@ public final class Constants {
     public static final int GYRO_ID = 40; 
     
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
+
+    private final Map<FieldLocation, Pose2d> BLUE_MAP = Map.ofEntries(Map.entry(FieldLocation.NODE_1, new Pose2d()),
+    Map.entry(FieldLocation.NODE_2, new Pose2d()), Map.entry(FieldLocation.NODE_3, new Pose2d()),
+    Map.entry(FieldLocation.NODE_4, new Pose2d()), Map.entry(FieldLocation.NODE_5, new Pose2d()),
+    Map.entry(FieldLocation.NODE_6, new Pose2d()), Map.entry(FieldLocation.NODE_7, new Pose2d()),
+    Map.entry(FieldLocation.NODE_8, new Pose2d()), Map.entry(FieldLocation.NODE_9, new Pose2d()),
+    Map.entry(FieldLocation.DOUBLE_SUBSTATION, new Pose2d()),
+    Map.entry(FieldLocation.SINGLE_SUBSTATION, new Pose2d()));
+
+private final Map<FieldLocation, Pose2d> RED_MAP = Map.ofEntries(Map.entry(FieldLocation.NODE_1, new Pose2d()),
+    Map.entry(FieldLocation.NODE_2, new Pose2d()), Map.entry(FieldLocation.NODE_3, new Pose2d()),
+    Map.entry(FieldLocation.NODE_4, new Pose2d()), Map.entry(FieldLocation.NODE_5, new Pose2d()),
+    Map.entry(FieldLocation.NODE_6, new Pose2d()), Map.entry(FieldLocation.NODE_7, new Pose2d()),
+    Map.entry(FieldLocation.NODE_8, new Pose2d()), Map.entry(FieldLocation.NODE_9, new Pose2d()),
+    Map.entry(FieldLocation.DOUBLE_SUBSTATION, new Pose2d()),
+    Map.entry(FieldLocation.SINGLE_SUBSTATION, new Pose2d()));
+
+private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
+    .ofEntries(Map.entry(Alliance.Blue, BLUE_MAP), Map.entry(Alliance.Red, RED_MAP));
+  }
+  private enum FieldLocation {
+    NODE_1(),
+    NODE_2(),
+    NODE_3(),
+    NODE_4(),
+    NODE_5(),
+    NODE_6(),
+    NODE_7(),
+    NODE_8(),
+    NODE_9(),
+    DOUBLE_SUBSTATION(),
+    SINGLE_SUBSTATION();
+
+    FieldLocation() {
+    }
   }
 
   public static class VisionConstants {
@@ -88,10 +129,15 @@ public final class Constants {
     public static final int RIGHT_ARM_PISTON_RETRACT_PORT = 0;
 
     public enum PnuematicPositions{
-      RETRACTED(),
-      EXTENDED();
-
-      PnuematicPositions(){}
+      RETRACTED(Value.kReverse),
+      EXTENDED(Value.kForward);
+      Value mValue;
+      PnuematicPositions(Value value){
+        mValue = value;
+      }
+      public Value getValue() {
+          return mValue;
+      }
     }
   }
 
@@ -140,7 +186,6 @@ public final class Constants {
 
 
 
-   }
    public static class IntakeConstants {
     public static final int WRIST_CAN_ID = 22;
     public static final int INTAKE_CAN_ID = 23;
@@ -181,6 +226,7 @@ public final class Constants {
       Store (0.0),
       FloorCubePickup (0.06),
       FloorConePickup ( 0.07),
+      StationPickup(0.07),
       LevelThreePlace (0.04),
       LevelTwoPlace (0.05),
       LevelOnePlace (0.03);

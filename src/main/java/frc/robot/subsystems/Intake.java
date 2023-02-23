@@ -23,8 +23,12 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.armIntakeCordinatorUtil;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.IntakeDirection;
+import frc.robot.Constants.IntakeConstants.WristPosition;
+import frc.robot.armIntakeCordinatorUtil.PickupPlaces;
+import frc.robot.armIntakeCordinatorUtil.PieceType;
 
 public class Intake extends SubsystemBase {
   private final CANSparkMax intakeMotor = new CANSparkMax( IntakeConstants.INTAKE_CAN_ID, MotorType.kBrushless);
@@ -73,6 +77,33 @@ public class Intake extends SubsystemBase {
     double speed = direction.speed();
     return new RunCommand(()-> this.setIntakeSpeed(speed), this);
   }
+
+  public Command MoveToPickupCommand(armIntakeCordinatorUtil cordinatorUtil, PickupPlaces location){
+    Command command = null;
+    if(location.equals(PickupPlaces.FLOOR)){
+      if(cordinatorUtil.getDesiredOrHeldPiece().equals(PieceType.CONE)){
+       command = moveToPositionCommand(WristPosition.FloorConePickup);
+      }
+
+      else if(cordinatorUtil.getDesiredOrHeldPiece().equals(PieceType.CUBE)){
+        command = moveToPositionCommand(WristPosition.FloorCubePickup);
+        }
+    }
+
+    else if(location.equals(PickupPlaces.DOUBLE)){
+      if(cordinatorUtil.getDesiredOrHeldPiece().equals(PieceType.CONE)){
+        command = moveToPositionCommand(WristPosition.StationPickup);
+      }
+
+      else if(cordinatorUtil.getDesiredOrHeldPiece().equals(PieceType.CUBE)){
+        command = moveToPositionCommand(WristPosition.StationPickup);
+        
+        }
+    }
+    return command;
+  }
+
+  
   public Command moveToPositionCommand(IntakeConstants.WristPosition position){
     ArmFeedforward feedforward = new ArmFeedforward(IntakeConstants.WRIST_KS, IntakeConstants.WRIST_KG, IntakeConstants.WRIST_KV);
     ProfiledPIDCommand command = new ProfiledPIDCommand(
