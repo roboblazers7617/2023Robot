@@ -183,8 +183,8 @@ public class RobotContainer {
         Alliance.Blue));
 
         // (new Translation2d((Units.inchesToMeters(20)),(Units.inchesToMeters(155)))));
-    m_driverController.rightTrigger().whileTrue(null/*TODO:  go to double substation*/);
-    m_driverController.rightTrigger().and(m_driverController.leftTrigger()).whileTrue(null /*TODO  go to single substation*/);
+    // m_driverController.rightTrigger().whileTrue(null/*TODO:  go to double substation*/);
+    // m_driverController.rightTrigger().and(m_driverController.leftTrigger()).whileTrue(null /*TODO  go to single substation*/);
     m_driverController.rightTrigger().onTrue(new InstantCommand(()-> drivetrain.resetEncoders()).andThen(new InstantCommand(()-> drivetrain.resetOdometry(new Pose2d(0,0,new Rotation2d(0))))).andThen(new InstantCommand (()-> drivetrain.zeroHeading())));
 
     m_driverController.rightBumper().onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED)));
@@ -201,21 +201,21 @@ public class RobotContainer {
   private void configureOperatorBindings() {
     //TODO: Arm.setDefaultCommand(use L joy to move);
     //TODO Intake.setDefaultCommand(use R joy to move);
-   m_operatorController.leftBumper().whileTrue(null/*TODO: Pick up cube double substation */);
-   m_operatorController.rightBumper().whileTrue(null/*TODO: Pick up cone double substation */);
-   m_operatorController.leftBumper().whileTrue(null/*TODO: Pick up cube floor */);
-   m_operatorController.rightBumper().whileTrue(null/*TODO: Pick up cone floor */);
+//    m_operatorController.leftBumper().whileTrue(null/*TODO: Pick up cube double substation */);
+//    m_operatorController.rightBumper().whileTrue(null/*TODO: Pick up cone double substation */);
+//    m_operatorController.leftBumper().whileTrue(null/*TODO: Pick up cube floor */);
+//    m_operatorController.rightBumper().whileTrue(null/*TODO: Pick up cone floor */);
 
-   m_operatorController.a().onTrue(null /*TODO: Toggle Arm pnuematic */);
-   m_operatorController.b().whileTrue(null /*TODO: move arm to directed score level */);
-   m_operatorController.y().whileTrue(null /*TODO: Spin intake to pick-up cube/ spit cone */);
-   m_operatorController.x().whileTrue(null /*TODO: Spin intake to spit cube/ pick-up cone */);
+//    m_operatorController.a().onTrue(null /*TODO: Toggle Arm pnuematic */);
+//    m_operatorController.b().whileTrue(null /*TODO: move arm to directed score level */);
+//    m_operatorController.y().whileTrue(null /*TODO: Spin intake to pick-up cube/ spit cone */);
+//    m_operatorController.x().whileTrue(null /*TODO: Spin intake to spit cube/ pick-up cone */);
 
-   m_operatorController.povLeft(/*TODO: Store Arm */);
+//    m_operatorController.povLeft(/*TODO: Store Arm */);
 
-   m_operatorController.povDown().onTrue(null /*TODO: set to hybrid node position */);
-   m_operatorController.povLeft().onTrue(null /*TODO: set to level 2 node position */);
-   m_operatorController.povDown().onTrue(null /*TODO: set to level 3 node position */);
+//    m_operatorController.povDown().onTrue(null /*TODO: set to hybrid node position */);
+//    m_operatorController.povLeft().onTrue(null /*TODO: set to level 2 node position */);
+//    m_operatorController.povDown().onTrue(null /*TODO: set to level 3 node position */);
 
 
 

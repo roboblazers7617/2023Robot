@@ -58,8 +58,10 @@ public class DriverStationTab extends ShuffleboardTabBase {
         tab.add("target position for path planning", "NA");
 
         camera = CameraServer.startAutomaticCapture();
-        camera.setResolution(480, 320);
-        camera.setFPS(10);
+        if (camera.isConnected()) {
+            camera.setResolution(480, 320);
+            camera.setFPS(10);
+        }
     }
 
     public void update() {
