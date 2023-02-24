@@ -5,8 +5,6 @@
 package frc.robot.commands.ArmStuff;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.ArmConstants.ArmPositions;
-import frc.robot.Constants.IntakeConstants.WristPosition;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
@@ -18,7 +16,7 @@ public class Stow extends SequentialCommandGroup {
   public Stow(Arm arm, Intake intake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(arm.moveToPositionCommand(ArmPositions.STOW), intake.moveToPositionCommand(WristPosition.Store),
-        arm.actuateSuperstructureCommand(ArmPositions.STOW));
+    addCommands(intake.stowCommand(),
+     arm.stowCommand());
   }
 }

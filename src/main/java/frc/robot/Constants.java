@@ -12,7 +12,6 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
-import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
@@ -30,6 +29,24 @@ import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+  public enum ScoreLevel {
+    LEVEL_1,
+    LEVEL_2,
+    LEVEL_3;
+}
+
+public enum PickupLocation{
+    FLOOR,
+    DOUBLE;
+}
+
+public enum PieceType {
+    CONE,
+    CUBE;
+}
+
+
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int OPERATOR_CONTROLLER_PORT = 1;
@@ -124,9 +141,9 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
   public static class PnuematicsConstants{
 
     public static final int LEFT_ARM_PISTON_EXTEND_PORT = 0;
-    public static final int LEFT_ARM_PISTON_RETRACT_PORT = 0;
-    public static final int RIGHT_ARM_PISTON_EXTEND_PORT = 0;
-    public static final int RIGHT_ARM_PISTON_RETRACT_PORT = 0;
+    public static final int LEFT_ARM_PISTON_RETRACT_PORT = 1;
+    public static final int RIGHT_ARM_PISTON_EXTEND_PORT = 2;
+    public static final int RIGHT_ARM_PISTON_RETRACT_PORT = 3;
 
     public enum PnuematicPositions{
       RETRACTED(Value.kReverse),
@@ -143,7 +160,7 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
 
   public static class ArmConstants {
 
-    public static final int SHOULDER_MOTOR_PORT = 0;
+    public static final int SHOULDER_MOTOR_PORT = 21;
     public static final double KP = 0;
     public static final double KI = 0;
     public static final double KD = 0;
@@ -160,9 +177,9 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
     public static final double MAX_SPEED = 0;
 
     public enum ArmPositions {
-      HIGH_GOAL(0, PnuematicPositions.EXTENDED),
-      MID_GOAL(0, PnuematicPositions.RETRACTED),
-      LOW_GOAL(0, PnuematicPositions.RETRACTED),
+      LEVEL_3(0, PnuematicPositions.EXTENDED),
+      LEVEL_2(0, PnuematicPositions.RETRACTED),
+      LEVEL_1(0, PnuematicPositions.RETRACTED),
       STOW(0, PnuematicPositions.RETRACTED),
       FLOOR_PICKUP(0, PnuematicPositions.RETRACTED),
       STATION_PICKUP(0, PnuematicPositions.EXTENDED);
@@ -189,7 +206,7 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
    public static class IntakeConstants {
     public static final int WRIST_CAN_ID = 22;
     public static final int INTAKE_CAN_ID = 23;
-    public static final int POT_CHANEL = 1;
+    public static final int POT_CHANEL = 2;
     public static final int DISTANCE_SENSOR_CHANEL = 5;
     public static final int INTAKE_LIMIT_SWITCH_ID = 2;
     public static final int WRIST_POT_SCALE = 270;
@@ -207,11 +224,11 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
     public static final double WRIST_ANGLE_TOLERANCE = 0.1;
     public enum IntakeDirection
     {
-      Stop (0.0),
-      PickCone (0.25),
-      PickCube (-0.25),
-      PlaceCone (-0.25),
-      PlaceCube (0.25);
+      STOP (0.0),
+      PICK_CONE (0.25),
+      PICK_CUBE (-0.25),
+      PLACE_CONE (-0.25),
+      PLACE_CUBE (0.25);
 
       private final double speed;
       IntakeDirection (double speed) {
@@ -223,13 +240,13 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
     } 
     public enum WristPosition
     {
-      Store (0.0),
-      FloorCubePickup (0.06),
-      FloorConePickup ( 0.07),
-      StationPickup(0.07),
-      LevelThreePlace (0.04),
-      LevelTwoPlace (0.05),
-      LevelOnePlace (0.03);
+      STOW (0.0),
+      FLOOR_CUBE_PICKUP (0.06),
+      FLOOR_CONE_PICKUP ( 0.07),
+      DOUBLE_PICKUP(0.07),
+      LEVEL_3 (0.04),
+      LEVEL_2 (0.05),
+      LEVEL_1 (0.03);
 
 
       private final double angle;

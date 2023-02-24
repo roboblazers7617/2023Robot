@@ -7,12 +7,8 @@ package frc.robot.commands.ArmStuff;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.ArmConstants.ArmPositions;
-import frc.robot.armIntakeCordinatorUtil.PickupLocation;
-import frc.robot.armIntakeCordinatorUtil.PickupPlaces;
-import frc.robot.armIntakeCordinatorUtil.PieceType;
-import frc.robot.armIntakeCordinatorUtil.ScoreLevel;
-import frc.robot.armIntakeCordinatorUtil;
+import frc.robot.Constants.PickupLocation;
+import frc.robot.Constants.PieceType;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
@@ -21,9 +17,12 @@ import frc.robot.subsystems.Intake;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimpleMoveToPickup extends SequentialCommandGroup {
   /** Creates a new SimpleMoveArmToPosition. */
-  public SimpleMoveToPickup(Arm arm, Intake intake, armIntakeCordinatorUtil cordinatorUtil, PickupPlaces location) {
+  public SimpleMoveToPickup(Arm arm, Intake intake, Supplier<PieceType> piece, PickupLocation location) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(arm.moveArmPickupCommand(cordinatorUtil, location), intake.MoveToPickupCommand(cordinatorUtil, location));
+    addCommands(arm.moveToPositionCommand(location), 
+    arm.actuateSuperstructureCommand(location), 
+    intake.moveToPositionCommand(location, piece));
+      
   }
 }

@@ -18,19 +18,15 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.FunctionalCommand;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.armIntakeCordinatorUtil;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
-import frc.robot.armIntakeCordinatorUtil.PickupPlaces;
-import frc.robot.armIntakeCordinatorUtil.PieceType;
+import frc.robot.Constants.PickupLocation;
+import frc.robot.Constants.ScoreLevel;
 
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
@@ -40,7 +36,6 @@ public class Arm extends SubsystemBase {
 
   TrapezoidProfile.Constraints shoulderConstraints = new Constraints(ArmConstants.MAX_SHOULDER_VELOCITY,
       ArmConstants.MAX_SHOULDER_ACCELERATION);
-  TrapezoidProfile shoulderProfile = new TrapezoidProfile(shoulderConstraints, null, null);
 
   AnalogPotentiometer shoulderAngle = new AnalogPotentiometer(ArmConstants.SHOULDER_POTENTIOMETER_PORT, 270, -135);
   DigitalInput isArmStowed = new DigitalInput(ArmConstants.LIMIT_SWITCH_PORT);
@@ -56,36 +51,14 @@ public class Arm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
-
-  public Command moveArmPickupCommand(armIntakeCordinatorUtil cordinatorUtil, PickupPlaces location) {
-    SequentialCommandGroup command = null;
-    if (location.equals(PickupPlaces.FLOOR)) {
-      command = new SequentialCommandGroup(moveToPositionCommand(ArmPositions.FLOOR_PICKUP),
-          actuateSuperstructureCommand(ArmPositions.FLOOR_PICKUP));
-    }
-
-    else if (location.equals(PickupPlaces.DOUBLE)) {
-      command = new SequentialCommandGroup(moveToPositionCommand(ArmPositions.STATION_PICKUP),
-          actuateSuperstructureCommand(ArmPositions.STATION_PICKUP));
-    }
-    return command;
-  }
-
-  public Command moveArmScoreCommand(armIntakeCordinatorUtil cordinatorUtil) {
-    SequentialCommandGroup command = new SequentialCommandGroup(
-        moveToPositionCommand(cordinatorUtil.getScoreArmPosition()),
-        actuateSuperstructureCommand(cordinatorUtil.getScoreArmPosition()));
-    return command;
-  }
-
-  public Command moveToPositionCommand(ArmConstants.ArmPositions position) {
+  public Command moveToPositionCommand(ScoreLevel level) {
     ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
     ProfiledPIDCommand command = new ProfiledPIDCommand(
         new ProfiledPIDController(ArmConstants.KP, ArmConstants.KI, ArmConstants.KD, shoulderConstraints),
         this.shoulderAngle::get,
-        new TrapezoidProfile.State(position.getShoulderAngle(), 0),
+        new TrapezoidProfile.State(evalScorePosition(level).getShoulderAngle(), 0),
         (output, setpoint) -> {
-          this.shoulderMotor.set(output + feedforward.calculate(setpoint.position, setpoint.velocity));
+          this.setShoulderSpeed(output + feedforward.calculate(setpoint.position, setpoint.velocity));
         },
         this);
 
@@ -94,9 +67,59 @@ public class Arm extends SubsystemBase {
 
   }
 
-  public void moveToPosition(){
+  public Command moveToPositionCommand(PickupLocation location) {
+    ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
+    ProfiledPIDCommand command = new ProfiledPIDCommand(
+        new ProfiledPIDController(ArmConstants.KP, ArmConstants.KI, ArmConstants.KD, shoulderConstraints),
+        this.shoulderAngle::get,
+        new TrapezoidProfile.State(evalPickupPosition(location).getShoulderAngle(), 0),
+        (output, setpoint) -> {
+          this.setShoulderSpeed(output + feedforward.calculate(setpoint.position, setpoint.velocity));
+        },
+        this);
+
+    command.getController().setTolerance(ArmConstants.POSITION_TOLERANCE);
+    return command;
 
   }
+
+  public Command stowCommand() {
+    ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
+    ProfiledPIDCommand command = new ProfiledPIDCommand(
+        new ProfiledPIDController(ArmConstants.KP, ArmConstants.KI, ArmConstants.KD, shoulderConstraints),
+        this.shoulderAngle::get,
+        new TrapezoidProfile.State(ArmPositions.STOW.getShoulderAngle(), 0),
+        (output, setpoint) -> {
+          this.setShoulderSpeed(output + feedforward.calculate(setpoint.position, setpoint.velocity));
+        },
+        this);
+
+    command.getController().setTolerance(ArmConstants.POSITION_TOLERANCE);
+    
+    return new SequentialCommandGroup(actuateSuperstructureCommand(ArmPositions.STOW.getPistonPosition()), command);
+
+  }
+
+  private ArmPositions evalPickupPosition(PickupLocation location){
+    if(location.equals(PickupLocation.FLOOR))
+      return ArmPositions.FLOOR_PICKUP;
+    else if(location.equals(PickupLocation.DOUBLE))
+      return ArmPositions.STATION_PICKUP;
+    else
+      return ArmPositions.STOW;
+  }
+
+  private ArmPositions evalScorePosition(ScoreLevel level){
+    if(level.equals(ScoreLevel.LEVEL_1))
+      return ArmPositions.LEVEL_1;
+    else if(level.equals(ScoreLevel.LEVEL_2))
+      return ArmPositions.LEVEL_2;
+    else if(level.equals(ScoreLevel.LEVEL_3))
+      return ArmPositions.LEVEL_3;
+    else
+      return ArmPositions.STOW;
+  }
+
 
   public void setShoulderSpeed(double speed) {
     if (shoulderAngle.get() < ArmConstants.UPPER_ANGLE_LIMIT && speed > 0) {
@@ -108,12 +131,16 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public Command actuateSuperstructureCommand(ArmPositions position) {
-    return new InstantCommand(() -> actuateSuperstructure(position.getPistonPosition()), this);
+  public Command actuateSuperstructureCommand(PickupLocation location) {
+    return Commands.runOnce(() -> actuateSuperstructure(evalPickupPosition(location).getPistonPosition()), this);
+  }
+
+  public Command actuateSuperstructureCommand(ScoreLevel level) {
+    return Commands.runOnce(() -> actuateSuperstructure(evalScorePosition(level).getPistonPosition()), this);
   }
 
   public Command actuateSuperstructureCommand(PnuematicPositions position) {
-    return new InstantCommand(() -> actuateSuperstructure(position), this);
+    return Commands.runOnce(() -> actuateSuperstructure(position), this);
   }
 
   public void actuateSuperstructure(PnuematicPositions positions) {

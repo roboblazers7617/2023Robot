@@ -6,11 +6,11 @@ package frc.robot;
 
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.CenterRelativeTag;
+import frc.robot.Constants.PieceType;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.ScoreGridSelection;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
+import frc.robot.shuffleboard.ArmTab;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
@@ -35,8 +35,6 @@ import com.pathplanner.lib.commands.PPRamseteCommand;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -60,7 +58,6 @@ public class RobotContainer {
   private final Pnuematics pnuematics = new Pnuematics();
   private final Arm arm = new Arm(pnuematics);
   private final Intake intake = new Intake(); 
-  private final armIntakeCordinatorUtil cordinatorUtil = new armIntakeCordinatorUtil();
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
@@ -69,6 +66,9 @@ public class RobotContainer {
   private final CommandXboxController m_operatorController = new CommandXboxController(
       OperatorConstants.OPERATOR_CONTROLLER_PORT);
 
+
+   private PieceType selectedPiece = PieceType.CONE;
+   
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -90,6 +90,7 @@ public class RobotContainer {
     tabs.add(new VisionTab(vision, drivetrain));
     tabs.add(new DriveTrainTab(drivetrain));
     tabs.add(new IntakeTab(intake));
+    tabs.add(new ArmTab(arm));
     // STOP HERE OR DIE
 
     ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
@@ -164,7 +165,6 @@ public class RobotContainer {
         .and(m_driverController.povRight())
         .onTrue(new ScoreGridSelection(2, 2));
 
-    m_driverController.leftTrigger().whileTrue(new CenterRelativeTag(vision,drivetrain,0.25));
   }
 
   private void configureOperatorBindings() {

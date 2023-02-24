@@ -5,7 +5,7 @@
 package frc.robot.commands.ArmStuff;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.armIntakeCordinatorUtil;
+import frc.robot.Constants.ScoreLevel;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 
@@ -14,11 +14,11 @@ import frc.robot.subsystems.Intake;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimpleMoveToScore extends SequentialCommandGroup {
   /** Creates a new SimpleMoveArmToPosition. */
-  public SimpleMoveToScore(Arm arm, Intake intake, armIntakeCordinatorUtil cordinatorUtil) {
+  public SimpleMoveToScore(Arm arm, Intake intake, ScoreLevel level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands((arm.moveToPositionCommand(cordinatorUtil.getScoreArmPosition())),
-        arm.actuateSuperstructureCommand(cordinatorUtil.getScoreArmPosition()),
-        intake.moveToPositionCommand(cordinatorUtil.getScoreWristPosition()));
+    addCommands((arm.moveToPositionCommand(level)),
+        arm.actuateSuperstructureCommand(level),
+        intake.moveToPositionCommand(level));
   }
 }
