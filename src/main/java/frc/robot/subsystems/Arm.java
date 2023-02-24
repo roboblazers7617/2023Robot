@@ -51,6 +51,7 @@ public class Arm extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
   }
+
   public Command moveToPositionCommand(ScoreLevel level) {
     ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
     ProfiledPIDCommand command = new ProfiledPIDCommand(
@@ -95,31 +96,36 @@ public class Arm extends SubsystemBase {
         this);
 
     command.getController().setTolerance(ArmConstants.POSITION_TOLERANCE);
-    
+
     return new SequentialCommandGroup(actuateSuperstructureCommand(ArmPositions.STOW.getPistonPosition()), command);
 
   }
 
-  private ArmPositions evalPickupPosition(PickupLocation location){
-    if(location.equals(PickupLocation.FLOOR))
+  public Command holdCommand() {
+    ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
+    return Commands.runEnd(() -> setShoulderSpeed(feedforward.calculate(getShoulderAngle(), 0)),
+        () -> setShoulderSpeed(0), this);
+  }
+
+  private ArmPositions evalPickupPosition(PickupLocation location) {
+    if (location.equals(PickupLocation.FLOOR))
       return ArmPositions.FLOOR_PICKUP;
-    else if(location.equals(PickupLocation.DOUBLE))
+    else if (location.equals(PickupLocation.DOUBLE))
       return ArmPositions.STATION_PICKUP;
     else
       return ArmPositions.STOW;
   }
 
-  private ArmPositions evalScorePosition(ScoreLevel level){
-    if(level.equals(ScoreLevel.LEVEL_1))
+  private ArmPositions evalScorePosition(ScoreLevel level) {
+    if (level.equals(ScoreLevel.LEVEL_1))
       return ArmPositions.LEVEL_1;
-    else if(level.equals(ScoreLevel.LEVEL_2))
+    else if (level.equals(ScoreLevel.LEVEL_2))
       return ArmPositions.LEVEL_2;
-    else if(level.equals(ScoreLevel.LEVEL_3))
+    else if (level.equals(ScoreLevel.LEVEL_3))
       return ArmPositions.LEVEL_3;
     else
       return ArmPositions.STOW;
   }
-
 
   public void setShoulderSpeed(double speed) {
     if (shoulderAngle.get() < ArmConstants.UPPER_ANGLE_LIMIT && speed > 0) {
