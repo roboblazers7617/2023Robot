@@ -43,7 +43,7 @@ public class DriveTillY extends CommandBase {
     {
     drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED);
     }  
-    drivetrain.drive(leftY.getAsDouble(), rightX.getAsDouble(), rightY.getAsDouble());
+    drivetrain.drive(leftY.getAsDouble(), rightX.getAsDouble(), rightY.getAsDouble(), false);
   }
 
   // Called once the command ends or is interrupted.

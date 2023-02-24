@@ -125,15 +125,17 @@ public class Drivetrain extends SubsystemBase {
     return "we gonna fix dis later I swears";
   }
 
-  public void drive(double leftY, double rightX, double rightY) {
+  public void drive(double leftY, double rightX, double rightY, boolean isQuickTurn) {
     double lForward = slewRateFilterLeft.calculate(leftY);
     double rForward = slewRateFilterRight.calculate(rightY);
     if (mode == DrivetrainConstants.DrivetrainMode.arcadeDrive) {
       arcadeDrive(-lForward, -rightX);
     } else if (mode == DrivetrainConstants.DrivetrainMode.tankDrive) {
       tankDrive(-lForward, -rForward);
-    }
+    } else if (mode == DrivetrainConstants.DrivetrainMode.curvatureDrive) {
+      curvatureDrive(-lForward, -rightX, isQuickTurn);
   }
+}
 
   private void tankDrive(double leftSpeed, double rightSpeed) {
     drivetrain.tankDrive(leftSpeed, rightSpeed);
@@ -143,6 +145,9 @@ public class Drivetrain extends SubsystemBase {
     drivetrain.arcadeDrive(xSpeed, zRotation);
   }
 
+  private void curvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn) {
+    drivetrain.curvatureDrive(xSpeed, zRotation, isQuickTurn);
+  }
   public void setDrivetrainSpeed(double maxSpeed) {
     maxDrivetrainspeed = maxSpeed;
     drivetrain.setMaxOutput(maxSpeed);

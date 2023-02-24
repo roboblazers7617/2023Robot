@@ -87,7 +87,7 @@ public class RobotContainer {
     configureOperatorBindings();
     // create shuffleboardinfo.java
     drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
-        m_driverController.getRightX(), m_driverController.getRightY()), drivetrain));
+        m_driverController.getRightX(), m_driverController.getRightY(), true), drivetrain));
     // arm.setDefaultCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftY()), arm));
     
     // intake.setDefaultCommand(new RunCommand(()->intake.setWristSpeed( m_operatorController.getRightY()),intake));

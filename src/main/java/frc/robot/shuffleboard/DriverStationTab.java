@@ -51,6 +51,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
         //drive mode
         drivetrainMode.setDefaultOption("Tank Drive", DrivetrainConstants.DrivetrainMode.tankDrive.toString());
         drivetrainMode.addOption("Arcade Drive", DrivetrainMode.arcadeDrive.toString());
+        drivetrainMode.addOption("Curvature Drive", DrivetrainMode.curvatureDrive.toString());
         tab.add(drivetrainMode);
 
         //debug mode

@@ -41,6 +41,7 @@ public final class Constants {
 
     public static final String ARCADE_DRIVE_STRING = "ARCADE";
     public static final String TANK_DRIVE_STRING = "TANK";
+    public static final String CURVATURE_DRIVE_STRING = "CURVATURE";
 
     public static final double WHEEL_RADIUS = Units.inchesToMeters(3.0);
     public static final double WHEEL_GEAR_RATIO = 1.0 / 10.71;
@@ -84,7 +85,7 @@ public final class Constants {
     public static final double MAX_AUTO_ACCELERATION = 0.25;
     public static final double MAX_AUTO_VELOCITY = 0.4;
 
-    public static final double RAMP_TIME_SECONDS = 0.25;
+    public static final double RAMP_TIME_SECONDS = 0.001;
 
     public static final double ALLIANCE_BLUE_ROTATION = 180.0;
     public static final double ALLIANCE_RED_ROTATION = 0.0;
@@ -94,7 +95,8 @@ public final class Constants {
 
     public enum DrivetrainMode {
       arcadeDrive,
-      tankDrive
+      tankDrive,
+      curvatureDrive
   }
   }
    public static class VisionConstants {
