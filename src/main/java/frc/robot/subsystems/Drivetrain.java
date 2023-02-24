@@ -39,6 +39,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.FieldPositions.FieldLocation;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
@@ -71,10 +72,10 @@ public class Drivetrain extends SubsystemBase {
   private DrivetrainConstants.DrivetrainMode mode;
   private double maxDrivetrainspeed = DrivetrainConstants.REG_SPEED;
 
-  private Pose2d targetPose;
 
   private SlewRateLimiter slewRateFilterLeft = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
   private SlewRateLimiter slewRateFilterRight = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
+  private FieldLocation targetNode;
   public void setDriveTrainMode(DrivetrainConstants.DrivetrainMode mode) {
     this.mode = mode;
   }
@@ -267,6 +268,10 @@ public class Drivetrain extends SubsystemBase {
           zeroHeading();
           resetOdometry(new Pose2d(0,0, Rotation2d.fromDegrees(0)));
       }); 
+    }
+
+    public void setTargetNode(FieldLocation selected) {
+      targetNode = selected;
     }
   }
   
