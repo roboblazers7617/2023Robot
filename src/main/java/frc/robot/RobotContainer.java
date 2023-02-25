@@ -181,7 +181,6 @@ public class RobotContainer {
                 .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CUBE)));
 
         m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
-        m_operatorController.b().whileTrue(new Stow(arm, intake));
         m_operatorController.y()
                 .whileTrue(Commands.runEnd(() -> intake.setIntakeSpeed(IntakeDirection.PICK_CUBE.speed()),
                         () -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake));
