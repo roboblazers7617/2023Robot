@@ -25,4 +25,13 @@ public class DriveToScoreGrid extends SequentialCommandGroup {
               new FaceScoreLocation(drivetrain, color)
      );
   }
+
+  public DriveToScoreGrid(Drivetrain drivetrain, DoubleSupplier LeftY, DoubleSupplier rightY, DoubleSupplier rightX, Alliance color) {
+
+    addCommands(new DriveTillY(drivetrain, LeftY, rightY, rightX),
+              new FaceScoreLocation(drivetrain, color),
+              new DriveForwardToScoreLocation(drivetrain, color),
+              new FaceScoreLocation(drivetrain, color)
+     );
+  }
 }

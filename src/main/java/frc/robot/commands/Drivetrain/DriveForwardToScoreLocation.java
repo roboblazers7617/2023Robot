@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.FieldPositions;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 
@@ -54,6 +55,16 @@ public class DriveForwardToScoreLocation extends CommandBase {
     configurePIDControllers();
   }
 
+  public DriveForwardToScoreLocation(Drivetrain drivetrain, Alliance color) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    addRequirements(drivetrain);
+
+    this.drivetrain = drivetrain;
+    this.color = color;
+
+    configurePIDControllers();
+  }
+
   public void configurePIDControllers()
   {
     pidController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
@@ -70,11 +81,16 @@ public class DriveForwardToScoreLocation extends CommandBase {
     if (targetPoseSupplier != null) {
       targetPose = targetPoseSupplier.get();
     }
+    else if (targetPose == null){
+      targetPose = FieldPositions.getTargetPose(drivetrain.getTargetNode(), color);
+    }
     startTranslation2d = drivetrain.getPose2d().getTranslation();
     distanceToGoal = targetPose.getTranslation().getDistance(startTranslation2d);
 
     endingEncoderValue = drivetrain.getaverageEncoderDistance() + distanceToGoal;
     pidController.setSetpoint(endingEncoderValue);
+
+    
 
     if (color == Alliance.Blue)
     {

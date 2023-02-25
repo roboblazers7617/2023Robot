@@ -270,5 +270,9 @@ public class Drivetrain extends SubsystemBase {
     public void setTargetNode(FieldLocation selected) {
       targetNode = selected;
     }
+
+    public FieldLocation getTargetNode(){
+      return targetNode;
+    }
   }
   
