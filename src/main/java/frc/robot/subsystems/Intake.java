@@ -32,7 +32,7 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.INTAKE_CAN_ID, MotorType.kBrushless);
   private final CANSparkMax wristMotor = new CANSparkMax(IntakeConstants.WRIST_CAN_ID, MotorType.kBrushless);
   private final AnalogPotentiometer wristPotentiometer = new AnalogPotentiometer(IntakeConstants.POT_CHANEL,
-      IntakeConstants.WRIST_POT_SCALE);
+      IntakeConstants.WRIST_POT_SCALE, IntakeConstants.WRIST_POT_OFFSET);
   private final DigitalInput isHoldingCube = new DigitalInput(IntakeConstants.DISTANCE_SENSOR_CHANEL);
   private final DigitalInput isIntakeStored = new DigitalInput(IntakeConstants.INTAKE_LIMIT_SWITCH_ID);
 
@@ -62,7 +62,8 @@ public class Intake extends SubsystemBase {
   }
 
   public void setWristSpeed(double speed) {
-    if ((speed < 0.0) && (isStored() == false)) {
+    //TODO:
+    if ((speed < 0.0)  /*&&(isStored() == false)*/) {
       wristMotor.set(MathUtil.clamp(speed, -IntakeConstants.MAX_WRIST_SPEED, IntakeConstants.MAX_WRIST_SPEED));
     } else if ((speed > 0.0) && (wristPotentiometer.get() <= IntakeConstants.MAX_WRIST_ANGLE)) {
       wristMotor.set(MathUtil.clamp(speed, -IntakeConstants.MAX_WRIST_SPEED, IntakeConstants.MAX_WRIST_SPEED));
@@ -103,6 +104,12 @@ public class Intake extends SubsystemBase {
     command.getController().setTolerance(IntakeConstants.WRIST_ANGLE_TOLERANCE);
 
     return command;
+  }
+
+  public Command holdCommand(){
+    ArmFeedforward feedforward = new ArmFeedforward(IntakeConstants.WRIST_KS, IntakeConstants.WRIST_KG, IntakeConstants.WRIST_KV);
+    return Commands.runEnd(() -> setWristSpeed(feedforward.calculate(getWristAngle(), 0)),
+        () -> setWristSpeed(0), this);
   }
 
   public Command moveToPositionCommand(ScoreLevel level) {

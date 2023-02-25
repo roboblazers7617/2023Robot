@@ -6,6 +6,7 @@ package frc.robot.commands.ArmStuff;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
@@ -20,9 +21,8 @@ public class SimpleMoveToPickup extends SequentialCommandGroup {
   public SimpleMoveToPickup(Arm arm, Intake intake, Supplier<PieceType> piece, PickupLocation location) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(arm.moveToPositionCommand(location),
-    arm.actuateSuperstructureCommand(location),
-    intake.moveToPositionCommand(location, piece));
-      
+    addCommands(new ParallelCommandGroup(arm.moveToHeldPositionCommand(location), intake.holdCommand()),
+        new ParallelCommandGroup(intake.moveToPositionCommand(location, piece), arm.holdCommand()));
+
   }
 }

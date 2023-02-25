@@ -30,19 +30,20 @@ import frc.robot.Constants.ScoreLevel;
 
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
-  CANSparkMax shoulderMotor = new CANSparkMax(ArmConstants.SHOULDER_MOTOR_PORT, MotorType.kBrushless);
+  CANSparkMax shoulderMotor = new CANSparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
   DoubleSolenoid leftPiston;
   DoubleSolenoid rightPiston;
 
   TrapezoidProfile.Constraints shoulderConstraints = new Constraints(ArmConstants.MAX_SHOULDER_VELOCITY,
       ArmConstants.MAX_SHOULDER_ACCELERATION);
 
-  AnalogPotentiometer shoulderAngle = new AnalogPotentiometer(ArmConstants.SHOULDER_POTENTIOMETER_PORT, 270, -135);
+  AnalogPotentiometer shoulderAngle = new AnalogPotentiometer(ArmConstants.SHOULDER_POTENTIOMETER_PORT, ArmConstants.SHOULDER_POTENTIOMETER_RANGE, ArmConstants.SHOULDER_POTENTIOMETER_OFFSET);
   DigitalInput isArmStowed = new DigitalInput(ArmConstants.LIMIT_SWITCH_PORT);
 
   public Arm(Pnuematics pnuematics) {
     shoulderMotor.restoreFactoryDefaults();
-    shoulderMotor.setIdleMode(IdleMode.kBrake);
+    shoulderMotor.setIdleMode(IdleMode.kCoast);
+    shoulderMotor.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
     leftPiston = pnuematics.getLeftArmPiston();
     rightPiston = pnuematics.getRightArmPiston();
   }
@@ -101,6 +102,41 @@ public class Arm extends SubsystemBase {
 
   }
 
+  
+  public Command moveToHeldPositionCommand(PickupLocation location) {
+    ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
+    ProfiledPIDCommand command = new ProfiledPIDCommand(
+        new ProfiledPIDController(ArmConstants.KP, ArmConstants.KI, ArmConstants.KD, shoulderConstraints),
+        this.shoulderAngle::get,
+        new TrapezoidProfile.State(evalPickupPosition(location).getShoulderAngle(), 0),
+        (output, setpoint) -> {
+          this.setShoulderSpeed(output + feedforward.calculate(setpoint.position, setpoint.velocity));
+        },
+        this);
+    return new SequentialCommandGroup(command, Commands.runOnce(() -> {
+      setShoulderSpeed(feedforward.calculate(getShoulderAngle(), 0));
+      actuateSuperstructure(evalPickupPosition(location).getPistonPosition());
+    },
+     this));
+  }
+
+  public Command moveToHeldPositionCommand(ScoreLevel level) {
+    ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
+    ProfiledPIDCommand command = new ProfiledPIDCommand(
+        new ProfiledPIDController(ArmConstants.KP, ArmConstants.KI, ArmConstants.KD, shoulderConstraints),
+        this.shoulderAngle::get,
+        new TrapezoidProfile.State(evalScorePosition(level).getShoulderAngle(), 0),
+        (output, setpoint) -> {
+          this.setShoulderSpeed(output + feedforward.calculate(setpoint.position, setpoint.velocity));
+        },
+        this);
+    return new SequentialCommandGroup(command, Commands.runOnce(() -> {
+      setShoulderSpeed(feedforward.calculate(getShoulderAngle(), 0));
+      actuateSuperstructure(evalScorePosition(level ).getPistonPosition());
+    },
+     this));
+  }
+
   public Command holdCommand() {
     ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
     return Commands.runEnd(() -> setShoulderSpeed(feedforward.calculate(getShoulderAngle(), 0)),
@@ -130,7 +166,9 @@ public class Arm extends SubsystemBase {
   public void setShoulderSpeed(double speed) {
     if (shoulderAngle.get() < ArmConstants.UPPER_ANGLE_LIMIT && speed > 0) {
       shoulderMotor.set(MathUtil.clamp(speed, -ArmConstants.MAX_SPEED, ArmConstants.MAX_SPEED));
-    } else if (!isArmStowed.get() && speed < 0) {
+
+      // TODO: Add limit switch
+    } else if (shoulderAngle.get() > 80/*!isArmStowed.get() && speed*/&& speed < 0) {
       shoulderMotor.set(MathUtil.clamp(speed, -ArmConstants.MAX_SPEED, ArmConstants.MAX_SPEED));
     } else {
       shoulderMotor.set(0);

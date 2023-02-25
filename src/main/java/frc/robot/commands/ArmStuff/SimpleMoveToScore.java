@@ -4,6 +4,7 @@
 
 package frc.robot.commands.ArmStuff;
 
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.subsystems.Arm;
@@ -17,8 +18,8 @@ public class SimpleMoveToScore extends SequentialCommandGroup {
   public SimpleMoveToScore(Arm arm, Intake intake, ScoreLevel level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands((arm.moveToPositionCommand(level)),
-        arm.actuateSuperstructureCommand(level),
-        intake.moveToPositionCommand(level));
+    addCommands(new ParallelCommandGroup(arm.moveToHeldPositionCommand(level), intake.holdCommand()),
+        new ParallelCommandGroup(arm.holdCommand(),
+            intake.moveToPositionCommand(level)));
   }
 }

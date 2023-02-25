@@ -50,14 +50,15 @@ public enum PieceType {
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int OPERATOR_CONTROLLER_PORT = 1;
+    public static final double DEADZONE = 0.1;
     }
 
 
     public static class DrivetrainConstants{
-    public static final int LEFT_WHEEL_PORT = 4;
-    public static final int RIGHT_WHEEL_PORT = 3;
-    public static final int LEFT_FOLLOWER_WHEEL_PORT = 31;
-    public static final int RIGHT_FOLLOWER_WHEEL_PORT = 32;
+    public static final int LEFT_WHEEL_ID = 3;
+    public static final int RIGHT_WHEEL_ID = 4;
+    public static final int LEFT_FOLLOWER_WHEEL_ID = 1;
+    public static final int RIGHT_FOLLOWER_WHEEL_ID = 5;
 
     public static final double DRIVE_TRAIN_SPEED = .25;
 
@@ -168,10 +169,10 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
 
   public static class PnuematicsConstants{
 
-    public static final int LEFT_ARM_PISTON_EXTEND_PORT = 0;
-    public static final int LEFT_ARM_PISTON_RETRACT_PORT = 1;
-    public static final int RIGHT_ARM_PISTON_EXTEND_PORT = 2;
-    public static final int RIGHT_ARM_PISTON_RETRACT_PORT = 3;
+    public static final int LEFT_ARM_PISTON_EXTEND_PORT = 11;
+    public static final int LEFT_ARM_PISTON_RETRACT_PORT = 10;
+    public static final int RIGHT_ARM_PISTON_EXTEND_PORT = 8;
+    public static final int RIGHT_ARM_PISTON_RETRACT_PORT = 9;
 
     public enum PnuematicPositions{
       RETRACTED(Value.kReverse),
@@ -188,12 +189,11 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
 
   public static class ArmConstants {
 
-    public static final int SHOULDER_MOTOR_PORT = 21;
+    public static final int SHOULDER_MOTOR_ID = 32;
     public static final double KP = 0;
     public static final double KI = 0;
     public static final double KD = 0;
     public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
-    public static final AnalogInput WRIST_POTENTIOMETER_PORT = new AnalogInput(1);
     public static final double MAX_SHOULDER_VELOCITY = 0;
     public static final double MAX_SHOULDER_ACCELERATION = 0;
     public static final double KS = 0;
@@ -201,8 +201,12 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
     public static final double KV = 0;
     public static final double POSITION_TOLERANCE = 0;
     public static final int LIMIT_SWITCH_PORT = 0;
-    public static final double UPPER_ANGLE_LIMIT = 0;
-    public static final double MAX_SPEED = 0;
+    public static final double UPPER_ANGLE_LIMIT = 360;
+    public static final double MAX_SPEED = 0.25;
+    public static final double SHOULDER_POTENTIOMETER_RANGE = 340;
+    //TODO: need to find offset to paralell  to floor 0
+    public static final double SHOULDER_POTENTIOMETER_OFFSET = -222;
+    public static final int CURRENT_LIMIT = 39;
 
     public enum ArmPositions {
       LEVEL_3(0, PnuematicPositions.EXTENDED),
@@ -232,24 +236,26 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
 
 
    public static class IntakeConstants {
-    public static final int WRIST_CAN_ID = 22;
-    public static final int INTAKE_CAN_ID = 23;
-    public static final int POT_CHANEL = 2;
+    public static final int WRIST_CAN_ID = 6;
+    public static final int INTAKE_CAN_ID = 7;
+    public static final int POT_CHANEL = 1;
     public static final int DISTANCE_SENSOR_CHANEL = 5;
     public static final int INTAKE_LIMIT_SWITCH_ID = 2;
-    public static final int WRIST_POT_SCALE = 270;
+    public static final int WRIST_POT_SCALE = 340;
     public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
-    public static final int CURRENT_LIMIT = 40;
-    public static final double MAX_WRIST_ANGLE = 2.094;
+    public static final int CURRENT_LIMIT = 27;
+    public static final double MAX_WRIST_ANGLE = 360;
     public static final double MAX_WRIST_SPEED = 0.25;
     public static final double MAX_WRIST_ACCEL = 0.12;
-    public static final double WRIST_KS = 0.5;
+    public static final double WRIST_KS = 0;
     public static final double WRIST_KG = 0.5;
-    public static final double WRIST_KV = 0.5;
+    public static final double WRIST_KV = 0;
     public static final double WRIST_KP = 2.0;
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.0;
     public static final double WRIST_ANGLE_TOLERANCE = 0.1;
+    public static final double WRIST_POT_OFFSET = -64;
+    public static final double WRIST_MANUAL_SLOWDOWN = 1;
     
     public enum IntakeDirection
     {

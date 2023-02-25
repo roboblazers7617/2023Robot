@@ -11,9 +11,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PnuematicsConstants;
 
 public class Pnuematics extends SubsystemBase {
-  private Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
-  private DoubleSolenoid leftArmPiston = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, PnuematicsConstants.LEFT_ARM_PISTON_EXTEND_PORT, PnuematicsConstants.LEFT_ARM_PISTON_RETRACT_PORT);
-  private DoubleSolenoid rightArmPiston = new DoubleSolenoid(PneumaticsModuleType.CTREPCM, PnuematicsConstants.RIGHT_ARM_PISTON_EXTEND_PORT, PnuematicsConstants.RIGHT_ARM_PISTON_RETRACT_PORT);
+  private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
+  private DoubleSolenoid leftArmPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, PnuematicsConstants.LEFT_ARM_PISTON_EXTEND_PORT, PnuematicsConstants.LEFT_ARM_PISTON_RETRACT_PORT);
+  private DoubleSolenoid rightArmPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, PnuematicsConstants.RIGHT_ARM_PISTON_EXTEND_PORT, PnuematicsConstants.RIGHT_ARM_PISTON_RETRACT_PORT);
   /** Creates a new Pnuematics. */
   public Pnuematics() {
   }
