@@ -34,26 +34,24 @@ public final class Constants {
     LEVEL_1,
     LEVEL_2,
     LEVEL_3;
-}
+  }
 
-public enum PickupLocation{
+  public enum PickupLocation {
     FLOOR,
     DOUBLE;
-}
+  }
 
-public enum PieceType {
+  public enum PieceType {
     CONE,
     CUBE;
-}
-
+  }
 
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int OPERATOR_CONTROLLER_PORT = 1;
-    }
+  }
 
-
-    public static class DrivetrainConstants{
+  public static class DrivetrainConstants {
     public static final int LEFT_WHEEL_PORT = 4;
     public static final int RIGHT_WHEEL_PORT = 3;
     public static final int LEFT_FOLLOWER_WHEEL_PORT = 31;
@@ -76,15 +74,15 @@ public enum PieceType {
     public static final double REG_SPEED = 0.5;
     public static final double SLOW_SPEED = 0.25;
     public static final double FAST_SPEED = 1;
-    public static final double MAX_ANGULAR_VELOCITY = 0.65;//.5
-    public static final double MAX_LINEAR_VELOCITY = 0.7;//.5
+    public static final double MAX_ANGULAR_VELOCITY = 0.65;// .5
+    public static final double MAX_LINEAR_VELOCITY = 0.7;// .5
 
     public static final double KP_LIN = 3.68;
     public static final double KI_LIN = 0.0;
     public static final double KD_LIN = 0.0;
     public static final double KS_LIN = .192;
 
-    public static final double KP_ROT = 0.015;//0.015
+    public static final double KP_ROT = 0.015;// 0.015
     public static final double KI_ROT = 0.0;
     public static final double KD_ROT = 0.0;
     public static final double KS_ROT = 0.3;
@@ -96,52 +94,53 @@ public enum PieceType {
     public static final double SIMPLE_FF_LINEAR = 0.5;
     public static final double SIMPLE_FF_ANGULAR = 0.3;
 
-    public static final int GYRO_ID = 40; 
-    
+    public static final int GYRO_ID = 40;
+
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
-    
+
     public static final double MAX_ERROR_LINEAR = Units.inchesToMeters(1.0);
     public static final double MAX_ERROR_ROTATION = 1.0; // in degrees
-    //public static final double LINEAR_ERROR_TARGET_DRIVER = Units.inchesToMeters(3);
-    
+    // public static final double LINEAR_ERROR_TARGET_DRIVER =
+    // Units.inchesToMeters(3);
+
     public static final double MAX_AUTO_ACCELERATION = 0.25;
     public static final double MAX_AUTO_VELOCITY = 0.4;
 
     private final Map<FieldLocation, Pose2d> BLUE_MAP = Map.ofEntries(Map.entry(FieldLocation.NODE_1, new Pose2d()),
-    Map.entry(FieldLocation.NODE_2, new Pose2d()), Map.entry(FieldLocation.NODE_3, new Pose2d()),
-    Map.entry(FieldLocation.NODE_4, new Pose2d()), Map.entry(FieldLocation.NODE_5, new Pose2d()),
-    Map.entry(FieldLocation.NODE_6, new Pose2d()), Map.entry(FieldLocation.NODE_7, new Pose2d()),
-    Map.entry(FieldLocation.NODE_8, new Pose2d()), Map.entry(FieldLocation.NODE_9, new Pose2d()),
-    Map.entry(FieldLocation.DOUBLE_SUBSTATION, new Pose2d()),
-    Map.entry(FieldLocation.SINGLE_SUBSTATION, new Pose2d()));
+        Map.entry(FieldLocation.NODE_2, new Pose2d()), Map.entry(FieldLocation.NODE_3, new Pose2d()),
+        Map.entry(FieldLocation.NODE_4, new Pose2d()), Map.entry(FieldLocation.NODE_5, new Pose2d()),
+        Map.entry(FieldLocation.NODE_6, new Pose2d()), Map.entry(FieldLocation.NODE_7, new Pose2d()),
+        Map.entry(FieldLocation.NODE_8, new Pose2d()), Map.entry(FieldLocation.NODE_9, new Pose2d()),
+        Map.entry(FieldLocation.DOUBLE_SUBSTATION, new Pose2d()),
+        Map.entry(FieldLocation.SINGLE_SUBSTATION, new Pose2d()));
 
-private final Map<FieldLocation, Pose2d> RED_MAP = Map.ofEntries(Map.entry(FieldLocation.NODE_1, new Pose2d()),
-    Map.entry(FieldLocation.NODE_2, new Pose2d()), Map.entry(FieldLocation.NODE_3, new Pose2d()),
-    Map.entry(FieldLocation.NODE_4, new Pose2d()), Map.entry(FieldLocation.NODE_5, new Pose2d()),
-    Map.entry(FieldLocation.NODE_6, new Pose2d()), Map.entry(FieldLocation.NODE_7, new Pose2d()),
-    Map.entry(FieldLocation.NODE_8, new Pose2d()), Map.entry(FieldLocation.NODE_9, new Pose2d()),
-    Map.entry(FieldLocation.DOUBLE_SUBSTATION, new Pose2d()),
-    Map.entry(FieldLocation.SINGLE_SUBSTATION, new Pose2d()));
+    private final Map<FieldLocation, Pose2d> RED_MAP = Map.ofEntries(Map.entry(FieldLocation.NODE_1, new Pose2d()),
+        Map.entry(FieldLocation.NODE_2, new Pose2d()), Map.entry(FieldLocation.NODE_3, new Pose2d()),
+        Map.entry(FieldLocation.NODE_4, new Pose2d()), Map.entry(FieldLocation.NODE_5, new Pose2d()),
+        Map.entry(FieldLocation.NODE_6, new Pose2d()), Map.entry(FieldLocation.NODE_7, new Pose2d()),
+        Map.entry(FieldLocation.NODE_8, new Pose2d()), Map.entry(FieldLocation.NODE_9, new Pose2d()),
+        Map.entry(FieldLocation.DOUBLE_SUBSTATION, new Pose2d()),
+        Map.entry(FieldLocation.SINGLE_SUBSTATION, new Pose2d()));
 
-private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
-    .ofEntries(Map.entry(Alliance.Blue, BLUE_MAP), Map.entry(Alliance.Red, RED_MAP));
+    private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
+        .ofEntries(Map.entry(Alliance.Blue, BLUE_MAP), Map.entry(Alliance.Red, RED_MAP));
 
-  private enum FieldLocation {
-    NODE_1(),
-    NODE_2(),
-    NODE_3(),
-    NODE_4(),
-    NODE_5(),
-    NODE_6(),
-    NODE_7(),
-    NODE_8(),
-    NODE_9(),
-    DOUBLE_SUBSTATION(),
-    SINGLE_SUBSTATION();
+    private enum FieldLocation {
+      NODE_1(),
+      NODE_2(),
+      NODE_3(),
+      NODE_4(),
+      NODE_5(),
+      NODE_6(),
+      NODE_7(),
+      NODE_8(),
+      NODE_9(),
+      DOUBLE_SUBSTATION(),
+      SINGLE_SUBSTATION();
 
-    FieldLocation() {
+      FieldLocation() {
+      }
     }
-  }
 
     public static final double RAMP_TIME_SECONDS = 0.001;
 
@@ -149,39 +148,44 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
     public static final double ALLIANCE_RED_ROTATION = 0.0;
 
     public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(39.0);
-    public static final double X_OFFSET_FROM_SCORE_LOCATION = LENGTH_OF_ROBOT/2.0 + Units.inchesToMeters(14.0);
+    public static final double X_OFFSET_FROM_SCORE_LOCATION = LENGTH_OF_ROBOT / 2.0 + Units.inchesToMeters(14.0);
 
     public enum DrivetrainMode {
       arcadeDrive,
       tankDrive,
       curvatureDrive
+    }
   }
-}
-   public static class VisionConstants {
+
+  public static class VisionConstants {
     public static final double CAMERA_PITCH = 0;
     public static final Transform3d CAMERA_POSITION = new Transform3d(new Translation3d(Units.inchesToMeters(17.5),
-              Units.inchesToMeters(-.5), Units.inchesToMeters(6.875)), new Rotation3d(0,CAMERA_PITCH,0));
-     public static final double[] TAG_HEIGHT = {17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25,17.25};
-    public static final double CAMERA_HEIGHT = (7.0+(5.0/8.0));
+        Units.inchesToMeters(-.5), Units.inchesToMeters(6.875)), new Rotation3d(0, CAMERA_PITCH, 0));
+    public static final double[] TAG_HEIGHT = { 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25,
+        17.25, 17.25, 17.25 };
+    public static final double CAMERA_HEIGHT = (7.0 + (5.0 / 8.0));
     public static final String CAMERA_NAME = "eyeball";
   }
 
-  public static class PnuematicsConstants{
+  public static class PnuematicsConstants {
 
     public static final int LEFT_ARM_PISTON_EXTEND_PORT = 0;
     public static final int LEFT_ARM_PISTON_RETRACT_PORT = 1;
     public static final int RIGHT_ARM_PISTON_EXTEND_PORT = 2;
     public static final int RIGHT_ARM_PISTON_RETRACT_PORT = 3;
 
-    public enum PnuematicPositions{
+    public enum PnuematicPositions {
       RETRACTED(Value.kReverse),
       EXTENDED(Value.kForward);
+
       Value mValue;
-      PnuematicPositions(Value value){
+
+      PnuematicPositions(Value value) {
         mValue = value;
       }
+
       public Value getValue() {
-          return mValue;
+        return mValue;
       }
     }
   }
@@ -223,15 +227,14 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
       public double getShoulderAngle() {
         return shoulderAngle;
       }
+
       public PnuematicPositions getPistonPosition() {
-          return pistonPosition;
+        return pistonPosition;
       }
     }
   }
 
-
-
-   public static class IntakeConstants {
+  public static class IntakeConstants {
     public static final int WRIST_CAN_ID = 22;
     public static final int INTAKE_CAN_ID = 23;
     public static final int POT_CHANEL = 2;
@@ -250,47 +253,48 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.0;
     public static final double WRIST_ANGLE_TOLERANCE = 0.1;
-    
-    public enum IntakeDirection
-    {
-      STOP (0.0),
-      PICK_CONE (0.25),
-      PICK_CUBE (-0.25),
-      PLACE_CONE (-0.25),
-      PLACE_CUBE (0.25);
+
+    public enum IntakeDirection {
+      STOP(0.0),
+      PICK_CONE(0.25),
+      PICK_CUBE(-0.25),
+      PLACE_CONE(-0.25),
+      PLACE_CUBE(0.25);
 
       private final double speed;
-      IntakeDirection (double speed) {
+
+      IntakeDirection(double speed) {
         this.speed = speed;
       }
-      public double speed(){
+
+      public double speed() {
         return speed;
       }
-    } 
-    public enum WristPosition
-    {
-      STOW (0.0),
-      FLOOR_CUBE_PICKUP (0.06),
-      FLOOR_CONE_PICKUP ( 0.07),
-      DOUBLE_PICKUP(0.07),
-      LEVEL_3 (0.04),
-      LEVEL_2 (0.05),
-      LEVEL_1 (0.03);
+    }
 
+    public enum WristPosition {
+      STOW(0.0),
+      FLOOR_CUBE_PICKUP(0.06),
+      FLOOR_CONE_PICKUP(0.07),
+      DOUBLE_PICKUP(0.07),
+      LEVEL_3(0.04),
+      LEVEL_2(0.05),
+      LEVEL_1(0.03);
 
       private final double angle;
-      WristPosition (double angle) {
+
+      WristPosition(double angle) {
         this.angle = angle;
       }
-      public double angle(){
+
+      public double angle() {
         return angle;
       }
-
 
     }
   }
 
-   public static class FieldConstants {
+  public static class FieldConstants {
 
-   }
+  }
 }
