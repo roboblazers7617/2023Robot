@@ -9,8 +9,10 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.FieldPositions;
 import frc.robot.Constants.DrivetrainConstants;
 public class DriveTillY extends CommandBase {
   /** Creates a new SmartDriver. */
@@ -30,10 +32,24 @@ public class DriveTillY extends CommandBase {
     addRequirements(drivetrain);
   }
 
+  public DriveTillY(Drivetrain drivetrain, DoubleSupplier leftY, DoubleSupplier rightY, DoubleSupplier rightX) {
+    // Use addRequirements() here to declare subsystem dependencies.
+    this.drivetrain = drivetrain;
+    this.leftY = leftY;
+    this.rightY = rightY;
+    this.rightX = rightX;
+    addRequirements(drivetrain);
+  }
+
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    targetPose = targetPoseSupplier.get();
+    if(targetPoseSupplier == null){
+      targetPose = targetPoseSupplier.get();
+    }
+    else {
+      targetPose = FieldPositions.getTargetPose(drivetrain.getTargetNode(), DriverStation.getAlliance());
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.

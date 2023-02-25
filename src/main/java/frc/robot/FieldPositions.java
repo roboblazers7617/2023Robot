@@ -89,8 +89,13 @@ public class FieldPositions {
         Alliance.Red, RED_MAP
     );
 
-    public Translation2d getTargetTranslation(FieldLocation targetLocation, Alliance color){
+    public static Translation2d getTargetTranslation(FieldLocation targetLocation, Alliance color){
         Pose2d myPose = POSE_MAP.get(color).get(targetLocation);
         return myPose.getTranslation();
-      }
+    }
+    public static Pose2d getTargetPose(FieldLocation targetLocation, Alliance color){
+      Pose2d myPose = POSE_MAP.get(color).get(targetLocation);
+      return myPose;
+  }
+    
 }
