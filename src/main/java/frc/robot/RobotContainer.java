@@ -21,7 +21,6 @@ import frc.robot.shuffleboard.ColorSensorTab;
 import frc.robot.shuffleboard.ArmTab;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
-import frc.robot.shuffleboard.ExampleSubsystemTab;
 import frc.robot.shuffleboard.IntakeTab;
 import frc.robot.shuffleboard.ShuffleboardInfo;
 import frc.robot.shuffleboard.ShuffleboardTabBase;
@@ -29,15 +28,12 @@ import frc.robot.shuffleboard.VisionTab;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.ExampleSubsystem;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.Pnuematics;
 import frc.robot.subsystems.Vision;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import com.pathplanner.lib.PathConstraints;
@@ -73,14 +69,12 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  */
 public class RobotContainer {
     // The robot's subsystems and commands are defined here...
-    private final ExampleSubsystem m_exampleSubsystem = new ExampleSubsystem();
     private final Vision vision = new Vision();
     private final Drivetrain drivetrain = new Drivetrain(vision);
     // private final Leds leds = new Leds();
     private final Pnuematics pnuematics = new Pnuematics();
     private final Intake intake = new Intake();
     private final Arm arm = new Arm(pnuematics);
-    // Replace with CommandPS4Controller or CommandJoystick if needed
     private final CommandXboxController m_driverController = new CommandXboxController(
             OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -100,8 +94,10 @@ public class RobotContainer {
         configureDriverBindings();
         configureOperatorBindings();
         // create shuffleboardinfo.java
+
         drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
-                m_driverController.getRightX(), m_driverController.getRightY(), true), drivetrain));
+                m_driverController.getRightX(), m_driverController.getRightY(), false), drivetrain));
+
         arm.setDefaultCommand(
                 new ConditionalCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftY()), arm),
                         arm.holdCommand(), () -> evalDeadzone(() -> m_operatorController.getLeftY())));
@@ -119,7 +115,6 @@ public class RobotContainer {
         // YOUR CODE HERE | | |
         // \/ \/ \/
         tabs.add(new DriverStationTab(drivetrain));
-        tabs.add(new ExampleSubsystemTab(m_exampleSubsystem));
         tabs.add(new VisionTab(vision, drivetrain));
         tabs.add(new DriveTrainTab(drivetrain));
         tabs.add(new ColorSensorTab(new ColorSensor()));
@@ -153,80 +148,12 @@ public class RobotContainer {
      * joysticks}.
      */
     private void configureDriverBindings() {
-        // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-        // pressed,
-        // cancelling on release.
-        // m_driverController.b().whileTrue(m_exampleSubsystem.exampleMethodCommand());
-        // m_driverController.a().whileTrue(new TurnToTag(vision, drivetrain));
-        // m_driverController.a().whileTrue(new RunCommand(PickPathWork(drivetrain, ()->
-        // drivetrain.getPose2d().getX(), ()-> drivetrain.getPose2d().getY(),()->
-        // drivetrain.getPose2d().getRotation().getDegrees())));
-        // m_driverController.rightTrigger().whileTrue(new
-        // centerAndDistanceAlign(vision, drivetrain, 1));
-        // Schedule `exampleMethodCommand` when the Xbox controller's B button is
-        // pressed,
-        // cancelling on release.
-        /*
-         * //this code calls the score grid selection command for the correct input
-         * /*m_driverController.x()
-         * .and(m_driverController.povLeft())
-         * .onTrue(new ScoreGridSelection(drivetrain, 0, 0));
-         * m_driverController.y()
-         * .and(m_driverController.povLeft())
-         * .onTrue(new ScoreGridSelection(drivetrain, 0, 1));
-         * m_driverController.b()
-         * .and(m_driverController.povLeft())
-         * .onTrue(new ScoreGridSelection(drivetrain, 0, 2));
-         * m_driverController.x()
-         * .and(m_driverController.povUp())
-         * .onTrue(new ScoreGridSelection(drivetrain, 1, 0));
-         * m_driverController.y()
-         * .and(m_driverController.povUp())
-         * .onTrue(new ScoreGridSelection(drivetrain, 1, 1));
-         * m_driverController.b()
-         * .and(m_driverController.povUp())
-         * .onTrue(new ScoreGridSelection(drivetrain, 1, 2));
-         * m_driverController.x()
-         * .and(m_driverController.povRight())
-         * .onTrue(new ScoreGridSelection(drivetrain, 2, 0));
-         * m_driverController.y()
-         * .and(m_driverController.povRight())
-         * .onTrue(new ScoreGridSelection(drivetrain, 2, 1));
-         * m_driverController.b()
-         * .and(m_driverController.povRight())
-         * .onTrue(new ScoreGridSelection(drivetrain, 2, 2));
-         */
-        m_driverController.povLeft().whileTrue(
-                new InstantCommand(() -> setTargetPose(
-                        new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + 38), Units.inchesToMeters(108.19)),
-                                new Rotation2d(Units.degreesToRadians(0))))));
-        m_driverController.povUp().onTrue(new InstantCommand(() -> setTargetPose(
-                new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + 38), Units.inchesToMeters(42.19)),
-                        new Rotation2d((Units.degreesToRadians(0)))))));
-        m_driverController.povRight().onTrue(new InstantCommand(() -> setTargetPose(
-                new Pose2d(new Translation2d(Units.inchesToMeters(40.45 + 38), Units.inchesToMeters(42.19)),
-                        new Rotation2d(Units.degreesToRadians(0))))));
 
-        drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
-                m_driverController.getRightX(), m_driverController.getRightY(), false), drivetrain));
-        // TODO: Imptement whatever system to select node to go to
         m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain,
                 () -> m_driverController.getLeftY(),
                 () -> m_driverController.getRightY(),
                 () -> m_driverController.getRightX(),
-                () -> getTargetPose(),
                 Alliance.Blue));
-
-        // (new Translation2d((Units.inchesToMeters(20)),(Units.inchesToMeters(155)))));
-        // m_driverController.rightTrigger().whileTrue(null/*TODO: go to double
-        // substation*/);
-        // m_driverController.rightTrigger().and(m_driverController.leftTrigger()).whileTrue(null
-        // /*TODO go to single substation*/);
-        m_driverController.rightTrigger()
-                .onTrue(new InstantCommand(() -> drivetrain.resetEncoders())
-                        .andThen(
-                                new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d(0, 0, new Rotation2d(0)))))
-                        .andThen(new InstantCommand(() -> drivetrain.zeroHeading())));
 
         m_driverController.rightBumper()
                 .onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED)));
@@ -249,9 +176,9 @@ public class RobotContainer {
         m_operatorController.leftTrigger()
                 .whileTrue(new SimpleMoveToPickup(arm, intake, () -> getSelectedPiece(), PickupLocation.FLOOR));
         m_operatorController.rightBumper()
-                .onTrue(new InstantCommand(() -> setSelectedPiece(PieceType.CONE), new ExampleSubsystem()));
+                .onTrue( Commands.runOnce(() -> setSelectedPiece(PieceType.CONE)));
         m_operatorController.rightTrigger()
-                .onTrue(new InstantCommand(() -> setSelectedPiece(PieceType.CUBE), new ExampleSubsystem()));
+                .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CUBE)));
 
         m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
         m_operatorController.b().whileTrue(new Stow(arm, intake));
@@ -304,23 +231,7 @@ public class RobotContainer {
                 pathName, new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
                         DrivetrainConstants.MAX_AUTO_ACCELERATION),
                 true);
-        // drivetrain.resetOdometry(test_path.getInitialPose());
-        // PPRamseteCommand returnCommand = new PPRamseteCommand(
-        // test_path,
-        // drivetrain::getPose2d,
-        // new RamseteController(),
-        // new SimpleMotorFeedforward(DrivetrainConstants.KS_LIN,
-        // DrivetrainConstants.KV),
-        // drivetrain.getKinematics(),
-        // drivetrain::getWheelSpeeds,
-        // new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-        // DrivetrainConstants.KD_LIN),
-        // new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-        // DrivetrainConstants.KD_LIN),
-        // drivetrain::tankDriveVolts,
-        // false,
-        // drivetrain);
-        // return returnCommand;
+        
         RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
                 drivetrain::getPose2d, // Pose2d supplier
                 drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
