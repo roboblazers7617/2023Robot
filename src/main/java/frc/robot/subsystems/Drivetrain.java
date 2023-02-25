@@ -108,14 +108,9 @@ public class Drivetrain extends SubsystemBase {
     updatePose();
   }
 
-  public void setTargetPose(String target){
-    //targetPose = target;
-  }
 
-  public String getTargetPose(){
-    //return targetPose;
-    return "we gonna fix dis later I swears";
-  }
+
+  
 
   public void drive(double leftY, double rightX, double rightY, boolean isQuickTurn) {
     double lForward = slewRateFilterLeft.calculate(leftY);
@@ -274,5 +269,14 @@ public class Drivetrain extends SubsystemBase {
     public FieldLocation getTargetNode(){
       return targetNode;
     }
+
+    public String getTargetPose(){
+      //return targetPose;
+      return targetNode.toString();
+    }
+
+      // public void setTargetPose(String target){
+  //   //targetPose = target;
+  // }
   }
   

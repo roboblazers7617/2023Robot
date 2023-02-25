@@ -49,12 +49,12 @@ public class DriverStationTab extends ShuffleboardTabBase {
         drivetrainMode.setDefaultOption("Tank Drive", DrivetrainConstants.DrivetrainMode.tankDrive.toString());
         drivetrainMode.addOption("Arcade Drive", DrivetrainMode.arcadeDrive.toString());
         drivetrainMode.addOption("Curvature Drive", DrivetrainMode.curvatureDrive.toString());
-        tab.add(drivetrainMode);
+        tab.add("Drivetrain Mode", drivetrainMode);
 
         //debug mode
         debugMode.setDefaultOption("True", true);
         debugMode.addOption("false", false);
-        tab.add(debugMode);
+        tab.add("Debug Mode", debugMode);
         NetworkTable debugNetworkTable = NetworkTableInstance.getDefault().getTable("debug mode table");
         debugModePub = debugNetworkTable.getBooleanTopic("debug mode").publish();
 
@@ -68,7 +68,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
         targetNode.addOption("Node 7", FieldLocation.NODE7);
         targetNode.addOption("Node 8", FieldLocation.NODE8);
         targetNode.addOption("Node 9", FieldLocation.NODE9);
-        tab.add("field target", targetNode);
+        tab.add("Field Target", targetNode);
         
 
 
@@ -90,10 +90,11 @@ public class DriverStationTab extends ShuffleboardTabBase {
     public void update() {
         drivetrain.setDriveTrainMode(DrivetrainMode.valueOf(drivetrainMode.getSelected()));
         maxSpeedPub.set(drivetrain.getCarmax());
+        drivetrain.setTargetNode(targetNode.getSelected());
         pathPlanningTargetPub.set(drivetrain.getTargetPose());
 
         debugModePub.set(debugMode.getSelected());
-        drivetrain.setTargetNode(targetNode.getSelected());
+        
 
     }
 }
