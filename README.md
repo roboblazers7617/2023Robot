@@ -1,8 +1,8 @@
 # 2023Robot
 7617 robot code
 
-## subsystems
-subsystems are used to group parts of the robot together and abstract low level control subsystems include drivetrain arm and intkae
+## Subsystems
+Subsystems are used to group parts of the robot together and abstract low-level control. Subsystems include drivetrain, arm, and intake.
 
-## commands
-commands are used to operate the subsystems commands are triggered by robot container and when activated takes control of certain subsystems this prevents multiple commands from trying to use the same subsystem commands include drive to tag and lower intake
+## Commands
+Commands are used to operate the subsystems. Commands are triggered by the robot container and, when activated, take control of certain subsystems. This prevents multiple commands from trying to use the same subsystem. Commands include "drive to tag" and "lower intake".
