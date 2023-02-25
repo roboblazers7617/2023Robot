@@ -7,7 +7,6 @@ package frc.robot;
 import java.util.Map;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -51,9 +50,9 @@ public enum PieceType {
   public static class OperatorConstants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int OPERATOR_CONTROLLER_PORT = 1;
-    
-    public static final int THE_NUMBER_3 = 6;
     }
+
+
     public static class DrivetrainConstants{
     public static final int LEFT_WHEEL_PORT = 4;
     public static final int RIGHT_WHEEL_PORT = 3;
@@ -126,7 +125,7 @@ private final Map<FieldLocation, Pose2d> RED_MAP = Map.ofEntries(Map.entry(Field
 
 private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
     .ofEntries(Map.entry(Alliance.Blue, BLUE_MAP), Map.entry(Alliance.Red, RED_MAP));
-  }
+
   private enum FieldLocation {
     NODE_1(),
     NODE_2(),
@@ -157,7 +156,7 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
       tankDrive,
       curvatureDrive
   }
-  }
+}
    public static class VisionConstants {
     public static final double CAMERA_PITCH = 0;
     public static final Transform3d CAMERA_POSITION = new Transform3d(new Translation3d(Units.inchesToMeters(17.5),
@@ -251,6 +250,7 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.0;
     public static final double WRIST_ANGLE_TOLERANCE = 0.1;
+    
     public enum IntakeDirection
     {
       STOP (0.0),
@@ -288,9 +288,9 @@ private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
 
 
     }
+  }
 
    public static class FieldConstants {
 
    }
-}
 }

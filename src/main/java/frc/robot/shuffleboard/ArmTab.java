@@ -14,9 +14,6 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
-import frc.robot.Constants.PickupLocation;
-import frc.robot.Constants.ScoreLevel;
-import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 import frc.robot.subsystems.Arm;
 
 /**

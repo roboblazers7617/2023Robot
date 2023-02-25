@@ -5,8 +5,6 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
-import java.util.function.DoubleSupplier;
-
 import org.photonvision.EstimatedRobotPose;
 
 import com.revrobotics.CANSparkMax;
@@ -14,14 +12,6 @@ import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
-import com.pathplanner.lib.PathConstraints;
-import com.pathplanner.lib.PathPlanner;
-import com.pathplanner.lib.PathPlannerTrajectory;
-import com.pathplanner.lib.PathPoint;
-import com.pathplanner.lib.commands.PPRamseteCommand;
-
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -34,11 +24,11 @@ import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.DrivetrainConstants.DrivetrainMode;
 import frc.robot.FieldPositions.FieldLocation;
 
 public class Drivetrain extends SubsystemBase {
@@ -69,16 +59,14 @@ public class Drivetrain extends SubsystemBase {
       private final Vision mVision;
 
   private final DifferentialDrive drivetrain;
-  private DrivetrainConstants.DrivetrainMode mode;
   private double maxDrivetrainspeed = DrivetrainConstants.REG_SPEED;
+
+  private DrivetrainMode mode;
 
 
   private SlewRateLimiter slewRateFilterLeft = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
   private SlewRateLimiter slewRateFilterRight = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
   private FieldLocation targetNode;
-  public void setDriveTrainMode(DrivetrainConstants.DrivetrainMode mode) {
-    this.mode = mode;
-  }
 
   public Drivetrain(Vision vision) {
     drivetrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
@@ -109,6 +97,10 @@ public class Drivetrain extends SubsystemBase {
     mKinematics = new DifferentialDriveKinematics(DrivetrainConstants.TRACK_WIDTH_METERS);
     mOdometry = new DifferentialDrivePoseEstimator(mKinematics, mGyro.getRotation2d(), getLeftDistance(), getRightDistance(), new Pose2d());
 
+  }
+
+  public void setDriveTrainMode(DrivetrainMode mode) {
+    this.mode = mode;
   }
 
   @Override

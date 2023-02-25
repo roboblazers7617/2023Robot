@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.ColorSensor;
-import frc.robot.subsystems.ExampleSubsystem;
 
 /**
  * This is an example of the shuffleboard tab class for a subsystem.

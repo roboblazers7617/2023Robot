@@ -7,15 +7,9 @@ package frc.robot;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PieceType;
-import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.IntakeDown;
-//import frc.robot.commands.IntakeDown;
-import frc.robot.commands.ScoreGridSelection;
 import frc.robot.commands.Drivetrain.DriveToScoreGrid;
-import frc.robot.commands.TurnToTag;
-import frc.robot.commands.centerAndDistanceAlign;
 import frc.robot.shuffleboard.ColorSensorTab;
-import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.shuffleboard.ArmTab;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
@@ -24,10 +18,13 @@ import frc.robot.shuffleboard.IntakeTab;
 import frc.robot.shuffleboard.ShuffleboardInfo;
 import frc.robot.shuffleboard.ShuffleboardTabBase;
 import frc.robot.shuffleboard.VisionTab;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.ExampleSubsystem;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Leds;
+import frc.robot.subsystems.Pnuematics;
 import frc.robot.subsystems.Vision;
 
 import java.util.ArrayList;
@@ -38,10 +35,8 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.RamseteAutoBuilder;
-import com.pathplanner.lib.commands.PPRamseteCommand;
 import com.revrobotics.CANSparkMax.IdleMode;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -70,6 +65,9 @@ public class RobotContainer {
   private final Vision vision = new Vision();
   private final Drivetrain drivetrain = new Drivetrain(vision);
   private final Leds leds = new Leds();
+  private final Pnuematics pnuematics = new Pnuematics();
+  private final Intake intake = new Intake();
+  private final Arm arm = new Arm(pnuematics);
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController m_driverController = new CommandXboxController(
       OperatorConstants.DRIVER_CONTROLLER_PORT);
@@ -179,7 +177,7 @@ public class RobotContainer {
         new Rotation2d(Units.degreesToRadians(0))))));
 
     drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
-        m_driverController.getRightX(), m_driverController.getRightY()), drivetrain));
+        m_driverController.getRightX(), m_driverController.getRightY(), true), drivetrain));
     // TODO: Imptement whatever system to select node to go to
     m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain, 
         ()-> m_driverController.getLeftY(), 
