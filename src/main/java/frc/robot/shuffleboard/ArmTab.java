@@ -14,6 +14,8 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import frc.robot.Constants.PickupLocation;
+import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 import frc.robot.subsystems.Arm;
 
@@ -46,10 +48,6 @@ public class ArmTab extends ShuffleboardTabBase {
 
         mArm = arm;
 
-        // add commands
-        shuffleboardTabTesting.add("Retract Pistons", mArm.actuateSuperstructure(PnuematicPositions.RETRACTED));
-        shuffleboardTabTesting.add("Extend Pistons", mArm.actuateSuperstructure(PnuematicPositions.EXTENDED));
-
         // create a publisher in the network table
         anglePub = networkTable.getDoubleTopic("Angle (Degrees)").publish();
         pistonPub = networkTable.getStringTopic("Piston state").publish();
@@ -60,7 +58,6 @@ public class ArmTab extends ShuffleboardTabBase {
         widget.add("Angle (Degrees)", 0);
         widget.add("Piston State", "ERROR 404: Position does not exist.");
         widget.add("Stow Limit Switch", false);
-
     }
 
     public void update() {

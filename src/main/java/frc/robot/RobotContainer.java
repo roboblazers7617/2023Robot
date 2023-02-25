@@ -6,8 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.Autos;
-import frc.robot.commands.CenterRelativeTag;
+import frc.robot.Constants.PieceType;
 import frc.robot.commands.ExampleCommand;
 import frc.robot.commands.IntakeDown;
 //import frc.robot.commands.IntakeDown;
@@ -16,6 +15,8 @@ import frc.robot.commands.Drivetrain.DriveToScoreGrid;
 import frc.robot.commands.TurnToTag;
 import frc.robot.commands.centerAndDistanceAlign;
 import frc.robot.shuffleboard.ColorSensorTab;
+import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
+import frc.robot.shuffleboard.ArmTab;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.ExampleSubsystemTab;
@@ -78,6 +79,9 @@ public class RobotContainer {
   private Pose2d targetPose = new Pose2d(new Translation2d(Units.inchesToMeters(40.45+36),Units.inchesToMeters(42.19)),
   new Rotation2d(180));
 
+
+   private PieceType selectedPiece = PieceType.CONE;
+   
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -99,6 +103,8 @@ public class RobotContainer {
     tabs.add(new VisionTab(vision, drivetrain));
     tabs.add(new DriveTrainTab(drivetrain));
     tabs.add(new ColorSensorTab(new ColorSensor()));
+    tabs.add(new IntakeTab(intake));
+    tabs.add(new ArmTab(arm));
     // STOP HERE OR DIE
 
     ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
