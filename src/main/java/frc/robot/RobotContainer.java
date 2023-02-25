@@ -173,7 +173,7 @@ public class RobotContainer {
         new Rotation2d(Units.degreesToRadians(0))))));
 
     drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
-        m_driverController.getRightX(), m_driverController.getRightY()), drivetrain));
+        m_driverController.getRightX(), m_driverController.getRightY(), false), drivetrain));
     // TODO: Imptement whatever system to select node to go to
     m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain, 
         ()-> m_driverController.getLeftY(), 
