@@ -12,8 +12,10 @@ public class IntakeTab extends ShuffleboardTabBase {
     DoublePublisher wristAnglePublisher;
     DoublePublisher wristSpeedPublisher;
     DoublePublisher intakeSpeedPublisher;
+    DoublePublisher wristTempPublisher;
     BooleanPublisher isIntakeStoredPublisher;
     BooleanPublisher isHoldingCubePublisher;
+    DoublePublisher wristEncoderAnglePublisher;
     Intake intake;
     public IntakeTab (Intake subsystem){
         intake = subsystem;
@@ -21,10 +23,13 @@ public class IntakeTab extends ShuffleboardTabBase {
         NetworkTable networkTable = inst.getTable("Shuffleboard/Intake");
         ShuffleboardTab shuffleboardTabTesting = Shuffleboard.getTab("Intake");
         wristAnglePublisher = networkTable.getDoubleTopic("The angle of the wrist").publish();
+        wristTempPublisher = networkTable.getDoubleTopic("Wrist Temp").publish();
         wristSpeedPublisher = networkTable.getDoubleTopic("The speed of the wrist").publish();
         intakeSpeedPublisher = networkTable.getDoubleTopic("The speed of the intake").publish();
         isIntakeStoredPublisher = networkTable.getBooleanTopic("Is the intake in the stored position?").publish();
         isHoldingCubePublisher = networkTable.getBooleanTopic("Is the robot holding a cube?").publish();
+        wristEncoderAnglePublisher = networkTable.getDoubleTopic("Wrist Encoder Angle").publish();
+        
         //shuffleboardTabTesting.add(new intake.moveToPositionCommand(IntakeConstants.WristPosition.FloorConePickup));
         
     }
@@ -35,6 +40,8 @@ public class IntakeTab extends ShuffleboardTabBase {
         intakeSpeedPublisher.set(intake.getIntakeSpeed());
         isIntakeStoredPublisher.set(intake.isStored());
         isHoldingCubePublisher.set(intake.isHoldingGamePiece());
+        wristEncoderAnglePublisher.set(intake.getEncoderAngle());
+        wristTempPublisher.set((intake.getWristMotorTemp()*(9.0/5.0)+32.0));
 
     }
     

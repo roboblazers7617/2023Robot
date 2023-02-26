@@ -152,6 +152,12 @@ public final class Constants {
     public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(39.0);
     public static final double X_OFFSET_FROM_SCORE_LOCATION = LENGTH_OF_ROBOT / 2.0 + Units.inchesToMeters(14.0);
 
+    public static final double KP_BALANCE = 0.01;
+    public static final double KI_BALANCE = 0;
+    public static final double KD_BALANCE = 0;
+    public static final double BALANCING_TOLERANCE = 1;
+    public static final int MAX_BALANCE_SPEED = 0;
+
     public enum DrivetrainMode {
       arcadeDrive,
       tankDrive,
@@ -202,11 +208,11 @@ public final class Constants {
     public static final double MAX_SHOULDER_VELOCITY = 0;
     public static final double MAX_SHOULDER_ACCELERATION = 0;
     public static final double KS = 0;
-    public static final double KG = 0;
+    public static final double KG = 0.11;
     public static final double KV = 0;
     public static final double POSITION_TOLERANCE = 0;
     public static final int LIMIT_SWITCH_PORT = 0;
-    public static final double UPPER_ANGLE_LIMIT = 360;
+    public static final double UPPER_ANGLE_LIMIT = 10000000;
     public static final double MAX_SPEED = 0.25;
     public static final double SHOULDER_POTENTIOMETER_RANGE = 340;
     //TODO: need to find offset to paralell  to floor 0
@@ -253,23 +259,26 @@ public final class Constants {
     public static final double MAX_WRIST_ANGLE = 360;
     public static final double MAX_WRIST_SPEED = 0.25;
     public static final double MAX_WRIST_ACCEL = 0.12;
-    public static final double WRIST_KS = 0;
-    public static final double WRIST_KG = 0.5;
+    public static final double WRIST_KS = -0.0;
+    public static final double WRIST_KG = 0.1;
     public static final double WRIST_KV = 0;
     public static final double WRIST_KP = 2.0;
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.0;
     public static final double WRIST_ANGLE_TOLERANCE = 0.1;
-    public static final double WRIST_POT_OFFSET = -64;
-    public static final double WRIST_MANUAL_SLOWDOWN = 1;
+    public static final double WRIST_POT_OFFSET = -199;// so stowed is 120
+    public static final double WRIST_MANUAL_SLOWDOWN = .25;
+    public static final double MAX_APROACHING_WRIST_SPEED = .08;
+    public static final double WRIST_GEAR_RATIO = 1.0/36.0;
+    public static final double WRIST_ENCODER_CONVERSION_FACTOR = 360.0 * WRIST_GEAR_RATIO;
     
     public enum IntakeDirection
     {
       STOP (0.0),
-      PICK_CONE (0.25),
-      PICK_CUBE (-0.25),
-      PLACE_CONE (-0.25),
-      PLACE_CUBE (0.25);
+      PICK_CONE (0.75),
+      PICK_CUBE (-0.5),
+      PLACE_CONE (-0.5),
+      PLACE_CUBE (0.75);
 
       private final double speed;
 

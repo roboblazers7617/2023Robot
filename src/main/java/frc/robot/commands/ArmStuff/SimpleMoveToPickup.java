@@ -21,7 +21,8 @@ public class SimpleMoveToPickup extends SequentialCommandGroup {
   public SimpleMoveToPickup(Arm arm, Intake intake, Supplier<PieceType> piece, PickupLocation location) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new ParallelCommandGroup(arm.moveToHeldPositionCommand(location), intake.holdCommand()),
+    // TODO: Add back in next line of code. Changed holdCommand and broke it
+    addCommands(//new ParallelCommandGroup(arm.moveToHeldPositionCommand(location), intake.holdCommand()),
         new ParallelCommandGroup(intake.moveToPositionCommand(location, piece), arm.holdCommand()));
 
   }

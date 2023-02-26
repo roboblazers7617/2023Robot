@@ -16,6 +16,7 @@ public class Pnuematics extends SubsystemBase {
   private DoubleSolenoid rightArmPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, PnuematicsConstants.RIGHT_ARM_PISTON_EXTEND_PORT, PnuematicsConstants.RIGHT_ARM_PISTON_RETRACT_PORT);
   /** Creates a new Pnuematics. */
   public Pnuematics() {
+    compressor.disable();
   }
 
   @Override

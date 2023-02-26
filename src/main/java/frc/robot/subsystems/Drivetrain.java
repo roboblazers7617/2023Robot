@@ -275,6 +275,10 @@ public class Drivetrain extends SubsystemBase {
       return targetNode.toString();
     }
 
+    public double getPitch() {
+        return mGyro.getPitch();
+    }
+
       // public void setTargetPose(String target){
   //   //targetPose = target;
   // }

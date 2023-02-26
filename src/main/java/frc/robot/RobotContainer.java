@@ -12,10 +12,14 @@ import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.IntakeConstants.IntakeDirection;
 import frc.robot.commands.IntakeDown;
+import frc.robot.commands.ArmStuff.HoldArm;
+import frc.robot.commands.ArmStuff.HoldWrist;
+import frc.robot.commands.ArmStuff.HoldWrist2;
 import frc.robot.commands.ArmStuff.SimpleMoveToPickup;
 import frc.robot.commands.ArmStuff.SimpleMoveToScore;
 import frc.robot.commands.ArmStuff.Stow;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
+import frc.robot.commands.Drivetrain.AutoBalance;
 import frc.robot.commands.Drivetrain.DriveToScoreGrid;
 import frc.robot.shuffleboard.ColorSensorTab;
 import frc.robot.shuffleboard.ArmTab;
@@ -104,16 +108,20 @@ public class RobotContainer {
                 m_driverController.getRightX(), m_driverController.getRightY(), true), drivetrain));
         arm.setDefaultCommand(
                 new ConditionalCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftY()), arm),
-                        arm.holdCommand(), () -> evalDeadzone(() -> m_operatorController.getLeftY())));
+                        new InstantCommand(() -> arm.setShoulderSpeed(0)), () -> evalDeadzone(() -> m_operatorController.getLeftY())));
 
-        intake.setDefaultCommand(
-                new ConditionalCommand(
+        intake.setDefaultCommand(new RunCommand(
+            () -> intake.setWristSpeed(
+                    m_operatorController.getRightY() * IntakeConstants.WRIST_MANUAL_SLOWDOWN),
+            intake));
+           /*      new ConditionalCommand(
                         new RunCommand(
                                 () -> intake.setWristSpeed(
                                         m_operatorController.getRightY() * IntakeConstants.WRIST_MANUAL_SLOWDOWN),
                                 intake),
-                        /* intake.holdCommand() */ new InstantCommand(() -> intake.setWristSpeed(0), intake),
-                        () -> evalDeadzone(() -> m_operatorController.getRightY())));
+                        /* intake.holdCommand() */ //new InstantCommand(() -> intake.setWristSpeed(0), intake),
+  //                      () -> evalDeadzone(() -> m_operatorController.getRightY())));
+
 
         ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
         // YOUR CODE HERE | | |
@@ -239,6 +247,7 @@ public class RobotContainer {
                 .onFalse(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
 
         m_driverController.b().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d())));
+        m_driverController.a().onTrue(new AutoBalance(drivetrain));
         // TODO: Adressable LEDS
 
     }
@@ -253,8 +262,9 @@ public class RobotContainer {
         m_operatorController.rightTrigger()
                 .onTrue(new InstantCommand(() -> setSelectedPiece(PieceType.CUBE), new ExampleSubsystem()));
 
-        m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
-        m_operatorController.b().whileTrue(new Stow(arm, intake));
+        m_operatorController.a().whileTrue(new HoldArm(arm));
+        m_operatorController.b().whileTrue(new HoldWrist2(intake));
+        //TODO: m_operatorController.b().whileTrue(new Stow(arm, intake));
         m_operatorController.y()
                 .whileTrue(Commands.runEnd(() -> intake.setIntakeSpeed(IntakeDirection.PICK_CUBE.speed()),
                         () -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake));

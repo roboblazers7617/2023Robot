@@ -18,7 +18,8 @@ public class SimpleMoveToScore extends SequentialCommandGroup {
   public SimpleMoveToScore(Arm arm, Intake intake, ScoreLevel level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new ParallelCommandGroup(arm.moveToHeldPositionCommand(level), intake.holdCommand()),
+    // TODO: Add in next line of code. changed holdCommand and broke it
+    addCommands(//new ParallelCommandGroup(arm.moveToHeldPositionCommand(level), intake.holdCommand()),
         new ParallelCommandGroup(arm.holdCommand(),
             intake.moveToPositionCommand(level)));
   }

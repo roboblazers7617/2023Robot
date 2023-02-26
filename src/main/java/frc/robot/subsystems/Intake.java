@@ -4,9 +4,11 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -19,6 +21,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ProfiledPIDCommand;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.PickupLocation;
@@ -36,6 +39,8 @@ public class Intake extends SubsystemBase {
   private final DigitalInput isHoldingCube = new DigitalInput(IntakeConstants.DISTANCE_SENSOR_CHANEL);
   private final DigitalInput isIntakeStored = new DigitalInput(IntakeConstants.INTAKE_LIMIT_SWITCH_ID);
 
+  private final RelativeEncoder wristEncoder = wristMotor.getEncoder();
+
   /** Creates a new Intake. */
   public Intake() {
     intakeMotor.restoreFactoryDefaults();
@@ -44,6 +49,8 @@ public class Intake extends SubsystemBase {
     wristMotor.setSmartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
     intakeMotor.setIdleMode(IdleMode.kBrake);
     wristMotor.setIdleMode(IdleMode.kBrake);
+    wristEncoder.setPositionConversionFactor(IntakeConstants.WRIST_ENCODER_CONVERSION_FACTOR);
+    wristEncoder.setPosition(103);
   }
 
   @Override
@@ -51,6 +58,10 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
+  public double getEncoderAngle()
+  {
+    return wristEncoder.getPosition();
+  }
   public double getWristAngle() {
     return wristPotentiometer.get();
   }
@@ -65,7 +76,11 @@ public class Intake extends SubsystemBase {
     //TODO:
     if ((speed < 0.0)  /*&&(isStored() == false)*/) {
       wristMotor.set(MathUtil.clamp(speed, -IntakeConstants.MAX_WRIST_SPEED, IntakeConstants.MAX_WRIST_SPEED));
-    } else if ((speed > 0.0) && (wristPotentiometer.get() <= IntakeConstants.MAX_WRIST_ANGLE)) {
+    }
+      else if(speed > 0.0 && wristPotentiometer.get() >= 77){
+        wristMotor.set(MathUtil.clamp(speed, -IntakeConstants.MAX_APROACHING_WRIST_SPEED, IntakeConstants.MAX_APROACHING_WRIST_SPEED));
+      }
+     else if ((speed > 0.0) && (wristPotentiometer.get() <= IntakeConstants.MAX_WRIST_ANGLE)) {
       wristMotor.set(MathUtil.clamp(speed, -IntakeConstants.MAX_WRIST_SPEED, IntakeConstants.MAX_WRIST_SPEED));
     } else {
       wristMotor.set(0.0);
@@ -106,10 +121,10 @@ public class Intake extends SubsystemBase {
     return command;
   }
 
-  public Command holdCommand(){
+  public Command holdCommand(DoubleSupplier angleSupplier){
     ArmFeedforward feedforward = new ArmFeedforward(IntakeConstants.WRIST_KS, IntakeConstants.WRIST_KG, IntakeConstants.WRIST_KV);
-    return Commands.runEnd(() -> setWristSpeed(feedforward.calculate(getWristAngle(), 0)),
-        () -> setWristSpeed(0), this);
+    System.out.println("angle to hold is " + angleSupplier.getAsDouble());
+    return new RunCommand(() -> setWristSpeed(feedforward.calculate(angleSupplier.getAsDouble(), 0)), this);
   }
 
   public Command moveToPositionCommand(ScoreLevel level) {
@@ -196,6 +211,10 @@ public class Intake extends SubsystemBase {
 
   public double getIntakeSpeed() {
     return intakeMotor.getEncoder().getVelocity();
+  }
+
+  public double getWristMotorTemp(){
+    return wristMotor.getMotorTemperature();
   }
 
 }

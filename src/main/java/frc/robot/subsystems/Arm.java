@@ -168,7 +168,7 @@ public class Arm extends SubsystemBase {
       shoulderMotor.set(MathUtil.clamp(speed, -ArmConstants.MAX_SPEED, ArmConstants.MAX_SPEED));
 
       // TODO: Add limit switch
-    } else if (shoulderAngle.get() > 80/*!isArmStowed.get() && speed*/&& speed < 0) {
+    } else if (shoulderAngle.get() > -1000/*!isArmStowed.get() && speed*/&& speed < 0) {
       shoulderMotor.set(MathUtil.clamp(speed, -ArmConstants.MAX_SPEED, ArmConstants.MAX_SPEED));
     } else {
       shoulderMotor.set(0);
