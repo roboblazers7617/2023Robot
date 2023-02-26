@@ -73,7 +73,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void setWristSpeed(double speed) {
-    //TODO:
+    //TODO: add limit switch
     if ((speed < 0.0)  /*&&(isStored() == false)*/) {
       wristMotor.set(MathUtil.clamp(speed, -IntakeConstants.MAX_WRIST_SPEED, IntakeConstants.MAX_WRIST_SPEED));
     }

@@ -50,16 +50,16 @@ public final class Constants {
     public static final int DRIVER_CONTROLLER_PORT = 0;
     public static final int OPERATOR_CONTROLLER_PORT = 1;
     public static final double DEADZONE = 0.1;
-    }
+  }
 
+  public static class DrivetrainConstants {
 
-    public static class DrivetrainConstants{
+    public static final int GYRO_ID = 40;
+
     public static final int LEFT_WHEEL_ID = 3;
     public static final int RIGHT_WHEEL_ID = 4;
     public static final int LEFT_FOLLOWER_WHEEL_ID = 1;
     public static final int RIGHT_FOLLOWER_WHEEL_ID = 5;
-
-    public static final double DRIVE_TRAIN_SPEED = .25;
 
     public static final String ARCADE_DRIVE_STRING = "ARCADE";
     public static final String TANK_DRIVE_STRING = "TANK";
@@ -96,8 +96,6 @@ public final class Constants {
     public static final double SIMPLE_FF_LINEAR = 0.5;
     public static final double SIMPLE_FF_ANGULAR = 0.3;
 
-    public static final int GYRO_ID = 40;
-
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
 
     public static final double MAX_ERROR_LINEAR = Units.inchesToMeters(1.0);
@@ -108,41 +106,9 @@ public final class Constants {
     public static final double MAX_AUTO_ACCELERATION = 0.25;
     public static final double MAX_AUTO_VELOCITY = 0.4;
 
-    private final Map<FieldLocation, Pose2d> BLUE_MAP = Map.ofEntries(Map.entry(FieldLocation.NODE_1, new Pose2d()),
-        Map.entry(FieldLocation.NODE_2, new Pose2d()), Map.entry(FieldLocation.NODE_3, new Pose2d()),
-        Map.entry(FieldLocation.NODE_4, new Pose2d()), Map.entry(FieldLocation.NODE_5, new Pose2d()),
-        Map.entry(FieldLocation.NODE_6, new Pose2d()), Map.entry(FieldLocation.NODE_7, new Pose2d()),
-        Map.entry(FieldLocation.NODE_8, new Pose2d()), Map.entry(FieldLocation.NODE_9, new Pose2d()),
-        Map.entry(FieldLocation.DOUBLE_SUBSTATION, new Pose2d()),
-        Map.entry(FieldLocation.SINGLE_SUBSTATION, new Pose2d()));
+    
 
-    private final Map<FieldLocation, Pose2d> RED_MAP = Map.ofEntries(Map.entry(FieldLocation.NODE_1, new Pose2d()),
-        Map.entry(FieldLocation.NODE_2, new Pose2d()), Map.entry(FieldLocation.NODE_3, new Pose2d()),
-        Map.entry(FieldLocation.NODE_4, new Pose2d()), Map.entry(FieldLocation.NODE_5, new Pose2d()),
-        Map.entry(FieldLocation.NODE_6, new Pose2d()), Map.entry(FieldLocation.NODE_7, new Pose2d()),
-        Map.entry(FieldLocation.NODE_8, new Pose2d()), Map.entry(FieldLocation.NODE_9, new Pose2d()),
-        Map.entry(FieldLocation.DOUBLE_SUBSTATION, new Pose2d()),
-        Map.entry(FieldLocation.SINGLE_SUBSTATION, new Pose2d()));
-
-    private final Map<Alliance, Map<FieldLocation, Pose2d>> POSE_MAPS = Map
-        .ofEntries(Map.entry(Alliance.Blue, BLUE_MAP), Map.entry(Alliance.Red, RED_MAP));
-
-    private enum FieldLocation {
-      NODE_1(),
-      NODE_2(),
-      NODE_3(),
-      NODE_4(),
-      NODE_5(),
-      NODE_6(),
-      NODE_7(),
-      NODE_8(),
-      NODE_9(),
-      DOUBLE_SUBSTATION(),
-      SINGLE_SUBSTATION();
-
-      FieldLocation() {
-      }
-    }
+    
 
     public static final double RAMP_TIME_SECONDS = 0.001;
 
@@ -199,23 +165,22 @@ public final class Constants {
   }
 
   public static class ArmConstants {
-
+    public static final int LIMIT_SWITCH_PORT = 0;
     public static final int SHOULDER_MOTOR_ID = 32;
+    public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
     public static final double KP = 0;
     public static final double KI = 0;
     public static final double KD = 0;
-    public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
     public static final double MAX_SHOULDER_VELOCITY = 0;
     public static final double MAX_SHOULDER_ACCELERATION = 0;
     public static final double KS = 0;
     public static final double KG = 0.11;
     public static final double KV = 0;
     public static final double POSITION_TOLERANCE = 0;
-    public static final int LIMIT_SWITCH_PORT = 0;
-    public static final double UPPER_ANGLE_LIMIT = 10000000;
+    public static final double UPPER_ANGLE_LIMIT = 360;
     public static final double MAX_SPEED = 0.25;
     public static final double SHOULDER_POTENTIOMETER_RANGE = 340;
-    //TODO: need to find offset to paralell  to floor 0
+    // TODO: need to find offset to paralell to floor 0
     public static final double SHOULDER_POTENTIOMETER_OFFSET = -222;
     public static final int CURRENT_LIMIT = 39;
 
@@ -245,9 +210,7 @@ public final class Constants {
     }
   }
 
-
-
-   public static class IntakeConstants {
+  public static class IntakeConstants {
     public static final int WRIST_CAN_ID = 6;
     public static final int INTAKE_CAN_ID = 7;
     public static final int POT_CHANEL = 1;
@@ -313,7 +276,5 @@ public final class Constants {
     }
   }
 
-  public static class FieldConstants {
-
-  }
+  
 }
