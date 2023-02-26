@@ -7,6 +7,7 @@ package frc.robot.commands.ArmStuff;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.IntakeConstants;
@@ -37,7 +38,7 @@ public class HoldWrist2 extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    double output = Math.abs(feedforward.calculate(angleToHold-10.0, 0));
+    double output = (feedforward.calculate(Units.degreesToRadians(angleToHold), 0));
     System.out.println("Output is " + output);
     intake.setWristSpeed(output);
 
