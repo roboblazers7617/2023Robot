@@ -219,10 +219,10 @@ public final class Constants {
     public static final int WRIST_POT_SCALE = 340;
     public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
     public static final int CURRENT_LIMIT = 25;
-    public static final double MAX_WRIST_ANGLE = 360;
-    public static final double MAX_WRIST_SPEED = 0.25;
+    public static final double MAX_WRIST_ANGLE = 103;
+    public static final double MAX_WRIST_SPEED = 0.6;//.25
     public static final double MAX_WRIST_ACCEL = 0.12;
-    public static final double WRIST_KS = -0.0;
+    public static final double WRIST_KS = 0.1;
     public static final double WRIST_KG = 0.08;
     public static final double WRIST_KV = 0;
     public static final double WRIST_KP = 2.0;
@@ -230,10 +230,13 @@ public final class Constants {
     public static final double WRIST_KD = 0.0;
     public static final double WRIST_ANGLE_TOLERANCE = 0.1;
     public static final double WRIST_POT_OFFSET = -199;// so stowed is 120
-    public static final double WRIST_MANUAL_SLOWDOWN = .3;
+    public static final double WRIST_MANUAL_SLOWDOWN = .4;
     public static final double MAX_APROACHING_WRIST_SPEED = .08;
     public static final double WRIST_GEAR_RATIO = 1.0/36.0;
     public static final double WRIST_ENCODER_CONVERSION_FACTOR = 360.0 * WRIST_GEAR_RATIO;
+    public static final double SLOWDOWN_WRIST_ANGLE = 80;
+    public static final double MAX_SLOW_WRIST_SPEED = 0.05;
+    public static final double MAX_DOWNWARD_WRIST_SPEED = 0.1;
     
     public enum IntakeDirection
     {

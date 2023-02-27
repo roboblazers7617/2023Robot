@@ -14,7 +14,7 @@ import frc.robot.Constants.IntakeConstants.IntakeDirection;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.ArmStuff.HoldArm;
 import frc.robot.commands.ArmStuff.HoldWrist;
-import frc.robot.commands.ArmStuff.HoldWrist2;
+import frc.robot.commands.ArmStuff.HoldWrist;
 import frc.robot.commands.ArmStuff.SimpleMoveToPickup;
 import frc.robot.commands.ArmStuff.SimpleMoveToScore;
 import frc.robot.commands.ArmStuff.Stow;
@@ -102,21 +102,14 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
                 m_driverController.getRightX(), m_driverController.getRightY(), false), drivetrain));
 
-        arm.setDefaultCommand(
-                new ConditionalCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftY()), arm),
-                        new InstantCommand(() -> arm.setShoulderSpeed(0)), () -> evalDeadzone(() -> m_operatorController.getLeftY())));
-
-        intake.setDefaultCommand(new RunCommand(
-            () -> intake.setWristSpeed(
+        //arm.setDefaultCommand(
+          //      new ConditionalCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftY()), arm),
+            //            new InstantCommand(() -> arm.setShoulderSpeed(0)), () -> isOutsideDeadzone(() -> m_operatorController.getLeftY())));
+        intake.setDefaultCommand(new HoldWrist(intake, ()->m_operatorController.getRightY()));
+            /*new RunCommand(() -> intake.setWristSpeed(
                     m_operatorController.getRightY() * IntakeConstants.WRIST_MANUAL_SLOWDOWN),
-            intake));
-           /*      new ConditionalCommand(
-                        new RunCommand(
-                                () -> intake.setWristSpeed(
-                                        m_operatorController.getRightY() * IntakeConstants.WRIST_MANUAL_SLOWDOWN),
-                                intake),
-                        /* intake.holdCommand() */ //new InstantCommand(() -> intake.setWristSpeed(0), intake),
-  //                      () -> evalDeadzone(() -> m_operatorController.getRightY())));
+            intake));*/
+                
 
 
         ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
@@ -137,7 +130,8 @@ public class RobotContainer {
 
     }
 
-    private boolean evalDeadzone(DoubleSupplier value) {
+    private boolean isOutsideDeadzone(DoubleSupplier value) {
+        System.out.println(Math.abs(value.getAsDouble()));
         return (Math.abs(value.getAsDouble()) > OperatorConstants.DEADZONE);
     }
 
@@ -190,7 +184,7 @@ public class RobotContainer {
                 .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CUBE)));
 
         m_operatorController.a().whileTrue(new HoldArm(arm));
-        m_operatorController.b().whileTrue(new HoldWrist2(intake));
+        m_operatorController.b().whileTrue(new HoldWrist(intake));
         //TODO: m_operatorController.b().whileTrue(new Stow(arm, intake));
         m_operatorController.y()
                 .whileTrue(Commands.runEnd(() -> intake.setIntakeSpeed(IntakeDirection.PICK_CUBE.speed()),
