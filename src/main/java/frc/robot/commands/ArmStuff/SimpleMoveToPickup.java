@@ -16,9 +16,9 @@ import frc.robot.subsystems.Intake;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class SimpleMoveToPickup extends SequentialCommandGroup {
+//public class SimpleMoveToPickup extends SequentialCommandGroup {
   /** Creates a new SimpleMoveArmToPosition. */
-  public SimpleMoveToPickup(Arm arm, Intake intake, Supplier<PieceType> piece, PickupLocation location) {
+  /*public SimpleMoveToPickup(Arm arm, Intake intake, Supplier<PieceType> piece, PickupLocation location) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     // TODO: Add back in next line of code. Changed holdCommand and broke it
@@ -26,4 +26,4 @@ public class SimpleMoveToPickup extends SequentialCommandGroup {
         new ParallelCommandGroup(intake.moveToPositionCommand(location, piece), arm.holdCommand()));
 
   }
-}
+}*/

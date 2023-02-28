@@ -16,7 +16,7 @@ public class Stow extends SequentialCommandGroup {
   public Stow(Arm arm, Intake intake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(intake.stowCommand(),
-     arm.stowCommand());
+   // addCommands(intake.stowCommand(),
+    // arm.stowCommand());
   }
 }

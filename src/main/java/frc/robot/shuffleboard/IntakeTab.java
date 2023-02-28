@@ -7,8 +7,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Wrist;
 
 public class IntakeTab extends ShuffleboardTabBase {
+    Wrist wrist;
     DoublePublisher wristAnglePublisher;
     DoublePublisher wristSpeedPublisher;
     DoublePublisher intakeSpeedPublisher;
@@ -17,8 +19,9 @@ public class IntakeTab extends ShuffleboardTabBase {
     BooleanPublisher isHoldingCubePublisher;
     DoublePublisher wristEncoderAnglePublisher;
     Intake intake;
-    public IntakeTab (Intake subsystem){
+    public IntakeTab (Intake subsystem, Wrist wrist){
         intake = subsystem;
+        this.wrist = wrist;
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         NetworkTable networkTable = inst.getTable("Shuffleboard/Intake");
         ShuffleboardTab shuffleboardTabTesting = Shuffleboard.getTab("Intake");
@@ -35,13 +38,13 @@ public class IntakeTab extends ShuffleboardTabBase {
     }
 
     public void update() {
-        wristAnglePublisher.set(intake.getWristAngle());
-        wristSpeedPublisher.set(intake.getWristSpeed());
+        wristAnglePublisher.set(wrist.getWristPosition());
+        wristSpeedPublisher.set(wrist.getWristVelocity());
         intakeSpeedPublisher.set(intake.getIntakeSpeed());
         isIntakeStoredPublisher.set(intake.isStored());
         isHoldingCubePublisher.set(intake.isHoldingGamePiece());
-        wristEncoderAnglePublisher.set(intake.getEncoderAngle());
-        wristTempPublisher.set((intake.getWristMotorTemp()*(9.0/5.0)+32.0));
+       // wristEncoderAnglePublisher.set(intake.getEncoderAngle());
+        wristTempPublisher.set((wrist.getWristMotorTemp()*(9.0/5.0)+32.0));
 
     }
     

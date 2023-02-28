@@ -8,10 +8,8 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Intake;
 
 public class HoldArm extends CommandBase {
   private DoubleSupplier angleToHoldSupplier;
