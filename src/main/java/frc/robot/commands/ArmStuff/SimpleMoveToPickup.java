@@ -6,24 +6,28 @@ package frc.robot.commands.ArmStuff;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Wrist;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-//public class SimpleMoveToPickup extends SequentialCommandGroup {
+public class SimpleMoveToPickup extends SequentialCommandGroup {
   /** Creates a new SimpleMoveArmToPosition. */
-  /*public SimpleMoveToPickup(Arm arm, Intake intake, Supplier<PieceType> piece, PickupLocation location) {
+  public SimpleMoveToPickup(Arm arm, Wrist wrist, Supplier<PieceType> piece, PickupLocation location) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    // TODO: Add back in next line of code. Changed holdCommand and broke it
-    addCommands(//new ParallelCommandGroup(arm.moveToHeldPositionCommand(location), intake.holdCommand()),
-        new ParallelCommandGroup(intake.moveToPositionCommand(location, piece), arm.holdCommand()));
+    addCommands(new InstantCommand(() -> arm.setPosition(arm.evalPickupPosition(location)), arm),
+        arm.WaitUntilArmInPosition(),
+        arm.actuateSuperstructureCommand(location),
+        new InstantCommand(() -> wrist.setPosition(wrist.evalPickupLocation(location, piece)), wrist),
+        wrist.WaitUntilWristInPosition());
 
   }
-}*/
+}

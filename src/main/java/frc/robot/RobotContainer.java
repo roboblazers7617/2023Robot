@@ -4,16 +4,16 @@
 
 package frc.robot;
 
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
-import frc.robot.Constants.IntakeConstants.IntakeDirection;
-import frc.robot.Constants.IntakeConstants.WristPosition;
+import frc.robot.Constants.WristConstants;
+import frc.robot.Constants.WristConstants.WristPosition;
+import frc.robot.Constants.WristConstants.IntakeConstants.IntakeDirection;
 import frc.robot.commands.IntakeDown;
-import frc.robot.commands.ArmStuff.HoldArm;
 import frc.robot.commands.ArmStuff.Stow;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.commands.Drivetrain.AutoBalance;
@@ -101,10 +101,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
                 m_driverController.getRightX(), m_driverController.getRightY(), false), drivetrain));
 
-        //arm.setDefaultCommand(
-          //      new ConditionalCommand(new RunCommand(() -> arm.setShoulderSpeed(m_operatorController.getLeftY()), arm),
-            //            new InstantCommand(() -> arm.setShoulderSpeed(0)), () -> isOutsideDeadzone(() -> m_operatorController.getLeftY())));
-        wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(m_operatorController.getRightY()*IntakeConstants.MAX_MANNUAL_WRIST_SPEED), wrist));
+        arm.setDefaultCommand( new RunCommand(() -> arm.setVelocity(m_operatorController.getLeftY()*ArmConstants.MAX_MANNUAL_WRIST_SPEED), arm));
+        wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(m_operatorController.getRightY()*WristConstants.MAX_MANNUAL_WRIST_SPEED), wrist));
                 
 
 
@@ -179,7 +177,8 @@ public class RobotContainer {
         m_operatorController.rightTrigger()
                 .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CUBE)));
 
-        m_operatorController.a().whileTrue(new HoldArm(arm));
+
+
         m_operatorController.povLeft().whileTrue(new InstantCommand(() -> wrist.setPosition(WristPosition.STOW.angle()), wrist));
         m_operatorController.povRight().whileTrue(new InstantCommand(() -> wrist.setPosition(60), wrist));
         m_operatorController.povDown().whileTrue(new InstantCommand(() -> wrist.setPosition(20), wrist));
@@ -191,7 +190,8 @@ public class RobotContainer {
                 .whileTrue(Commands.runEnd(() -> intake.setIntakeSpeed(IntakeDirection.PICK_CONE.speed()),
                         () -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake));
 
-        m_operatorController.povLeft().whileTrue(new Stow(arm, intake));
+        // Test holding arm in place
+        m_operatorController.a().onTrue(new InstantCommand(()-> arm.setPosition(arm.getShoulderAngle())));
 
        // m_operatorController.povDown().onTrue(new SimpleMoveToScore(arm, intake, ScoreLevel.LEVEL_1));
        // m_operatorController.povRight().onTrue(new SimpleMoveToScore(arm, intake, ScoreLevel.LEVEL_2));

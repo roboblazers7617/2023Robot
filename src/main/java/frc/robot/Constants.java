@@ -168,21 +168,26 @@ public final class Constants {
     public static final int LIMIT_SWITCH_PORT = 0;
     public static final int SHOULDER_MOTOR_ID = 32;
     public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
-    public static final double KP = 0;
+
+    public static final double KP = 0; //THIS
     public static final double KI = 0;
     public static final double KD = 0;
-    public static final double MAX_SHOULDER_VELOCITY = 0;
-    public static final double MAX_SHOULDER_ACCELERATION = 0;
     public static final double KS = 0;
-    public static final double KG = 0.11;
+    public static final double KG = 0.11; //THIS
     public static final double KV = 0;
+
     public static final double POSITION_TOLERANCE = 0;
-    public static final double UPPER_ANGLE_LIMIT = 360;
-    public static final double MAX_SPEED = 0.25;
     public static final double SHOULDER_POTENTIOMETER_RANGE = 340;
     // TODO: need to find offset to paralell to floor 0
     public static final double SHOULDER_POTENTIOMETER_OFFSET = -222;
     public static final int CURRENT_LIMIT = 39;
+    public static final double SHOULDER_GEAR_RATIO = 1.0/1.0; //THIS
+    public static final double POSITION_CONVERSION_FACTOR = SHOULDER_GEAR_RATIO * 360.0; //TODO: add actuall number
+    public static final double MINIMUM_SHOULDER_ANGLE = 0; //THIS
+    public static final double MAX_SHOULDER_ANGLE = 0.0;
+    public static final double MAX_MANNUAL_WRIST_SPEED = 75.0; //THIS
+    public static final double MAX_SPEED_DOWNWARD = 0.25; //THIS
+    public static final double MAX_SPEED_UPWARD = 0.25; //THIS
 
     public enum ArmPositions {
       LEVEL_3(0, PnuematicPositions.EXTENDED),
@@ -210,16 +215,10 @@ public final class Constants {
     }
   }
 
-
-  public static class IntakeConstants {
-    public static final int WRIST_CAN_ID = 6;
-    public static final int INTAKE_CAN_ID = 7;
-    public static final int POT_CHANEL = 1;
-    public static final int DISTANCE_SENSOR_CHANEL = 5;
-    public static final int INTAKE_LIMIT_SWITCH_ID = 2;
-    public static final int WRIST_POT_SCALE = 340;
-    public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
+  public static class WristConstants{
+    public static final double WRIST_ANGLE_TOLERANCE = 1;
     public static final int CURRENT_LIMIT = 20;
+    public static final int WRIST_CAN_ID = 6;
     public static final double MAX_WRIST_ANGLE = 103;
     public static final double MAX_UPWARD_WRIST_SPEED = 0.25;
     public static final double MAX_DOWNWARD_WRIST_SPEED = -0.1;
@@ -230,7 +229,6 @@ public final class Constants {
     public static final double WRIST_KP = 0.011;
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.0;
-    public static final double WRIST_ANGLE_TOLERANCE = 0.1;
     public static final double WRIST_POT_OFFSET = -199;// so stowed is 120
     public static final double WRIST_MANUAL_SLOWDOWN = .4;
     public static final double MAX_APROACHING_WRIST_SPEED = .08;
@@ -239,8 +237,38 @@ public final class Constants {
     public static final double SLOWDOWN_WRIST_ANGLE = 80;
     public static final double MAX_SLOW_WRIST_SPEED = 0.05;
     public static final double MIN_WRIST_ANGLE = 10;
+    public static final int WRIST_POT_SCALE = 340;
+    public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
+    public static final int POT_CHANEL = 1;
 
     public static final double MAX_MANNUAL_WRIST_SPEED = 50;
+
+    public enum WristPosition {
+      STOW(WristConstants.MAX_WRIST_ANGLE),
+      FLOOR_CUBE_PICKUP(0.06),
+      FLOOR_CONE_PICKUP(0.07),
+      DOUBLE_PICKUP(0.07),
+      LEVEL_3(0.04),
+      LEVEL_2(0.05),
+      LEVEL_1(0.03);
+
+      private final double angle;
+
+      WristPosition(double angle) {
+        this.angle = angle;
+      }
+
+      public double angle() {
+        return angle;
+      }
+  }
+
+
+  public static class IntakeConstants {
+    public static final int INTAKE_CAN_ID = 7;
+    public static final int DISTANCE_SENSOR_CHANEL = 5;
+    public static final int INTAKE_LIMIT_SWITCH_ID = 2;
+    public static final int CURRENT_LIMIT = 20;
     
     public enum IntakeDirection
     {
@@ -261,24 +289,6 @@ public final class Constants {
       }
     }
 
-    public enum WristPosition {
-      STOW(IntakeConstants.MAX_WRIST_ANGLE),
-      FLOOR_CUBE_PICKUP(0.06),
-      FLOOR_CONE_PICKUP(0.07),
-      DOUBLE_PICKUP(0.07),
-      LEVEL_3(0.04),
-      LEVEL_2(0.05),
-      LEVEL_1(0.03);
-
-      private final double angle;
-
-      WristPosition(double angle) {
-        this.angle = angle;
-      }
-
-      public double angle() {
-        return angle;
-      }
 
     }
   }
