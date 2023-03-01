@@ -278,6 +278,8 @@ public final class Constants {
     public static final int DISTANCE_SENSOR_CHANEL = 5;
     public static final int INTAKE_LIMIT_SWITCH_ID = 2;
     public static final int CURRENT_LIMIT = 20;
+    public static final double INTAKE_GEAR_RATIO = 1.0 / 5.0;
+    public static final double INTAKE_ENCODER_CONVERSION_FACTOR = 360.0 * INTAKE_GEAR_RATIO;
     
     //TODO: Lukas. (High) Set these
     public enum IntakeDirection
