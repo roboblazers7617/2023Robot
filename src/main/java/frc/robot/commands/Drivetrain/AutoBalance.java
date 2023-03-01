@@ -20,6 +20,7 @@ public class AutoBalance extends CommandBase {
     // Use addRequirements() here to declare subsystem dependencies.
     mDrivetrain = drivetrain;
     addRequirements(drivetrain);
+    //TODO: Lukas. (High) Make this a constant
     controller.setSetpoint(3);
     controller.setTolerance(DrivetrainConstants.BALANCING_TOLERANCE);
     controller.enableContinuousInput(-180, 180);

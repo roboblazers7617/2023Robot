@@ -39,6 +39,7 @@ public class ShuffleboardInfo extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    //TODO: Brandon. (High) This is a magic number. Need to code this to make sure that DriverStationtab is always the first. Someone could add code in RobotContainer that makes it not
     tabs.get(0).update();
     if (topic.get()) {
       for (int i = 1; i < tabs.size(); i++) {

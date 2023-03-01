@@ -29,6 +29,8 @@ public final class Autos {
   /** Example static factory for an autonomous command. */
 
 
+
+  //TODO: Sam. Will this be used? If not, should be deleted.
 public Command PickPath(Drivetrain drivetrain, DoubleSupplier x, DoubleSupplier y, DoubleSupplier angle) {
   PathPlannerTrajectory test_path = PathPlanner.generatePath(
     new PathConstraints(.1, .1),

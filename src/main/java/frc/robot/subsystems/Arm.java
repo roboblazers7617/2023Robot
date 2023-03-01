@@ -28,13 +28,16 @@ import frc.robot.Constants.ScoreLevel;
 
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
+  // TODO: Lukas. Should these all be private final?
   CANSparkMax shoulderMotor = new CANSparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
   SparkMaxPIDController controller;
   RelativeEncoder shoulderEncoder = shoulderMotor.getEncoder();
   DoubleSolenoid leftPiston;
   DoubleSolenoid rightPiston;
+  private Pnuematics pneumatics;
   ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
 
+  // TODO: Lukas. comment this out until used so as to not confuse what is the accurate shoulder angle
   AnalogPotentiometer shoulderAngle = new AnalogPotentiometer(ArmConstants.SHOULDER_POTENTIOMETER_PORT, ArmConstants.SHOULDER_POTENTIOMETER_RANGE, ArmConstants.SHOULDER_POTENTIOMETER_OFFSET);
 
   DigitalInput isArmStowed = new DigitalInput(ArmConstants.LIMIT_SWITCH_PORT);
@@ -47,7 +50,8 @@ public class Arm extends SubsystemBase {
 
   public Arm(Pnuematics pnuematics) {
     shoulderMotor.restoreFactoryDefaults();
-    shoulderMotor.setIdleMode(IdleMode.kCoast); // TODO: brake mode
+    // TODO: Lukas. (High) Set to brake mode after testing is done
+    shoulderMotor.setIdleMode(IdleMode.kCoast); 
     shoulderMotor.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
     controller = shoulderMotor.getPIDController();
 
@@ -59,7 +63,8 @@ public class Arm extends SubsystemBase {
     controller.setI(ArmConstants.KI);
     controller.setD(ArmConstants.KD);
     controller.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
-
+    
+    this.pneumatics = pnuematics;
     leftPiston = pnuematics.getLeftArmPiston();
     rightPiston = pnuematics.getRightArmPiston();
 
@@ -101,6 +106,7 @@ public class Arm extends SubsystemBase {
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
   }
 
+    //TODO: Lukas. Should this function just call setPosition(double position) once it has the setpoint so as to not duplicate code?
   public void setPosition(ArmPositions position) {
      setpoint = Math.min(position.getShoulderAngle(), ArmConstants.MAX_SHOULDER_ANGLE);
     setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
@@ -108,6 +114,7 @@ public class Arm extends SubsystemBase {
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
   }
 
+    //TODO: Lukas. Should this function just call setPosition(double position) once it has the setpoint so as to not duplicate code?
   public void setVelocity(double velocityDegreesPerSec){
     setpoint = setpoint + velocityDegreesPerSec*dt;
     setpoint = Math.min(setpoint, ArmConstants.MAX_SHOULDER_ANGLE);
@@ -137,6 +144,7 @@ public class Arm extends SubsystemBase {
     return leftPiston.get();
   }
 
+  //TODO: Lukas. (High) May want to add code testing encoder values as well as when stowed it may not consistently trip Limit Switch
   public boolean isArmStowed() {
     return isArmStowed.get();
   }
@@ -145,11 +153,28 @@ public class Arm extends SubsystemBase {
     return shoulderEncoder.getPosition();
   }
 
-  public boolean atSetpoint(){//TODO: check
+  //TODO: Lukas. (High) Check that this is correct
+  public boolean atSetpoint(){
     return (Math.abs(getShoulderAngle() - (setpoint)) < (ArmConstants.POSITION_TOLERANCE));
   }
 
   public Command WaitUntilArmInPosition(){
     return Commands.waitUntil(() -> atSetpoint());
+  }
+
+  // TODO: Lukas (High) check this
+  public void enableCompressor(boolean enableCompressor){
+    if (enableCompressor)
+    {
+      pneumatics.enable();
+    }
+    else
+    {
+      pneumatics.disable();
+    }
+  }
+
+  public double getShoulderMotorTemp(){
+    return shoulderMotor.getMotorTemperature();
   }
 }

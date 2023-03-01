@@ -30,6 +30,7 @@ public class Intake extends SubsystemBase {
     intakeMotor.restoreFactoryDefaults();
     intakeMotor.setSmartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
     intakeMotor.setIdleMode(IdleMode.kBrake);
+    //TODO: Marie. (High) Add velocity converstion factor for intake
   }
 
   @Override
@@ -38,11 +39,13 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isHoldingGamePiece() {
-    // add in code for holding a cone
-    return isHoldingCube.get();
+    // TODO: Marie. (High) add in code for holding a cone or cube
+    //return isHoldingCube.get();'
+    return false;
 
   }
 
+  //TODO: Marie. (High) Add code to check encoder value as the limit switch may not always be tripped with stowed
   public boolean isStored() {
     return isIntakeStored.get();
   }

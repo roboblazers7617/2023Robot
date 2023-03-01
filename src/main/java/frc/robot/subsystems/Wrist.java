@@ -75,6 +75,7 @@ public class Wrist extends SubsystemBase {
     dt = time.get() - lastTime;
     lastTime = time.get();
 
+    // TODO: Lukas. Is this code needed?
    /* if(isStowed.get())
       wristEncoder.setPosition(WristPosition.STOW.angle());*/
   }
@@ -94,6 +95,7 @@ public class Wrist extends SubsystemBase {
         wristFeedforward.calculate(Units.degreesToRadians(setpoint), 0));
   }
 
+  // TODO: Lukas. (Medium) Should this function just call setPosition(double position) and pass in the angle from WristPosition so as to not duplicate code?
   public void setPosition(WristPosition position) {
     setpoint = Math.min(position.angle(), WristConstants.MAX_WRIST_ANGLE);
     setpoint = Math.max(setpoint, WristConstants.MIN_WRIST_ANGLE);
@@ -101,6 +103,8 @@ public class Wrist extends SubsystemBase {
         wristFeedforward.calculate(Units.degreesToRadians(setpoint), 0));
   }
 
+  //TODO: Lukas. (Medium) Should this function just call setPosition(double position) once it has the setpoint so as to not duplicate code?
+  //TODO: Lukas. Rename this parameter to show what its units are
   public void setVelocity(double velocity){
     setpoint = setpoint + velocity*dt;
     setpoint = Math.min(setpoint, WristConstants.MAX_WRIST_ANGLE);
@@ -113,7 +117,8 @@ public class Wrist extends SubsystemBase {
     return wristMotor.getMotorTemperature();
   }
 
-  public boolean atSetpoint(){//TODO: check
+  // TODO: Lukas. (High) Check this code is correct
+  public boolean atSetpoint(){
     return (Math.abs(getWristPosition() - (setpoint)) < (WristConstants.WRIST_ANGLE_TOLERANCE));
   }
 

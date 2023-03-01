@@ -25,6 +25,8 @@ public class IntakeTab extends ShuffleboardTabBase {
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         NetworkTable networkTable = inst.getTable("Shuffleboard/Intake");
         ShuffleboardTab shuffleboardTabTesting = Shuffleboard.getTab("Intake");
+
+        //TODO: Marie. (Medium) Make these shorter so they can be read on Shuffleboard with default widget size
         wristAnglePublisher = networkTable.getDoubleTopic("The angle of the wrist").publish();
         wristTempPublisher = networkTable.getDoubleTopic("Wrist Temp").publish();
         wristSpeedPublisher = networkTable.getDoubleTopic("The speed of the wrist").publish();

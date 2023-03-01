@@ -21,11 +21,16 @@ public class DriveToTag extends CommandBase {
     // The controller that the command will use
     controller = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
     controller.setSetpoint(distanceMeters);
+
+    //TODO: Lukas. (Medium) Please put number in constant
     controller.setTolerance(.03);
     // Use addRequirements() here to declare subsystem dependencies.
     mDrivetrain = drivetrain;
     mVision = vision;
+    //TODO: Lukas. (High) Does this need to require vision?
     addRequirements(drivetrain);
+
+    //TODO: Lukas. (High) Please put number in constant
     drivetrain.setDrivetrainSpeed(1);
   }
 
@@ -38,6 +43,8 @@ public class DriveToTag extends CommandBase {
   @Override
   public void execute() {
     if (mVision.getBestTagDistance() > 0)
+    //TODO: Lukas. (High) You use KS_LIN here, but perhaps in a different way than in other subsystems. 
+    // There is a constant SIMPLE_FF_LINEAR that is used in DriveForwardToScoreLocation that might be more approrpriate. But that is set to a different value.
       mDrivetrain.arcadeDrive(-MathUtil.clamp(controller.calculate(mVision.getBestTagDistance()) + Math.copySign(DrivetrainConstants.KS_LIN, controller.calculate(mVision.getBestTagDistance())), -0.5, .5), 0);
     else
       mDrivetrain.arcadeDrive(0, 0);

@@ -32,6 +32,7 @@ public class Vision extends SubsystemBase {
   AprilTagFieldLayout layout;
   PhotonPoseEstimator poseEstimator;
 
+  // TODO: Lukas. Are these three lines used? Seems not
   ShuffleboardTab vision;
   NetworkTableInstance inst = NetworkTableInstance.getDefault();
   NetworkTable datatable = inst.getTable("Vision");
@@ -42,6 +43,7 @@ public class Vision extends SubsystemBase {
     } catch (IOException e) {
       layout = null;
     }
+    // TODO: Lukas. (High) Should this change to multi-tag PNP strategy?
     poseEstimator = new PhotonPoseEstimator(layout, PoseStrategy.CLOSEST_TO_LAST_POSE, camera,
         VisionConstants.CAMERA_POSITION);
   }
