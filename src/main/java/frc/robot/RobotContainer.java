@@ -12,6 +12,7 @@ import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.ArmConstants.ArmPositions;
+import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.Constants.WristConstants.WristPosition;
 import frc.robot.Constants.WristConstants.IntakeConstants.IntakeDirection;
 import frc.robot.commands.IntakeDown;
@@ -52,6 +53,10 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StringSubscriber;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
@@ -89,6 +94,7 @@ public class RobotContainer {
             new Rotation2d(180));
 
     private PieceType selectedPiece = PieceType.CONE;
+    private final StringSubscriber topic;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -98,10 +104,9 @@ public class RobotContainer {
         configureDriverBindings();
         configureOperatorBindings();
         // create shuffleboardinfo.java
-
-        // TODO: Sam. (Medium) Make a way for quickTurn to be true. Tied to another button
+        boolean isRightTriggerPressed = m_driverController.getRightTriggerAxis() > 0.5;
         drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
-                m_driverController.getRightX(), m_driverController.getRightY(), false), drivetrain));
+                m_driverController.getRightX(), m_driverController.getRightY(), isRightTriggerPressed),drivetrain));
 
         arm.setDefaultCommand( new RunCommand(() -> arm.setVelocity(m_operatorController.getLeftY()*ArmConstants.MAX_MANNUAL_WRIST_SPEED), arm));
         wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(m_operatorController.getRightY()*WristConstants.MAX_MANNUAL_WRIST_SPEED), wrist));
@@ -123,6 +128,13 @@ public class RobotContainer {
         shuffleboardInfo.addTabs(tabs);
 
         // create some tabs
+
+        NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("Shuffleboard/DriverStation");
+        topic = networkTable.getStringTopic("AutoPath").subscribe("default is bad");
+       
+
+
+
 
     }
 
@@ -148,12 +160,12 @@ public class RobotContainer {
      */
     private void configureDriverBindings() {
 
-        // TODO: Sam. (High) Remove hardcoded Blue Alliance. There should be a wrapper function to read what Alliance to use
+      
         m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain,
                 () -> m_driverController.getLeftY(),
                 () -> m_driverController.getRightY(),
                 () -> m_driverController.getRightX(),
-                Alliance.Blue));
+                DriverStation.getAlliance()));
 
         m_driverController.rightBumper()
                 .onTrue(new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED)));
@@ -233,29 +245,30 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
-    // TODO: Sam. (High) Make this tied into the drop-down selection in Shuffleboard to choose the routine
+
     public Command getAutonomousCommand() {
         drivetrain.setBrakeMode(IdleMode.kCoast);
-        return pickAutonomousCommand("blue far 2 ball").andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
+        AutoPath pathName = DrivetrainConstants.AutoPath.valueOf(topic.get()); 
+        return pickAutonomousCommand(pathName).andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
     }
 
 
     //TODO: Sam. (High) Add a boolean parameter to signify if the path should be reversed or not. Shouldn't default to reversed as may cause errors
-    public Command pickAutonomousCommand(String pathName) {
-
+    public Command pickAutonomousCommand(DrivetrainConstants.AutoPath autopath) {
+        System.out.println(autopath.pathname());
+        System.out.println(autopath.isReverse());
         HashMap<String, Command> eventMap = new HashMap<>();
         eventMap.put("intakeDown", new IntakeDown());
 
         PathPlannerTrajectory test_path = PathPlanner.loadPath(
-                pathName, new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
+                autopath.pathname(), new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
                         DrivetrainConstants.MAX_AUTO_ACCELERATION),
-                true);
+                autopath.isReverse());
         
         RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
                 drivetrain::getPose2d, // Pose2d supplier
                 drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
-                //TODO: Sam. (High) This should be constants
-                new RamseteController(2.0, 0.7),
+                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
                 drivetrain.getKinematics(),
                 new SimpleMotorFeedforward(DrivetrainConstants.KS_LIN, DrivetrainConstants.KV),
                 () -> drivetrain.getWheelSpeeds(), // WheelSpeeds supplier

@@ -56,8 +56,7 @@ public class DriveTillY extends CommandBase {
   @Override
   public void execute() {
 
-    // TODO: Sam. These magic numbers should be constants
-    if ((targetPose.getY() - Units.inchesToMeters(24.0)) <= drivetrain.getPose2d().getY() && (targetPose.getY() + Units.inchesToMeters(24.0)) >= drivetrain.getPose2d().getY()) 
+    if ((targetPose.getY() - Units.inchesToMeters(DrivetrainConstants.DISTANCE_TO_SLOW)) <= drivetrain.getPose2d().getY() && (targetPose.getY() + Units.inchesToMeters(DrivetrainConstants.DISTANCE_TO_SLOW)) >= drivetrain.getPose2d().getY()) 
     {
     drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED);
     }  

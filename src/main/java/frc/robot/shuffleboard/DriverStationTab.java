@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.FieldPositions;
 import frc.robot.Constants.DrivetrainConstants;
+import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.Constants.DrivetrainConstants.DrivetrainMode;
 import frc.robot.FieldPositions.FieldLocation;
 import frc.robot.subsystems.Drivetrain;
@@ -29,7 +30,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
     private final SendableChooser<String> drivetrainMode = new SendableChooser<>();
     private final SendableChooser<Boolean> debugMode = new SendableChooser<>();
     private final SendableChooser<FieldPositions.FieldLocation> targetNode = new SendableChooser<>();
-
+    private final SendableChooser<String> AutoPath = new SendableChooser<>();
 
     private Drivetrain drivetrain;
     private DoublePublisher maxSpeedPub;
@@ -48,10 +49,18 @@ public class DriverStationTab extends ShuffleboardTabBase {
         //drive mode
 
         //TODO. Brandon. Should it default to arcade or tank?
-        drivetrainMode.setDefaultOption("Arcade Drive", DrivetrainMode.arcadeDrive.toString());
-        drivetrainMode.addOption("Tank Drive", DrivetrainConstants.DrivetrainMode.tankDrive.toString());
+        drivetrainMode.setDefaultOption("Arcade Drive", DrivetrainConstants.DrivetrainMode.arcadeDrive.toString());
+        drivetrainMode.addOption("Tank Drive", DrivetrainMode.tankDrive.toString());
         drivetrainMode.addOption("Curvature Drive", DrivetrainMode.curvatureDrive.toString());
         tab.add("Drivetrain Mode", drivetrainMode);
+
+        AutoPath.setDefaultOption("blueNodeOne", DrivetrainConstants.AutoPath.blueNodeOne.toString());
+        AutoPath.addOption("blueNodeSix", DrivetrainConstants.AutoPath.blueNodeSix.toString());
+        AutoPath.addOption("blueNodeNine", DrivetrainConstants.AutoPath.blueNodeNine.toString());
+        AutoPath.addOption("redNodeOne", DrivetrainConstants.AutoPath.redNodeOne.toString());
+        AutoPath.addOption("redNodeSix", DrivetrainConstants.AutoPath.redNodeSix.toString());
+        AutoPath.addOption("redNodeNine", DrivetrainConstants.AutoPath.redNodeNine.toString());
+        tab.add("Auto Path", AutoPath);
 
         //debug mode
         debugMode.setDefaultOption("True", true);
@@ -91,7 +100,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
     public void update() {
         drivetrain.setDriveTrainMode(DrivetrainMode.valueOf(drivetrainMode.getSelected()));
-        maxSpeedPub.set(drivetrain.getCarmax());
+        maxSpeedPub.set(drivetrain.getMaxDrivetrainSpeed());
         drivetrain.setTargetNode(targetNode.getSelected());
         pathPlanningTargetPub.set(drivetrain.getTargetPose());
 
