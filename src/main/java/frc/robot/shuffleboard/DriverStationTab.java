@@ -48,8 +48,8 @@ public class DriverStationTab extends ShuffleboardTabBase {
         //drive mode
 
         //TODO. Brandon. Should it default to arcade or tank?
-        drivetrainMode.setDefaultOption("Tank Drive", DrivetrainConstants.DrivetrainMode.tankDrive.toString());
-        drivetrainMode.addOption("Arcade Drive", DrivetrainMode.arcadeDrive.toString());
+        drivetrainMode.setDefaultOption("Arcade Drive", DrivetrainMode.arcadeDrive.toString());
+        drivetrainMode.addOption("Tank Drive", DrivetrainConstants.DrivetrainMode.tankDrive.toString());
         drivetrainMode.addOption("Curvature Drive", DrivetrainMode.curvatureDrive.toString());
         tab.add("Drivetrain Mode", drivetrainMode);
 
@@ -82,12 +82,11 @@ public class DriverStationTab extends ShuffleboardTabBase {
         pathPlanningTargetPub = networkTable.getStringTopic("target position for path planning").publish();
         tab.add("target position for path planning", "NA");
 
-        //TODO: Brandon. (High) Add code here in case the camera is not plugged in that it does not crash the code.
-      /*   camera = CameraServer.startAutomaticCapture();
+        camera = CameraServer.startAutomaticCapture();
         if (camera.isConnected()) {
             camera.setResolution(480, 320);
             camera.setFPS(10);
-        }*/
+        }
     }
 
     public void update() {
