@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -22,7 +23,7 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.INTAKE_CAN_ID, MotorType.kBrushless);
   private final DigitalInput isHoldingCube = new DigitalInput(IntakeConstants.DISTANCE_SENSOR_CHANEL);
   private final DigitalInput isIntakeStored = new DigitalInput(IntakeConstants.INTAKE_LIMIT_SWITCH_ID);
-
+  private final RelativeEncoder intakeEncoder = intakeMotor.getEncoder();
   
 
   /** Creates a new Intake. */
@@ -30,7 +31,7 @@ public class Intake extends SubsystemBase {
     intakeMotor.restoreFactoryDefaults();
     intakeMotor.setSmartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
     intakeMotor.setIdleMode(IdleMode.kBrake);
-    //TODO: Marie. (High) Add velocity converstion factor for intake
+    intakeEncoder.setVelocityConversionFactor(IntakeConstants.INTAKE_ENCODER_CONVERSION_FACTOR / 60);
   }
 
   @Override
@@ -43,11 +44,6 @@ public class Intake extends SubsystemBase {
     //return isHoldingCube.get();'
     return false;
 
-  }
-
-  //TODO: Marie. (High) Add code to check encoder value as the limit switch may not always be tripped with stowed
-  public boolean isStored() {
-    return isIntakeStored.get();
   }
 
   public void setIntakeSpeed(double speed) {
