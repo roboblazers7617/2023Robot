@@ -56,6 +56,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StringSubscriber;
+import edu.wpi.first.networktables.Subscriber;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -94,7 +95,8 @@ public class RobotContainer {
             new Rotation2d(180));
 
     private PieceType selectedPiece = PieceType.CONE;
-    private final StringSubscriber topic;
+
+    private final DriverStationTab driverStationTab;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -116,8 +118,10 @@ public class RobotContainer {
         ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
         // YOUR CODE HERE | | |
         // \/ \/ \/
-        tabs.add(new DriverStationTab(drivetrain));
+        driverStationTab = new DriverStationTab(drivetrain);
+        tabs.add(driverStationTab);
         tabs.add(new VisionTab(vision, drivetrain));
+        
         tabs.add(new DriveTrainTab(drivetrain));
         tabs.add(new ColorSensorTab(new ColorSensor()));
         tabs.add(new IntakeTab(intake, wrist));
@@ -129,8 +133,6 @@ public class RobotContainer {
 
         // create some tabs
 
-        NetworkTable networkTable = NetworkTableInstance.getDefault().getTable("Shuffleboard/DriverStation");
-        topic = networkTable.getStringTopic("AutoPath").subscribe("default is bad");
        
 
 
@@ -248,8 +250,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         drivetrain.setBrakeMode(IdleMode.kCoast);
-        AutoPath pathName = DrivetrainConstants.AutoPath.valueOf(topic.get()); 
-        return pickAutonomousCommand(pathName).andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
+        return pickAutonomousCommand(driverStationTab.getAutoPath()).andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
     }
 
 

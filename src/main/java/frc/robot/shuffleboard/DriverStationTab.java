@@ -30,7 +30,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
     private final SendableChooser<String> drivetrainMode = new SendableChooser<>();
     private final SendableChooser<Boolean> debugMode = new SendableChooser<>();
     private final SendableChooser<FieldPositions.FieldLocation> targetNode = new SendableChooser<>();
-    private final SendableChooser<String> AutoPath = new SendableChooser<>();
+    private final SendableChooser<DrivetrainConstants.AutoPath> autoPath = new SendableChooser<>();
 
     private Drivetrain drivetrain;
     private DoublePublisher maxSpeedPub;
@@ -54,13 +54,13 @@ public class DriverStationTab extends ShuffleboardTabBase {
         drivetrainMode.addOption("Curvature Drive", DrivetrainMode.curvatureDrive.toString());
         tab.add("Drivetrain Mode", drivetrainMode);
 
-        AutoPath.setDefaultOption("blueNodeOne", DrivetrainConstants.AutoPath.blueNodeOne.toString());
-        AutoPath.addOption("blueNodeSix", DrivetrainConstants.AutoPath.blueNodeSix.toString());
-        AutoPath.addOption("blueNodeNine", DrivetrainConstants.AutoPath.blueNodeNine.toString());
-        AutoPath.addOption("redNodeOne", DrivetrainConstants.AutoPath.redNodeOne.toString());
-        AutoPath.addOption("redNodeSix", DrivetrainConstants.AutoPath.redNodeSix.toString());
-        AutoPath.addOption("redNodeNine", DrivetrainConstants.AutoPath.redNodeNine.toString());
-        tab.add("Auto Path", AutoPath);
+        autoPath.setDefaultOption("blueNodeOne", DrivetrainConstants.AutoPath.blueNodeOne);
+        autoPath.addOption("blueNodeSix", DrivetrainConstants.AutoPath.blueNodeSix);
+        autoPath.addOption("blueNodeNine", DrivetrainConstants.AutoPath.blueNodeNine);
+        autoPath.addOption("redNodeOne", DrivetrainConstants.AutoPath.redNodeOne);
+        autoPath.addOption("redNodeSix", DrivetrainConstants.AutoPath.redNodeSix);
+        autoPath.addOption("redNodeNine", DrivetrainConstants.AutoPath.redNodeNine);
+        tab.add("Auto Path", autoPath);
 
         //debug mode
         debugMode.setDefaultOption("True", true);
@@ -97,6 +97,10 @@ public class DriverStationTab extends ShuffleboardTabBase {
             camera.setResolution(480, 320);
             camera.setFPS(10);
         }*/
+    }
+
+    public DrivetrainConstants.AutoPath getAutoPath() {
+        return autoPath.getSelected();
     }
 
     public void update() {
