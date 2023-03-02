@@ -26,8 +26,8 @@ public class FaceScoreLocation extends CommandBase {
     this.color = color;
     turnController.setTolerance(angleTolerance);
     turnController.enableContinuousInput(-180, 180);
+    addRequirements(drivetrain);
 
-    //TODO: Sam. (High) Need to add addRequirements here
   }
 
   // Called when the command is initially scheduled.

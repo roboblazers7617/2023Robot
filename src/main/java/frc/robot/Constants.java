@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copywhite (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -57,18 +57,19 @@ public final class Constants {
     public static final int LEFT_FOLLOWER_WHEEL_ID = 1;
     public static final int RIGHT_FOLLOWER_WHEEL_ID = 5;
 
-    public static final String ARCADE_DRIVE_STRING = "ARCADE";
-    public static final String TANK_DRIVE_STRING = "TANK";
-    public static final String CURVATURE_DRIVE_STRING = "CURVATURE";
+    // public static final String ARCADE_DRIVE_STRING = "ARCADE";
+    // public static final String TANK_DRIVE_STRING = "TANK";
+    // public static final String CURVATURE_DRIVE_STRING = "CURVATURE";
 
     public static final double WHEEL_RADIUS = Units.inchesToMeters(3.0);
-    // TODO: Sam. (High) Verify with mechanical this is still the gear ratio
     public static final double WHEEL_GEAR_RATIO = 1.0 / 10.71;
     public static final double DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION = (2.0 * Math.PI * WHEEL_RADIUS
         * WHEEL_GEAR_RATIO);
     public static final double DRIVETRAIN_ENCODER_VELOCITY = (DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION / 60.0);
 
     public static final int CURRENT_LIMIT = 40;
+
+    public static final double THE_NUMBER_3 = 7.0;
 
     public static final double REG_SPEED = 0.5;
     public static final double SLOW_SPEED = 0.25;
@@ -93,8 +94,7 @@ public final class Constants {
     public static final double SIMPLE_FF_LINEAR = 0.5;
     public static final double SIMPLE_FF_ANGULAR = 0.3;
 
-    // TODO: Sam. (High) Verify this is still correct
-    public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
+    public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(20.5);
 
     public static final double MAX_ERROR_LINEAR = Units.inchesToMeters(1.0);
     public static final double MAX_ERROR_ROTATION = 1.0; // in degrees
@@ -104,18 +104,18 @@ public final class Constants {
     public static final double MAX_AUTO_ACCELERATION = 0.25;
     public static final double MAX_AUTO_VELOCITY = 0.4;
 
-    
+    public static final double RAMSETEb = 2.0;
+    public static final double RAMSETEzeta = 0.7;
 
-    
+    public static final double DISTANCE_TO_SLOW = 24.0;
 
     public static final double RAMP_TIME_SECONDS = 0.001;
 
     public static final double ALLIANCE_BLUE_ROTATION = 180.0;
     public static final double ALLIANCE_RED_ROTATION = 0.0;
 
-    // TODO: Sam. (High) Verify this is still correct
-    public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(39.0);
-    // TODO: Sam. (High) Verify this is still correct
+    
+    public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(31.0);
     public static final double X_OFFSET_FROM_SCORE_LOCATION = LENGTH_OF_ROBOT / 2.0 + Units.inchesToMeters(14.0);
 
     public static final double KP_BALANCE = 0.01;
@@ -129,6 +129,29 @@ public final class Constants {
       arcadeDrive,
       tankDrive,
       curvatureDrive
+    }
+
+    public enum AutoPath {
+      blueNodeOne("blue far 2 ball", true),
+      blueNodeSix("blue mid 2 ball", true),
+      blueNodeNine("blue near 2 ball", true),
+      redNodeOne("red far 2 ball", true),
+      redNodeSix("red mid 2 ball", true),
+      redNodeNine("red near 2 ball", true),;
+
+      private final String pathname;
+      private final boolean isReverse;
+
+      AutoPath(String pathname, boolean isReverse) {
+        this.pathname = pathname;
+        this.isReverse = isReverse;
+      }
+      public String pathname(){
+        return pathname;
+      }
+      public boolean isReverse(){
+        return isReverse;
+      }
     }
   }
 
