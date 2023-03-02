@@ -23,6 +23,7 @@ public class centerAndDistanceAlign extends CommandBase {
   PIDController distanceController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
   public centerAndDistanceAlign(Vision vision, Drivetrain drivetrain, double distance) {
     // Use addRequirements() here to declare subsystem dependencies.
+    //TODO: Lukas. (High) Does this need to require Vision?
     addRequirements(drivetrain);
     mDrivetrain = drivetrain;
     mVision = vision;
@@ -34,6 +35,7 @@ public class centerAndDistanceAlign extends CommandBase {
   @Override
   public void initialize() {
     rotationalController.enableContinuousInput(-180, 180);
+    //TODO: Lukas. Move magic numbers into constants
     rotationalController.setTolerance(3);
     distanceController.setTolerance(0.03);
     rotationalController.setSetpoint(0);
@@ -47,7 +49,10 @@ public class centerAndDistanceAlign extends CommandBase {
     rotOutput = rotationalController.calculate(mVision.getBestTagYaw());
     linOutput = distanceController.calculate(mVision.getBestTagDistance());
     if(mVision.getBestTagDistance() > 0){   
+    //TODO: Lukas. (High) You use KS_LIN here, but perhaps in a different way than in other subsystems. 
+    // There is a constant SIMPLE_FF_LINEAR that is used in DriveForwardToScoreLocation that might be more approrpriate. But that is set to a different value.
     mDrivetrain.arcadeDrive(-MathUtil.clamp((linOutput + Math.copySign(DrivetrainConstants.KS_LIN, linOutput)), -0.5, .5),
+    //TODO: Lukas. (High) same as above but with KS_ROT. Use SIMPLE_FF_ANGULAR
     MathUtil.clamp(rotOutput+Math.copySign(DrivetrainConstants.KS_ROT, rotOutput), -.5, .5));
      }
     else{

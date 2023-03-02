@@ -71,6 +71,7 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain(Vision vision) {
     drivetrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
     drivetrain.setMaxOutput(DrivetrainConstants.REG_SPEED);
+    //TODO: Sam. (High) Check what this should default to for Princeton
     mode = DrivetrainConstants.DrivetrainMode.tankDrive;
 
     leftFrontMotor.restoreFactoryDefaults();
@@ -140,6 +141,7 @@ public class Drivetrain extends SubsystemBase {
     drivetrain.setMaxOutput(maxSpeed);
   }
 
+  // TODO: Sam. Rename function to be more undertandable about what it is doing
   public double getCarmax() {
     return maxDrivetrainspeed;
   }
@@ -243,6 +245,8 @@ public class Drivetrain extends SubsystemBase {
     //mGyro.setYaw(mOdometry.getEstimatedPosition().getRotation().getDegrees());
     }
   }
+
+    // TODO: Sam. Is this needed? duplicate of getTargetNode()? If so, updated Shuffleboard tab to use that function
     public Translation2d getTargetTranslation() {
       return new Translation2d(1,1);
     }
@@ -270,6 +274,7 @@ public class Drivetrain extends SubsystemBase {
       return targetNode;
     }
 
+    // TODO: Sam. Why does this return a string? Is this old code?
     public String getTargetPose(){
       //return targetPose;
       return targetNode.toString();

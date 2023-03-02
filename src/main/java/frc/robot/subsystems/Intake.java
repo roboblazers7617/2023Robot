@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
@@ -22,7 +23,7 @@ public class Intake extends SubsystemBase {
   private final CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.INTAKE_CAN_ID, MotorType.kBrushless);
   private final DigitalInput isHoldingCube = new DigitalInput(IntakeConstants.DISTANCE_SENSOR_CHANEL);
   private final DigitalInput isIntakeStored = new DigitalInput(IntakeConstants.INTAKE_LIMIT_SWITCH_ID);
-
+  private final RelativeEncoder intakeEncoder = intakeMotor.getEncoder();
   
 
   /** Creates a new Intake. */
@@ -30,6 +31,7 @@ public class Intake extends SubsystemBase {
     intakeMotor.restoreFactoryDefaults();
     intakeMotor.setSmartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
     intakeMotor.setIdleMode(IdleMode.kBrake);
+    intakeEncoder.setVelocityConversionFactor(IntakeConstants.INTAKE_ENCODER_CONVERSION_FACTOR / 60);
   }
 
   @Override
@@ -38,13 +40,10 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean isHoldingGamePiece() {
-    // add in code for holding a cone
-    return isHoldingCube.get();
+    // TODO: Marie. (High) add in code for holding a cone or cube
+    //return isHoldingCube.get();'
+    return false;
 
-  }
-
-  public boolean isStored() {
-    return isIntakeStored.get();
   }
 
   public void setIntakeSpeed(double speed) {

@@ -4,16 +4,12 @@
 
 package frc.robot;
 
-import java.util.Map;
-
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 
 /**
@@ -66,6 +62,7 @@ public final class Constants {
     public static final String CURVATURE_DRIVE_STRING = "CURVATURE";
 
     public static final double WHEEL_RADIUS = Units.inchesToMeters(3.0);
+    // TODO: Sam. (High) Verify with mechanical this is still the gear ratio
     public static final double WHEEL_GEAR_RATIO = 1.0 / 10.71;
     public static final double DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION = (2.0 * Math.PI * WHEEL_RADIUS
         * WHEEL_GEAR_RATIO);
@@ -96,6 +93,7 @@ public final class Constants {
     public static final double SIMPLE_FF_LINEAR = 0.5;
     public static final double SIMPLE_FF_ANGULAR = 0.3;
 
+    // TODO: Sam. (High) Verify this is still correct
     public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(27.0);
 
     public static final double MAX_ERROR_LINEAR = Units.inchesToMeters(1.0);
@@ -115,13 +113,16 @@ public final class Constants {
     public static final double ALLIANCE_BLUE_ROTATION = 180.0;
     public static final double ALLIANCE_RED_ROTATION = 0.0;
 
+    // TODO: Sam. (High) Verify this is still correct
     public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(39.0);
+    // TODO: Sam. (High) Verify this is still correct
     public static final double X_OFFSET_FROM_SCORE_LOCATION = LENGTH_OF_ROBOT / 2.0 + Units.inchesToMeters(14.0);
 
     public static final double KP_BALANCE = 0.01;
     public static final double KI_BALANCE = 0;
     public static final double KD_BALANCE = 0;
     public static final double BALANCING_TOLERANCE = 1;
+    // TODO: Lukas. (High) Decide this value
     public static final int MAX_BALANCE_SPEED = 0;
 
     public enum DrivetrainMode {
@@ -132,9 +133,11 @@ public final class Constants {
   }
 
   public static class VisionConstants {
+    // TODO: Lukas. (High) Confirm these location constants for camera
     public static final double CAMERA_PITCH = 0;
     public static final Transform3d CAMERA_POSITION = new Transform3d(new Translation3d(Units.inchesToMeters(17.5),
         Units.inchesToMeters(-.5), Units.inchesToMeters(6.875)), new Rotation3d(0, CAMERA_PITCH, 0));
+    //TODO: Lukas. Is this used?
     public static final double[] TAG_HEIGHT = { 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25,
         17.25, 17.25, 17.25 };
     public static final double CAMERA_HEIGHT = (7.0 + (5.0 / 8.0));
@@ -176,19 +179,22 @@ public final class Constants {
     public static final double KG = 0.11; //THIS
     public static final double KV = 0;
 
+    //TODO: Lukas. (High) Set a position tolerance
     public static final double POSITION_TOLERANCE = 0;
     public static final double SHOULDER_POTENTIOMETER_RANGE = 340;
     // TODO: need to find offset to paralell to floor 0
     public static final double SHOULDER_POTENTIOMETER_OFFSET = -222;
     public static final int CURRENT_LIMIT = 39;
+    // TODO: Lukas. (High) Set gear ratio
     public static final double SHOULDER_GEAR_RATIO = 1.0/1.0; //THIS
-    public static final double POSITION_CONVERSION_FACTOR = SHOULDER_GEAR_RATIO * 360.0; //TODO: add actuall number
+    public static final double POSITION_CONVERSION_FACTOR = SHOULDER_GEAR_RATIO * 360.0; 
     public static final double MINIMUM_SHOULDER_ANGLE = 0; //THIS
     public static final double MAX_SHOULDER_ANGLE = 0.0;
     public static final double MAX_MANNUAL_WRIST_SPEED = 75.0; //THIS
-    public static final double MAX_SPEED_DOWNWARD = 0.25; //THIS
+    public static final double MAX_SPEED_DOWNWARD = -0.25; //THIS
     public static final double MAX_SPEED_UPWARD = 0.25; //THIS
 
+    // TODO: Lukas. (High) Set the angles
     public enum ArmPositions {
       LEVEL_3(0, PnuematicPositions.EXTENDED),
       LEVEL_2(0, PnuematicPositions.RETRACTED),
@@ -216,9 +222,13 @@ public final class Constants {
   }
 
   public static class WristConstants{
-    public static final double WRIST_ANGLE_TOLERANCE = 1;
-    public static final int CURRENT_LIMIT = 20;
     public static final int WRIST_CAN_ID = 6;
+    public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
+    public static final int POT_CHANEL = 1;
+
+    public static final int CURRENT_LIMIT = 20;
+
+    public static final double WRIST_ANGLE_TOLERANCE = 1;
     public static final double MAX_WRIST_ANGLE = 103;
     public static final double MAX_UPWARD_WRIST_SPEED = 0.25;
     public static final double MAX_DOWNWARD_WRIST_SPEED = -0.1;
@@ -230,19 +240,18 @@ public final class Constants {
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.0;
     public static final double WRIST_POT_OFFSET = -199;// so stowed is 120
+    //TODO: Lukas. Can this be removed?
     public static final double WRIST_MANUAL_SLOWDOWN = .4;
+    //TODO: Lukas. Can this be removed?
     public static final double MAX_APROACHING_WRIST_SPEED = .08;
     public static final double WRIST_GEAR_RATIO = 1.0/80.0;
     public static final double WRIST_ENCODER_CONVERSION_FACTOR = 360.0 * WRIST_GEAR_RATIO;
-    public static final double SLOWDOWN_WRIST_ANGLE = 80;
-    public static final double MAX_SLOW_WRIST_SPEED = 0.05;
     public static final double MIN_WRIST_ANGLE = 10;
     public static final int WRIST_POT_SCALE = 340;
-    public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
-    public static final int POT_CHANEL = 1;
 
     public static final double MAX_MANNUAL_WRIST_SPEED = 50;
 
+    // TODO: Lukas. (High) Determine these
     public enum WristPosition {
       STOW(WristConstants.MAX_WRIST_ANGLE),
       FLOOR_CUBE_PICKUP(0.06),
@@ -269,7 +278,10 @@ public final class Constants {
     public static final int DISTANCE_SENSOR_CHANEL = 5;
     public static final int INTAKE_LIMIT_SWITCH_ID = 2;
     public static final int CURRENT_LIMIT = 20;
+    public static final double INTAKE_GEAR_RATIO = 1.0 / 5.0;
+    public static final double INTAKE_ENCODER_CONVERSION_FACTOR = 360.0 * INTAKE_GEAR_RATIO;
     
+    //TODO: Lukas. (High) Set these
     public enum IntakeDirection
     {
       STOP (0.0),

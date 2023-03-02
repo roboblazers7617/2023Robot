@@ -33,12 +33,15 @@ public class TurnToTag extends PIDCommand {
         // This uses the output
         (output) -> {
           // Use the output (and setpoint, if desired) here
+              //TODO: Lukas. (High) Not sure should use KS_ROT here. KS_ROT. Use SIMPLE_FF_ANGULAR constant?
+              //TODO: Lukas. Please move magic numbers into constants
           mDrivetrain.arcadeDrive(0.0,MathUtil.clamp(output+Math.copySign(DrivetrainConstants.KS_ROT, output), -.5, .5));
         });
     // Use addRequirements() here to declare subsystem dependencies.
     // Configure additional PID options by calling `getController` here.
     addRequirements(mDrivetrain);
     getController().enableContinuousInput(-180, 180);
+    //TODO: Lukas (High) please move to constants
     getController().setTolerance(2);
   }
 

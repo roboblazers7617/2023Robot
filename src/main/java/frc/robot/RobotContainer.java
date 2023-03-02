@@ -11,6 +11,7 @@ import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.WristConstants;
+import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.WristConstants.WristPosition;
 import frc.robot.Constants.WristConstants.IntakeConstants.IntakeDirection;
 import frc.robot.commands.IntakeDown;
@@ -98,6 +99,7 @@ public class RobotContainer {
         configureOperatorBindings();
         // create shuffleboardinfo.java
 
+        // TODO: Sam. (Medium) Make a way for quickTurn to be true. Tied to another button
         drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
                 m_driverController.getRightX(), m_driverController.getRightY(), false), drivetrain));
 
@@ -124,6 +126,7 @@ public class RobotContainer {
 
     }
 
+    // TODO: Lukas: Unused code. Remove? Should this be used for the default commands for arm and wrist?
     private boolean isOutsideDeadzone(DoubleSupplier value) {
         System.out.println(Math.abs(value.getAsDouble()));
         return (Math.abs(value.getAsDouble()) > OperatorConstants.DEADZONE);
@@ -145,6 +148,7 @@ public class RobotContainer {
      */
     private void configureDriverBindings() {
 
+        // TODO: Sam. (High) Remove hardcoded Blue Alliance. There should be a wrapper function to read what Alliance to use
         m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain,
                 () -> m_driverController.getLeftY(),
                 () -> m_driverController.getRightY(),
@@ -178,7 +182,17 @@ public class RobotContainer {
                 .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CUBE)));
 
 
-
+        // Test arm movement
+        // TODO: Remove after testing
+        m_operatorController.povLeft().and(m_operatorController.leftBumper())
+                .whileTrue(new InstantCommand(() -> arm.setPosition(ArmPositions.STOW.getShoulderAngle()), arm));
+        m_operatorController.povRight().and(m_operatorController.leftBumper())
+                .whileTrue(new InstantCommand(() -> arm.setPosition(-20), arm));
+        m_operatorController.povDown().and(m_operatorController.leftBumper())
+                .whileTrue(new InstantCommand(() -> arm.setPosition(-45), arm));
+        
+        // Testing wrist movement
+        // TODO: Remove after testing
         m_operatorController.povLeft().whileTrue(new InstantCommand(() -> wrist.setPosition(WristPosition.STOW.angle()), wrist));
         m_operatorController.povRight().whileTrue(new InstantCommand(() -> wrist.setPosition(60), wrist));
         m_operatorController.povDown().whileTrue(new InstantCommand(() -> wrist.setPosition(20), wrist));
@@ -219,11 +233,14 @@ public class RobotContainer {
      *
      * @return the command to run in autonomous
      */
+    // TODO: Sam. (High) Make this tied into the drop-down selection in Shuffleboard to choose the routine
     public Command getAutonomousCommand() {
         drivetrain.setBrakeMode(IdleMode.kCoast);
         return pickAutonomousCommand("blue far 2 ball").andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
     }
 
+
+    //TODO: Sam. (High) Add a boolean parameter to signify if the path should be reversed or not. Shouldn't default to reversed as may cause errors
     public Command pickAutonomousCommand(String pathName) {
 
         HashMap<String, Command> eventMap = new HashMap<>();
@@ -237,6 +254,7 @@ public class RobotContainer {
         RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
                 drivetrain::getPose2d, // Pose2d supplier
                 drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning of auto
+                //TODO: Sam. (High) This should be constants
                 new RamseteController(2.0, 0.7),
                 drivetrain.getKinematics(),
                 new SimpleMotorFeedforward(DrivetrainConstants.KS_LIN, DrivetrainConstants.KV),

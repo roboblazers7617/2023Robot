@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInLayouts;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import frc.robot.subsystems.Arm;
 
 /**
@@ -23,6 +24,7 @@ import frc.robot.subsystems.Arm;
  */
 public class ArmTab extends ShuffleboardTabBase {
     DoublePublisher anglePub;
+    DoublePublisher motorTempPub;
     StringPublisher pistonPub;
     BooleanPublisher stowPub;
     Arm mArm;
@@ -49,12 +51,17 @@ public class ArmTab extends ShuffleboardTabBase {
         anglePub = networkTable.getDoubleTopic("Angle (Degrees)").publish();
         pistonPub = networkTable.getStringTopic("Piston state").publish();
         stowPub = networkTable.getBooleanTopic("Stow Limit Switch").publish();
+        motorTempPub = networkTable.getDoubleTopic("Motor Temp").publish();
 
         // add the network table to shuffleboard, the name must be the same, the default
         // value does not matter.
+        //TODO: Lukas. Update these with data
         widget.add("Angle (Degrees)", 0);
         widget.add("Piston State", "ERROR 404: Position does not exist.");
         widget.add("Stow Limit Switch", false);
+
+        shuffleboardTabTesting.add("Disable Compressor", new InstantCommand(() ->mArm.enableCompressor(false)));
+        shuffleboardTabTesting.add("Enable Compressor", new InstantCommand(() ->mArm.enableCompressor(true)));
     }
 
     public void update() {
@@ -62,6 +69,7 @@ public class ArmTab extends ShuffleboardTabBase {
         anglePub.set(mArm.getShoulderAngle());
         pistonPub.set(mArm.getSuperstructureState().toString());
         stowPub.set(mArm.isArmStowed());
+        motorTempPub.set((mArm.getShoulderMotorTemp()*(9.0/5.0)+32.0));
 
     }
 }

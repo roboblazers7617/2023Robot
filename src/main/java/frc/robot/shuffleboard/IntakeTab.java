@@ -25,12 +25,14 @@ public class IntakeTab extends ShuffleboardTabBase {
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         NetworkTable networkTable = inst.getTable("Shuffleboard/Intake");
         ShuffleboardTab shuffleboardTabTesting = Shuffleboard.getTab("Intake");
-        wristAnglePublisher = networkTable.getDoubleTopic("The angle of the wrist").publish();
+
+        
+        wristAnglePublisher = networkTable.getDoubleTopic("Wrist Angle").publish();
         wristTempPublisher = networkTable.getDoubleTopic("Wrist Temp").publish();
-        wristSpeedPublisher = networkTable.getDoubleTopic("The speed of the wrist").publish();
-        intakeSpeedPublisher = networkTable.getDoubleTopic("The speed of the intake").publish();
-        isIntakeStoredPublisher = networkTable.getBooleanTopic("Is the intake in the stored position?").publish();
-        isHoldingCubePublisher = networkTable.getBooleanTopic("Is the robot holding a cube?").publish();
+        wristSpeedPublisher = networkTable.getDoubleTopic("Wrist Speed").publish();
+        intakeSpeedPublisher = networkTable.getDoubleTopic("Intake Speed").publish();
+        isIntakeStoredPublisher = networkTable.getBooleanTopic("Is Wrist Stored?").publish();
+        isHoldingCubePublisher = networkTable.getBooleanTopic("Have Cube?").publish();
         wristEncoderAnglePublisher = networkTable.getDoubleTopic("Wrist Encoder Angle").publish();
         
         //shuffleboardTabTesting.add(new intake.moveToPositionCommand(IntakeConstants.WristPosition.FloorConePickup));
@@ -41,7 +43,7 @@ public class IntakeTab extends ShuffleboardTabBase {
         wristAnglePublisher.set(wrist.getWristPosition());
         wristSpeedPublisher.set(wrist.getWristVelocity());
         intakeSpeedPublisher.set(intake.getIntakeSpeed());
-        isIntakeStoredPublisher.set(intake.isStored());
+       // isIntakeStoredPublisher.set(intake.isStored());
         isHoldingCubePublisher.set(intake.isHoldingGamePiece());
        // wristEncoderAnglePublisher.set(intake.getEncoderAngle());
         wristTempPublisher.set((wrist.getWristMotorTemp()*(9.0/5.0)+32.0));
