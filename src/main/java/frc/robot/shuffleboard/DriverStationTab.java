@@ -91,12 +91,11 @@ public class DriverStationTab extends ShuffleboardTabBase {
         pathPlanningTargetPub = networkTable.getStringTopic("target position for path planning").publish();
         tab.add("target position for path planning", "NA");
 
-        //TODO: Brandon. (High) Add code here in case the camera is not plugged in that it does not crash the code.
-      /*   camera = CameraServer.startAutomaticCapture();
+        camera = CameraServer.startAutomaticCapture();
         if (camera.isConnected()) {
             camera.setResolution(480, 320);
             camera.setFPS(10);
-        }*/
+        }
     }
 
     public DrivetrainConstants.AutoPath getAutoPath() {
