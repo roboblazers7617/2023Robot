@@ -16,6 +16,7 @@ import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.Constants.WristConstants.WristPosition;
 import frc.robot.Constants.WristConstants.IntakeConstants.IntakeDirection;
 import frc.robot.commands.IntakeDown;
+import frc.robot.commands.ArmStuff.SimplePickup;
 import frc.robot.commands.ArmStuff.Stow;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.commands.Drivetrain.AutoBalance;
@@ -195,6 +196,11 @@ public class RobotContainer {
         m_operatorController.rightTrigger()
                 .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CUBE)));
 
+        m_operatorController.leftTrigger()
+                .onTrue(new SimplePickup(arm, wrist, intake, () -> getSelectedPiece(), Constants.PickupLocation.FLOOR));
+        m_operatorController.leftTrigger()
+                .onTrue(new SimplePickup(arm, wrist, intake, () -> getSelectedPiece(), Constants.PickupLocation.DOUBLE));
+
 
         // Test arm movement
         // TODO: Remove after testing
@@ -219,7 +225,10 @@ public class RobotContainer {
                         () -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake));
 
         // Test holding arm in place
-        m_operatorController.a().onTrue(new InstantCommand(()-> arm.setPosition(arm.getShoulderAngle())));
+        // m_operatorController.a().onTrue(new InstantCommand(()-> arm.setPosition(arm.getShoulderAngle())));
+
+        m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
+
 
        // m_operatorController.povDown().onTrue(new SimpleMoveToScore(arm, intake, ScoreLevel.LEVEL_1));
        // m_operatorController.povRight().onTrue(new SimpleMoveToScore(arm, intake, ScoreLevel.LEVEL_2));
