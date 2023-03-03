@@ -4,9 +4,12 @@
 
 package frc.robot.commands.ArmStuff;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.PickupLocation;
+import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
@@ -15,15 +18,11 @@ import frc.robot.subsystems.Wrist;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class SimpleMoveToScore extends SequentialCommandGroup {
-  /** Creates a new SimpleMoveArmToPosition. */
-  public SimpleMoveToScore(Arm arm, Wrist wrist, ScoreLevel level) {
+public class SimpleScore extends SequentialCommandGroup {
+  /** Creates a new SimplePickup. */
+  public SimpleScore(Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece, ScoreLevel level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new InstantCommand(() -> arm.setPosition(arm.evalScoreLevel(level)), arm),
-    arm.WaitUntilArmInPosition(),
-    arm.actuateSuperstructureCommand(level),
-    new InstantCommand(() -> wrist.setPosition(wrist.evalScorePosition(level)), wrist),
-    wrist.WaitUntilWristInPosition());
+    addCommands(new SimpleMoveToScore(arm, wrist, level), intake.SpinIntakeCommand(piece, false));
   }
 }
