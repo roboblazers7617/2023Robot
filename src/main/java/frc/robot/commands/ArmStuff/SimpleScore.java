@@ -20,9 +20,9 @@ import frc.robot.subsystems.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimpleScore extends SequentialCommandGroup {
   /** Creates a new SimplePickup. */
-  public SimpleScore(Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece, ScoreLevel level) {
+  public SimpleScore(Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece, Supplier<ScoreLevel> level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new SimpleMoveToScore(arm, wrist, level), intake.SpinIntakeCommand(piece, false));
+    addCommands(new SimpleMoveToScore(arm, wrist,level), intake.SpinIntakeCommand(piece, false));
   }
 }

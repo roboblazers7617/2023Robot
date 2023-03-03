@@ -4,6 +4,8 @@
 
 package frc.robot.commands.ArmStuff;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -17,12 +19,12 @@ import frc.robot.subsystems.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimpleMoveToScore extends SequentialCommandGroup {
   /** Creates a new SimpleMoveArmToPosition. */
-  public SimpleMoveToScore(Arm arm, Wrist wrist, ScoreLevel level) {
+  public SimpleMoveToScore(Arm arm, Wrist wrist, Supplier<ScoreLevel> level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new InstantCommand(() -> arm.setPosition(arm.evalScoreLevel(level)), arm),
+    addCommands(new InstantCommand(() -> arm.setPosition(arm.evalScorePosition(level)), arm),
     arm.WaitUntilArmInPosition(),
-    arm.actuateSuperstructureCommand(level),
+    arm.actuateSuperstructureCommandScore(level),
     new InstantCommand(() -> wrist.setPosition(wrist.evalScorePosition(level), arm::getShoulderAngle), wrist),
     wrist.WaitUntilWristInPosition());
   }

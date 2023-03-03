@@ -16,6 +16,8 @@ import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.Constants.WristConstants.WristPosition;
 import frc.robot.Constants.WristConstants.IntakeConstants.IntakeDirection;
 import frc.robot.commands.IntakeDown;
+import frc.robot.commands.ArmStuff.SimplePickup;
+import frc.robot.commands.ArmStuff.SimpleScore;
 import frc.robot.commands.ArmStuff.Stow;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.commands.Drivetrain.AutoBalance;
@@ -195,6 +197,11 @@ public class RobotContainer {
         m_operatorController.rightTrigger()
                 .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CUBE)));
 
+        m_operatorController.leftTrigger()
+                .onTrue(new SimplePickup(arm, wrist, intake, () -> getSelectedPiece(), ()-> PickupLocation.FLOOR));
+        m_operatorController.leftTrigger()
+                .onTrue(new SimplePickup(arm, wrist, intake, () -> getSelectedPiece(), ()-> PickupLocation.DOUBLE));
+
 
         // Test arm movement
         // TODO: Remove after testing
@@ -219,7 +226,10 @@ public class RobotContainer {
                         () -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake));
 
         // Test holding arm in place
-        m_operatorController.a().onTrue(new InstantCommand(()-> arm.setPosition(arm.getShoulderAngle())));
+        // m_operatorController.a().onTrue(new InstantCommand(()-> arm.setPosition(arm.getShoulderAngle())));
+
+        m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
+
 
        // m_operatorController.povDown().onTrue(new SimpleMoveToScore(arm, intake, ScoreLevel.LEVEL_1));
        // m_operatorController.povRight().onTrue(new SimpleMoveToScore(arm, intake, ScoreLevel.LEVEL_2));
@@ -252,15 +262,17 @@ public class RobotContainer {
         drivetrain.setBrakeMode(IdleMode.kCoast);
         return pickAutonomousCommand(driverStationTab.getAutoPath()).andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
     }
+//TODO Sam, I need to see If I can find a way to delete the extra command named null in "red far 2 ball"
 
-
-    //TODO: Sam. (High) Add a boolean parameter to signify if the path should be reversed or not. Shouldn't default to reversed as may cause errors
     public Command pickAutonomousCommand(DrivetrainConstants.AutoPath autopath) {
-        System.out.println(autopath.pathname());
-        System.out.println(autopath.isReverse());
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("intakeDown", new IntakeDown());
+        eventMap.put("Stow", new Stow(arm, wrist, intake));
+        eventMap.put("AutoBalance", new AutoBalance(drivetrain));
+        eventMap.put("SimplePickup", new SimplePickup(arm, wrist, intake, () -> autopath.selectedPiece(), () -> autopath.pickupLocation()));
+        eventMap.put("SimpleScore", new SimpleScore(arm, wrist, intake, () -> autopath.selectedPiece(), () -> autopath.scoreLevelSecond()));
+        
 
+// arm, intake, wrist, piecetype, score level
         PathPlannerTrajectory test_path = PathPlanner.loadPath(
                 autopath.pathname(), new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
                         DrivetrainConstants.MAX_AUTO_ACCELERATION),

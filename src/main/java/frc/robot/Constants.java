@@ -62,7 +62,7 @@ public final class Constants {
     // public static final String CURVATURE_DRIVE_STRING = "CURVATURE";
 
     public static final double WHEEL_RADIUS = Units.inchesToMeters(3.0);
-    public static final double WHEEL_GEAR_RATIO = 1.0 / 10.71;
+    public static final double WHEEL_GEAR_RATIO = 1.0 / 12.75;
     public static final double DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION = (2.0 * Math.PI * WHEEL_RADIUS
         * WHEEL_GEAR_RATIO);
     public static final double DRIVETRAIN_ENCODER_VELOCITY = (DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION / 60.0);
@@ -132,25 +132,45 @@ public final class Constants {
     }
 
     public enum AutoPath {
-      blueNodeOne("blue far 2 ball", true),
-      blueNodeSix("blue mid 2 ball", true),
-      blueNodeNine("blue near 2 ball", true),
-      redNodeOne("red far 2 ball", true),
-      redNodeSix("red mid 2 ball", true),
-      redNodeNine("red near 2 ball", true),;
+      blueNodeOne("blue far 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      blueNodeSix("blue mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      blueNodeNine("blue near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      redNodeOne("red far 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      redNodeSix("red mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      redNodeNine("red near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR);
 
       private final String pathname;
       private final boolean isReverse;
+      private final PieceType selectedPiece;
+      private final ScoreLevel ScoreLevelFirst;
+      private final ScoreLevel ScoreLevelSecond;
+      private final PickupLocation pickupLocation;
 
-      AutoPath(String pathname, boolean isReverse) {
+      AutoPath(String pathname, boolean isReverse, PieceType selectedPiece, ScoreLevel ScoreLevelFirst, ScoreLevel ScoreLevelSecond, PickupLocation pickupLocation) {
         this.pathname = pathname;
         this.isReverse = isReverse;
+        this.selectedPiece = selectedPiece;
+        this.ScoreLevelFirst = ScoreLevelFirst;
+        this.ScoreLevelSecond = ScoreLevelSecond;
+        this.pickupLocation = pickupLocation;
       }
       public String pathname(){
         return pathname;
       }
       public boolean isReverse(){
         return isReverse;
+      }
+      public PieceType selectedPiece(){
+        return selectedPiece;
+      }
+      public ScoreLevel scoreLevelFirst(){
+        return ScoreLevelFirst;
+      }
+      public ScoreLevel scoreLevelSecond(){
+        return ScoreLevelSecond;
+      }
+      public PickupLocation pickupLocation(){
+        return pickupLocation;
       }
     }
   }

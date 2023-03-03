@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.Supplier;
+
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
@@ -79,21 +81,21 @@ public class Arm extends SubsystemBase {
     lastTime = time.get();
   }
 
-  public ArmPositions evalPickupPosition(PickupLocation location) {
-    if (location.equals(PickupLocation.FLOOR))
+  public ArmPositions evalPickupPosition(Supplier<PickupLocation> location) {
+    if (location.get().equals(PickupLocation.FLOOR))
       return ArmPositions.FLOOR_PICKUP;
-    else if (location.equals(PickupLocation.DOUBLE))
+    else if (location.get().equals(PickupLocation.DOUBLE))
       return ArmPositions.STATION_PICKUP;
     else
       return ArmPositions.STOW;
   }
 
-  public ArmPositions evalScorePosition(ScoreLevel level) {
-    if (level.equals(ScoreLevel.LEVEL_1))
+  public ArmPositions evalScorePosition(Supplier<ScoreLevel> level) {
+    if (level.get().equals(ScoreLevel.LEVEL_1))
       return ArmPositions.LEVEL_1;
-    else if (level.equals(ScoreLevel.LEVEL_2))
+    else if (level.get().equals(ScoreLevel.LEVEL_2))
       return ArmPositions.LEVEL_2;
-    else if (level.equals(ScoreLevel.LEVEL_3))
+    else if (level.get().equals(ScoreLevel.LEVEL_3))
       return ArmPositions.LEVEL_3;
     else
       return ArmPositions.STOW;
@@ -123,11 +125,11 @@ public class Arm extends SubsystemBase {
         feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
   }
 
-  public Command actuateSuperstructureCommand(PickupLocation location) {
+  public Command actuateSuperstructureCommandPickup(Supplier<PickupLocation> location) {
     return Commands.runOnce(() -> actuateSuperstructure(evalPickupPosition(location).getPistonPosition()), this);
   }
 
-  public Command actuateSuperstructureCommand(ScoreLevel level) {
+  public Command actuateSuperstructureCommandScore(Supplier<ScoreLevel> level) {
     return Commands.runOnce(() -> actuateSuperstructure(evalScorePosition(level).getPistonPosition()), this);
   }
 

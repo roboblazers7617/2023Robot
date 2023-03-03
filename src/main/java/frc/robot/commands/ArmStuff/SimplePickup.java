@@ -19,7 +19,7 @@ import frc.robot.subsystems.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimplePickup extends SequentialCommandGroup {
   /** Creates a new SimplePickup. */
-  public SimplePickup(Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece, PickupLocation location) {
+  public SimplePickup(Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece, Supplier<PickupLocation> location) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new SimpleMoveToPickup(arm, wrist, piece, location), intake.SpinIntakeCommand(piece, true));
