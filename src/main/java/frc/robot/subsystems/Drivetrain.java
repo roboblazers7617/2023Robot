@@ -71,7 +71,6 @@ public class Drivetrain extends SubsystemBase {
   public Drivetrain(Vision vision) {
     drivetrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
     drivetrain.setMaxOutput(DrivetrainConstants.REG_SPEED);
-    //TODO: Sam. (High) Check what this should default to for Princeton
     mode = DrivetrainConstants.DrivetrainMode.arcadeDrive;
 
     leftFrontMotor.restoreFactoryDefaults();

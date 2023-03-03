@@ -126,23 +126,23 @@ public class Wrist extends SubsystemBase {
     return Commands.waitUntil(() -> atSetpoint());
   }
 
-  public WristPosition evalPickupLocation(PickupLocation location, Supplier<PieceType> piece) {
-    if (location.equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CONE))
+  public WristPosition evalPickupLocation(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
+    if (location.get().equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CONE))
       return WristPosition.FLOOR_CONE_PICKUP;
-    else if (location.equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CUBE))
+    else if (location.get().equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CUBE))
       return WristPosition.FLOOR_CUBE_PICKUP;
-    else if (location.equals(PickupLocation.DOUBLE))
+    else if (location.get().equals(PickupLocation.DOUBLE))
       return WristPosition.DOUBLE_PICKUP;
     else
       return WristPosition.STOW;
   }
 
-  public WristPosition evalScorePosition(ScoreLevel level) {
-    if (level.equals(ScoreLevel.LEVEL_1))
+  public WristPosition evalScorePosition(Supplier<ScoreLevel> level) {
+    if (level.get().equals(ScoreLevel.LEVEL_1))
       return WristPosition.LEVEL_1;
-    else if (level.equals(ScoreLevel.LEVEL_2))
+    else if (level.get().equals(ScoreLevel.LEVEL_2))
       return WristPosition.LEVEL_2;
-    else if (level.equals(ScoreLevel.LEVEL_3))
+    else if (level.get().equals(ScoreLevel.LEVEL_3))
       return WristPosition.LEVEL_2;
     else
       return WristPosition.LEVEL_2;
