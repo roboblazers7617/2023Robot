@@ -48,7 +48,6 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
         //drive mode
 
-        //TODO. Brandon. Should it default to arcade or tank?
         drivetrainMode.setDefaultOption("Arcade Drive", DrivetrainConstants.DrivetrainMode.arcadeDrive.toString());
         drivetrainMode.addOption("Tank Drive", DrivetrainMode.tankDrive.toString());
         drivetrainMode.addOption("Curvature Drive", DrivetrainMode.curvatureDrive.toString());

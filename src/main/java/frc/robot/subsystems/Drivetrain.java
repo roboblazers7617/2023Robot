@@ -244,10 +244,6 @@ public class Drivetrain extends SubsystemBase {
     }
   }
 
-    // TODO: Brandon. Is this needed? duplicate of getTargetNode()? If so, updated Shuffleboard tab to use that function
-    public Translation2d getTargetTranslation() {
-      return new Translation2d(1,1);
-    }
 
     public double getaverageEncoderDistance() {
       return (getLeftDistance() + getRightDistance()) / 2;
@@ -272,7 +268,7 @@ public class Drivetrain extends SubsystemBase {
       return targetNode;
     }
 
-    // TODO: Brandon. Why does this return a string? Is this old code?
+    // Brandon. Why does this return a string? Is this old code? - It is used for shuffleboard
     public String getTargetPose(){
       //return targetPose;
       return targetNode.toString();
