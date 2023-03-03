@@ -22,7 +22,7 @@ public class Stow extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new InstantCommand(() -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake),
-        new InstantCommand(() -> wrist.setPosition(WristPosition.STOW), wrist), wrist.WaitUntilWristInPosition(),
+        new InstantCommand(() -> wrist.setPosition(WristPosition.STOW, arm::getShoulderAngle), wrist), wrist.WaitUntilWristInPosition(),
         new InstantCommand(() -> arm.setPosition(ArmPositions.STOW), arm), arm.WaitUntilArmInPosition());
   }
 }

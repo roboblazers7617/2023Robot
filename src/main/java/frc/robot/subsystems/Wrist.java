@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
@@ -25,13 +26,14 @@ import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.WristConstants;
+import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.WristConstants.WristPosition;
 
 public class Wrist extends SubsystemBase {
   private final CANSparkMax wristMotor = new CANSparkMax(WristConstants.WRIST_CAN_ID, MotorType.kBrushless);
 
   private final ArmFeedforward wristFeedforward = new ArmFeedforward(WristConstants.WRIST_KS, WristConstants.WRIST_KG,
-  WristConstants.WRIST_KV);
+      WristConstants.WRIST_KV);
 
   private final SparkMaxPIDController wristController = wristMotor.getPIDController();
 
@@ -40,7 +42,8 @@ public class Wrist extends SubsystemBase {
   private final AnalogPotentiometer wristPotentiometer = new AnalogPotentiometer(WristConstants.POT_CHANEL,
       WristConstants.WRIST_POT_SCALE, WristConstants.WRIST_POT_OFFSET);
 
-  //TODO: private final DigitalInput isStowed = new DigitalInput(IntakeConstants.WRIST_LIMIT_SWITCH_CHANEL);
+  // TODO: private final DigitalInput isStowed = new
+  // DigitalInput(IntakeConstants.WRIST_LIMIT_SWITCH_CHANEL);
 
   private Timer time = new Timer();
 
@@ -63,10 +66,9 @@ public class Wrist extends SubsystemBase {
     wristController.setOutputRange(WristConstants.MAX_DOWNWARD_WRIST_SPEED, WristConstants.MAX_UPWARD_WRIST_SPEED);
     wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         wristFeedforward.calculate(Units.degreesToRadians(setpoint), 0));
-    
-        time.reset();
-        time.start();
 
+    time.reset();
+    time.start();
   }
 
   @Override
@@ -75,9 +77,12 @@ public class Wrist extends SubsystemBase {
     dt = time.get() - lastTime;
     lastTime = time.get();
 
-    // TODO: Lukas. Is this code needed?
-   /* if(isStowed.get())
-      wristEncoder.setPosition(WristPosition.STOW.angle());*/
+    if (getWristPosition() > 97 && setpoint == WristPosition.STOW.angle())
+      wristMotor.set(0);
+    else if (getWristPosition() < 97 && setpoint == WristPosition.STOW.angle()){
+    wristController.setReference(WristPosition.STOW.angle(), CANSparkMax.ControlType.kPosition, 0,
+    wristFeedforward.calculate(Units.degreesToRadians(WristPosition.STOW.angle()), 0));}
+  
   }
 
   public double getWristPosition() {
@@ -88,41 +93,39 @@ public class Wrist extends SubsystemBase {
     return wristEncoder.getVelocity();
   }
 
-  public void setPosition(double position) {
-    setpoint = Math.min(position, WristConstants.MAX_WRIST_ANGLE);
-    setpoint = Math.max(setpoint, WristConstants.MIN_WRIST_ANGLE);
-    wristController.setReference(position, CANSparkMax.ControlType.kPosition, 0,
-        wristFeedforward.calculate(Units.degreesToRadians(setpoint), 0));
+  public void setPosition(double position, Supplier<Double> armAngleSupplier) {
+    if (armAngleSupplier.get() >= WristConstants.MIN_ANGLE_TO_RAISE_ARM) {
+      setpoint = Math.min(position, WristConstants.MAX_WRIST_ANGLE);
+      setpoint = Math.max(setpoint, WristConstants.MIN_WRIST_ANGLE);
+      wristController.setReference(position, CANSparkMax.ControlType.kPosition, 0,
+          wristFeedforward.calculate(Units.degreesToRadians(setpoint), 0));
+    }
   }
 
-  // TODO: Lukas. (Medium) Should this function just call setPosition(double position) and pass in the angle from WristPosition so as to not duplicate code?
-  public void setPosition(WristPosition position) {
-    setpoint = Math.min(position.angle(), WristConstants.MAX_WRIST_ANGLE);
-    setpoint = Math.max(setpoint, WristConstants.MIN_WRIST_ANGLE);
-    wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
-        wristFeedforward.calculate(Units.degreesToRadians(setpoint), 0));
+  public void setPosition(WristPosition position, Supplier<Double> armAngleSupplier) {
+    setPosition(position.angle(), armAngleSupplier);
   }
 
-  //TODO: Lukas. (Medium) Should this function just call setPosition(double position) once it has the setpoint so as to not duplicate code?
-  //TODO: Lukas. Rename this parameter to show what its units are
-  public void setVelocity(double velocity){
-    setpoint = setpoint + velocity*dt;
-    setpoint = Math.min(setpoint, WristConstants.MAX_WRIST_ANGLE);
-    setpoint = Math.max(setpoint, WristConstants.MIN_WRIST_ANGLE);
-    wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
-        wristFeedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocity)));
+  public void setVelocity(double velocityDegrees, Supplier<Double> armAngleSupplier) {
+    if (armAngleSupplier.get() > WristConstants.MIN_ANGLE_TO_RAISE_ARM) {
+      setpoint = setpoint + velocityDegrees * dt;
+      setpoint = Math.min(setpoint, WristConstants.MAX_WRIST_ANGLE);
+      setpoint = Math.max(setpoint, WristConstants.MIN_WRIST_ANGLE);
+      wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+          wristFeedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegrees)));
+    }
   }
 
-  public double getWristMotorTemp(){
+  public double getWristMotorTemp() {
     return wristMotor.getMotorTemperature();
   }
 
   // TODO: Lukas. (High) Check this code is correct
-  public boolean atSetpoint(){
+  public boolean atSetpoint() {
     return (Math.abs(getWristPosition() - (setpoint)) < (WristConstants.WRIST_ANGLE_TOLERANCE));
   }
 
-  public Command WaitUntilWristInPosition(){
+  public Command WaitUntilWristInPosition() {
     return Commands.waitUntil(() -> atSetpoint());
   }
 

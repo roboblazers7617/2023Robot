@@ -273,6 +273,7 @@ public final class Constants {
     public static final int WRIST_POT_SCALE = 340;
 
     public static final double MAX_MANNUAL_WRIST_SPEED = 50;
+    public static final double MIN_ANGLE_TO_RAISE_ARM = 20;
 
     // TODO: Lukas. (High) Determine these
     public enum WristPosition {

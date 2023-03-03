@@ -111,7 +111,7 @@ public class RobotContainer {
                 m_driverController.getRightX(), m_driverController.getRightY(), isRightTriggerPressed),drivetrain));
 
         arm.setDefaultCommand( new RunCommand(() -> arm.setVelocity(m_operatorController.getLeftY()*ArmConstants.MAX_MANNUAL_WRIST_SPEED), arm));
-        wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(m_operatorController.getRightY()*WristConstants.MAX_MANNUAL_WRIST_SPEED), wrist));
+        wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(m_operatorController.getRightY()*WristConstants.MAX_MANNUAL_WRIST_SPEED, arm::getShoulderAngle), wrist));
                 
 
 
@@ -207,9 +207,9 @@ public class RobotContainer {
         
         // Testing wrist movement
         // TODO: Remove after testing
-        m_operatorController.povLeft().whileTrue(new InstantCommand(() -> wrist.setPosition(WristPosition.STOW.angle()), wrist));
-        m_operatorController.povRight().whileTrue(new InstantCommand(() -> wrist.setPosition(60), wrist));
-        m_operatorController.povDown().whileTrue(new InstantCommand(() -> wrist.setPosition(20), wrist));
+        m_operatorController.povLeft().whileTrue(new InstantCommand(() -> wrist.setPosition(WristPosition.STOW.angle(), arm::getShoulderAngle), wrist));
+        m_operatorController.povRight().whileTrue(new InstantCommand(() -> wrist.setPosition(60, arm::getShoulderAngle), wrist));
+        m_operatorController.povDown().whileTrue(new InstantCommand(() -> wrist.setPosition(20, arm::getShoulderAngle), wrist));
         //TODO: m_operatorController.b().whileTrue(new Stow(arm, intake));
         m_operatorController.y()
                 .whileTrue(Commands.runEnd(() -> intake.setIntakeSpeed(IntakeDirection.PICK_CUBE.speed()),

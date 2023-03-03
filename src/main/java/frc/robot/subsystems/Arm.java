@@ -177,4 +177,8 @@ public class Arm extends SubsystemBase {
   public double getShoulderMotorTemp(){
     return shoulderMotor.getMotorTemperature();
   }
+
+public ArmPositions evalScoreLevel(ScoreLevel level) {
+    return null;
+}
 }
