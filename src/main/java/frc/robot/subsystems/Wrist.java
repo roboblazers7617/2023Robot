@@ -80,8 +80,9 @@ public class Wrist extends SubsystemBase {
     if (getWristPosition() > 97 && setpoint == WristPosition.STOW.angle())
       wristMotor.set(0);
     else if (getWristPosition() < 97 && setpoint == WristPosition.STOW.angle()){
-    wristController.setReference(WristPosition.STOW.angle(), CANSparkMax.ControlType.kPosition, 0,
-    wristFeedforward.calculate(Units.degreesToRadians(WristPosition.STOW.angle()), 0));}
+      wristController.setReference(WristPosition.STOW.angle(), CANSparkMax.ControlType.kPosition, 0,
+      wristFeedforward.calculate(Units.degreesToRadians(WristPosition.STOW.angle()), 0));
+    }
   
   }
 

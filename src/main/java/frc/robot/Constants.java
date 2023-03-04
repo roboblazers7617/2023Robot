@@ -212,14 +212,15 @@ public final class Constants {
 
   public static class ArmConstants {
     public static final int LIMIT_SWITCH_PORT = 0;
-    public static final int SHOULDER_MOTOR_ID = 32;
+    public static final int SHOULDER_MOTOR_ID = 31;
+    public static final int SHOULDER_FOLLOWER_MOTOR_ID = 32;
     public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
 
-    public static final double KP = 0; //THIS
+    public static final double KP = 0.1; //THIS
     public static final double KI = 0;
     public static final double KD = 0;
-    public static final double KS = 0;
-    public static final double KG = 0.11; //THIS
+    public static final double KS = 0.0;
+    public static final double KG = 0.47; //THIS
     public static final double KV = 0;
 
     //TODO: Lukas. (High) Set a position tolerance
@@ -229,20 +230,20 @@ public final class Constants {
     public static final double SHOULDER_POTENTIOMETER_OFFSET = -222;
     public static final int CURRENT_LIMIT = 39;
     // TODO: Lukas. (High) Set gear ratio
-    public static final double SHOULDER_GEAR_RATIO = 1.0/1.0; //THIS
+    public static final double SHOULDER_GEAR_RATIO = 1.0/204;
     public static final double POSITION_CONVERSION_FACTOR = SHOULDER_GEAR_RATIO * 360.0; 
-    public static final double MINIMUM_SHOULDER_ANGLE = 0; //THIS
+    public static final double MINIMUM_SHOULDER_ANGLE = -56; //THIS
     public static final double MAX_SHOULDER_ANGLE = 0.0;
-    public static final double MAX_MANNUAL_WRIST_SPEED = 75.0; //THIS
-    public static final double MAX_SPEED_DOWNWARD = -0.25; //THIS
-    public static final double MAX_SPEED_UPWARD = 0.25; //THIS
+    public static final double MAX_MANNUAL_ARM_SPEED = 75.0; //THIS
+    public static final double MAX_SPEED_DOWNWARD = -0.3; //THIS
+    public static final double MAX_SPEED_UPWARD = 0.3; //THIS
 
     // TODO: Lukas. (High) Set the angles
     public enum ArmPositions {
       LEVEL_3(0, PnuematicPositions.EXTENDED),
       LEVEL_2(0, PnuematicPositions.RETRACTED),
       LEVEL_1(0, PnuematicPositions.RETRACTED),
-      STOW(0, PnuematicPositions.RETRACTED),
+      STOW(-54, PnuematicPositions.RETRACTED),
       FLOOR_PICKUP(0, PnuematicPositions.RETRACTED),
       STATION_PICKUP(0, PnuematicPositions.EXTENDED);
 
@@ -293,7 +294,7 @@ public final class Constants {
     public static final int WRIST_POT_SCALE = 340;
 
     public static final double MAX_MANNUAL_WRIST_SPEED = 50;
-    public static final double MIN_ANGLE_TO_RAISE_ARM = 20;
+    public static final double MIN_ANGLE_TO_RAISE_ARM = -50;
 
     // TODO: Lukas. (High) Determine these
     public enum WristPosition {
@@ -329,10 +330,10 @@ public final class Constants {
     public enum IntakeDirection
     {
       STOP (0.0),
-      PICK_CONE (0.75),
-      PICK_CUBE (-0.5),
-      PLACE_CONE (-0.5),
-      PLACE_CUBE (0.75);
+      PICK_CONE (-0.5),
+      PICK_CUBE (0.5),
+      PLACE_CONE (0.5),
+      PLACE_CUBE (-0.5);
 
       private final double speed;
 

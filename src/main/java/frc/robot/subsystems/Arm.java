@@ -32,15 +32,18 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   // TODO: Lukas. Should these all be private final?
   CANSparkMax shoulderMotor = new CANSparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
+  CANSparkMax shoulderMotorFollower = new CANSparkMax(ArmConstants.SHOULDER_FOLLOWER_MOTOR_ID, MotorType.kBrushless);
   SparkMaxPIDController controller;
+  SparkMaxPIDController controllerFollower;
   RelativeEncoder shoulderEncoder = shoulderMotor.getEncoder();
+  RelativeEncoder shoulderFollowerEncoder = shoulderMotorFollower.getEncoder();
   DoubleSolenoid leftPiston;
   DoubleSolenoid rightPiston;
   private Pnuematics pneumatics;
   ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
 
   // TODO: Lukas. comment this out until used so as to not confuse what is the accurate shoulder angle
-  AnalogPotentiometer shoulderAngle = new AnalogPotentiometer(ArmConstants.SHOULDER_POTENTIOMETER_PORT, ArmConstants.SHOULDER_POTENTIOMETER_RANGE, ArmConstants.SHOULDER_POTENTIOMETER_OFFSET);
+  //AnalogPotentiometer shoulderAngle = new AnalogPotentiometer(ArmConstants.SHOULDER_POTENTIOMETER_PORT, ArmConstants.SHOULDER_POTENTIOMETER_RANGE, ArmConstants.SHOULDER_POTENTIOMETER_OFFSET);
 
   DigitalInput isArmStowed = new DigitalInput(ArmConstants.LIMIT_SWITCH_PORT);
 
@@ -48,19 +51,39 @@ public class Arm extends SubsystemBase {
 
   private double dt, lastTime;
 
-  private double setpoint;
+  private double setpoint = -54;
 
   public Arm(Pnuematics pnuematics) {
     shoulderMotor.restoreFactoryDefaults();
+    shoulderMotorFollower.restoreFactoryDefaults();
     // TODO: Lukas. (High) Set to brake mode after testing is done
-    shoulderMotor.setIdleMode(IdleMode.kCoast); 
-    shoulderMotor.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
-    controller = shoulderMotor.getPIDController();
+    shoulderMotor.setIdleMode(IdleMode.kBrake); 
+    shoulderMotorFollower.setIdleMode(IdleMode.kBrake); 
+   
+    shoulderMotor.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT); 
+    shoulderMotorFollower.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
+
+
+    shoulderMotorFollower.follow(shoulderMotor, true);
 
     shoulderEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
     shoulderEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR/60.0);
     shoulderEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
+    shoulderFollowerEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+    shoulderFollowerEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR/60.0);
+    shoulderFollowerEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
+  
 
+
+    controller = shoulderMotor.getPIDController();
+    controllerFollower = shoulderMotorFollower.getPIDController();
+  
+    controllerFollower.setP(ArmConstants.KP);
+    controllerFollower.setI(ArmConstants.KI);
+    controllerFollower.setD(ArmConstants.KD);
+    controllerFollower.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
+
+    
     controller.setP(ArmConstants.KP);
     controller.setI(ArmConstants.KI);
     controller.setD(ArmConstants.KD);
@@ -79,6 +102,15 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
     dt = time.get() -lastTime;
     lastTime = time.get();
+    //System.out.println("velocity " + shoulderEncoder.getVelocity());    
+    
+    if (getShoulderAngle() > ( ArmConstants.MINIMUM_SHOULDER_ANGLE + 4 )&& setpoint == ArmPositions.STOW.getShoulderAngle())
+      shoulderMotor.set(0);
+    else if (getShoulderAngle() < ( ArmConstants.MINIMUM_SHOULDER_ANGLE + 4 ) && setpoint == ArmPositions.STOW.getShoulderAngle()){
+      controller.setReference(ArmPositions.STOW.getShoulderAngle(), CANSparkMax.ControlType.kPosition, 0,
+      feedforward.calculate(Units.degreesToRadians(ArmPositions.STOW.getShoulderAngle()), 0));
+    }
+    
   }
 
   public ArmPositions evalPickupPosition(Supplier<PickupLocation> location) {
@@ -104,8 +136,12 @@ public class Arm extends SubsystemBase {
   public void setPosition(double positionDegrees) {
     setpoint = Math.min(positionDegrees, ArmConstants.MAX_SHOULDER_ANGLE);
     setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    controller.setReference(positionDegrees, CANSparkMax.ControlType.kPosition, 0,
+    controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
+    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+        feedforward.calculate(Units.degreesToRadians(setpoint), 0));
+      System.out.println("Setpoint: " + setpoint);
+
   }
 
     //TODO: Lukas. Should this function just call setPosition(double position) once it has the setpoint so as to not duplicate code?
@@ -123,6 +159,7 @@ public class Arm extends SubsystemBase {
     setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
+    System.out.println("Setpoint: " + setpoint);
   }
 
   public Command actuateSuperstructureCommandPickup(Supplier<PickupLocation> location) {
