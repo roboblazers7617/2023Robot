@@ -123,7 +123,7 @@ public final class Constants {
     public static final double KD_BALANCE = 0;
     public static final double BALANCING_TOLERANCE = 1;
     // TODO: Lukas. (High) Decide this value
-    public static final int MAX_BALANCE_SPEED = 0;
+    public static final double MAX_BALANCE_SPEED = 0.25;
 
     public enum DrivetrainMode {
       arcadeDrive,
@@ -178,12 +178,8 @@ public final class Constants {
   public static class VisionConstants {
     // TODO: Lukas. (High) Confirm these location constants for camera
     public static final double CAMERA_PITCH = 0;
-    public static final Transform3d CAMERA_POSITION = new Transform3d(new Translation3d(Units.inchesToMeters(17.5),
-        Units.inchesToMeters(-.5), Units.inchesToMeters(6.875)), new Rotation3d(0, CAMERA_PITCH, 0));
-    //TODO: Lukas. Is this used?
-    public static final double[] TAG_HEIGHT = { 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25, 17.25,
-        17.25, 17.25, 17.25 };
-    public static final double CAMERA_HEIGHT = (7.0 + (5.0 / 8.0));
+    public static final Transform3d CAMERA_POSITION = new Transform3d(new Translation3d(Units.inchesToMeters(-5.8125),
+        Units.inchesToMeters(0), Units.inchesToMeters(30.5)), new Rotation3d(0, CAMERA_PITCH, 0));
     public static final String CAMERA_NAME = "eyeball";
   }
 
@@ -216,35 +212,33 @@ public final class Constants {
     public static final int SHOULDER_FOLLOWER_MOTOR_ID = 32;
     public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
 
-    public static final double KP = 0.1; //THIS
+    public static final double KP = 0.1; 
     public static final double KI = 0;
     public static final double KD = 0;
     public static final double KS = 0.0;
-    public static final double KG = 0.47; //THIS
+    public static final double KG = 0.47; 
     public static final double KV = 0;
 
     //TODO: Lukas. (High) Set a position tolerance
-    public static final double POSITION_TOLERANCE = 0;
+    public static final double POSITION_TOLERANCE = 0.5;
     public static final double SHOULDER_POTENTIOMETER_RANGE = 340;
-    // TODO: need to find offset to paralell to floor 0
     public static final double SHOULDER_POTENTIOMETER_OFFSET = -222;
     public static final int CURRENT_LIMIT = 39;
-    // TODO: Lukas. (High) Set gear ratio
     public static final double SHOULDER_GEAR_RATIO = 1.0/204;
     public static final double POSITION_CONVERSION_FACTOR = SHOULDER_GEAR_RATIO * 360.0; 
-    public static final double MINIMUM_SHOULDER_ANGLE = -56; //THIS
-    public static final double MAX_SHOULDER_ANGLE = 0.0;
-    public static final double MAX_MANNUAL_ARM_SPEED = 75.0; //THIS
-    public static final double MAX_SPEED_DOWNWARD = -0.3; //THIS
-    public static final double MAX_SPEED_UPWARD = 0.3; //THIS
+    public static final double MINIMUM_SHOULDER_ANGLE = -51; 
+    public static final double MAX_SHOULDER_ANGLE = 50;
+    public static final double MAX_MANNUAL_ARM_SPEED = 50.0;
+    public static final double MAX_SPEED_DOWNWARD = -0.3; 
+    public static final double MAX_SPEED_UPWARD = 0.3;
 
     // TODO: Lukas. (High) Set the angles
     public enum ArmPositions {
-      LEVEL_3(0, PnuematicPositions.EXTENDED),
-      LEVEL_2(0, PnuematicPositions.RETRACTED),
-      LEVEL_1(0, PnuematicPositions.RETRACTED),
-      STOW(-54, PnuematicPositions.RETRACTED),
-      FLOOR_PICKUP(0, PnuematicPositions.RETRACTED),
+      LEVEL_3_CONE(40, PnuematicPositions.EXTENDED),
+      LEVEL_2_CONE(4, PnuematicPositions.RETRACTED),
+      LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
+      STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
+      FLOOR_PICKUP_CONE( -42, PnuematicPositions.EXTENDED),
       STATION_PICKUP(0, PnuematicPositions.EXTENDED);
 
       private final double shoulderAngle;
@@ -272,25 +266,21 @@ public final class Constants {
 
     public static final int CURRENT_LIMIT = 20;
 
-    public static final double WRIST_ANGLE_TOLERANCE = 1;
+    public static final double WRIST_ANGLE_TOLERANCE = 5;
     public static final double MAX_WRIST_ANGLE = 103;
     public static final double MAX_UPWARD_WRIST_SPEED = 0.25;
     public static final double MAX_DOWNWARD_WRIST_SPEED = -0.1;
     public static final double MAX_WRIST_ACCEL = 0.12;
     public static final double WRIST_KS = 0.5;
-    public static final double WRIST_KG = 0.3; // changed from 0.2 because not holding
+    public static final double WRIST_KG = 0.3; 
     public static final double WRIST_KV = 0;
     public static final double WRIST_KP = 0.011;
     public static final double WRIST_KI = 0.0;
     public static final double WRIST_KD = 0.0;
     public static final double WRIST_POT_OFFSET = -199;// so stowed is 120
-    //TODO: Lukas. Can this be removed?
-    public static final double WRIST_MANUAL_SLOWDOWN = .4;
-    //TODO: Lukas. Can this be removed?
-    public static final double MAX_APROACHING_WRIST_SPEED = .08;
     public static final double WRIST_GEAR_RATIO = 1.0/80.0;
     public static final double WRIST_ENCODER_CONVERSION_FACTOR = 360.0 * WRIST_GEAR_RATIO;
-    public static final double MIN_WRIST_ANGLE = 10;
+    public static final double MIN_WRIST_ANGLE = -32;
     public static final int WRIST_POT_SCALE = 340;
 
     public static final double MAX_MANNUAL_WRIST_SPEED = 50;
@@ -299,12 +289,12 @@ public final class Constants {
     // TODO: Lukas. (High) Determine these
     public enum WristPosition {
       STOW(WristConstants.MAX_WRIST_ANGLE),
-      FLOOR_CUBE_PICKUP(0.06),
-      FLOOR_CONE_PICKUP(0.07),
-      DOUBLE_PICKUP(0.07),
-      LEVEL_3(0.04),
-      LEVEL_2(0.05),
-      LEVEL_1(0.03);
+      FLOOR_CUBE_PICKUP(24),
+      FLOOR_CONE_PICKUP(35),
+      DOUBLE_PICKUP(70),
+      LEVEL_3_CONE(-28),
+      LEVEL_2_CONE(-29),
+      LEVEL_1_CONE(37);
 
       private final double angle;
 
@@ -328,7 +318,6 @@ public final class Constants {
     public static final double CUBE_SENSOR_LIMIT = 600;
     public static final double CONE_CURRENT_LIMIT = 30.0;
     
-    //TODO: Lukas. (High) Set these
     public enum IntakeDirection
     {
       STOP (0.0),

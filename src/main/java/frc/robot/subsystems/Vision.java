@@ -18,9 +18,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.networktables.NetworkTable;
-import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
@@ -32,10 +29,6 @@ public class Vision extends SubsystemBase {
   AprilTagFieldLayout layout;
   PhotonPoseEstimator poseEstimator;
 
-  // TODO: Lukas. Are these three lines used? Seems not
-  ShuffleboardTab vision;
-  NetworkTableInstance inst = NetworkTableInstance.getDefault();
-  NetworkTable datatable = inst.getTable("Vision");
 
   public Vision() {
     try {
@@ -43,8 +36,7 @@ public class Vision extends SubsystemBase {
     } catch (IOException e) {
       layout = null;
     }
-    // TODO: Lukas. (High) Should this change to multi-tag PNP strategy?
-    poseEstimator = new PhotonPoseEstimator(layout, PoseStrategy.CLOSEST_TO_LAST_POSE, camera,
+    poseEstimator = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP, camera,
         VisionConstants.CAMERA_POSITION);
   }
 
@@ -66,10 +58,6 @@ public class Vision extends SubsystemBase {
   public double getBestTagDistance() {
     if (bestTag != null)
       return bestTag.getBestCameraToTarget().getX();
-    // return
-    // PhotonUtils.calculateDistanceToTargetMeters(Units.inchesToMeters(VisionConstants.CAMERA_HEIGHT),
-    // Units.inchesToMeters(VisionConstants.TAG_HEIGHT[bestTag.getFiducialId()]),
-    // VisionConstants.CAMERA_PITCH, Units.degreesToRadians(bestTag.getPitch()));
     else
       return 0;
   }

@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems;
 
-import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
@@ -16,17 +15,14 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogPotentiometer;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.WristConstants;
-import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.WristConstants.WristPosition;
 
 public class Wrist extends SubsystemBase {
@@ -76,13 +72,6 @@ public class Wrist extends SubsystemBase {
     // This method will be called once per scheduler run
     dt = time.get() - lastTime;
     lastTime = time.get();
-
-    if (getWristPosition() > 97 && setpoint == WristPosition.STOW.angle())
-      wristMotor.set(0);
-    else if (getWristPosition() < 97 && setpoint == WristPosition.STOW.angle()){
-      wristController.setReference(WristPosition.STOW.angle(), CANSparkMax.ControlType.kPosition, 0,
-      wristFeedforward.calculate(Units.degreesToRadians(WristPosition.STOW.angle()), 0));
-    }
   
   }
 
@@ -95,12 +84,10 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setPosition(double position, Supplier<Double> armAngleSupplier) {
-    if (armAngleSupplier.get() >= WristConstants.MIN_ANGLE_TO_RAISE_ARM) {
       setpoint = Math.min(position, WristConstants.MAX_WRIST_ANGLE);
       setpoint = Math.max(setpoint, WristConstants.MIN_WRIST_ANGLE);
       wristController.setReference(position, CANSparkMax.ControlType.kPosition, 0,
           wristFeedforward.calculate(Units.degreesToRadians(setpoint), 0));
-    }
   }
 
   public void setPosition(WristPosition position, Supplier<Double> armAngleSupplier) {
@@ -108,13 +95,11 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setVelocity(double velocityDegrees, Supplier<Double> armAngleSupplier) {
-    if (armAngleSupplier.get() > WristConstants.MIN_ANGLE_TO_RAISE_ARM) {
       setpoint = setpoint + velocityDegrees * dt;
       setpoint = Math.min(setpoint, WristConstants.MAX_WRIST_ANGLE);
       setpoint = Math.max(setpoint, WristConstants.MIN_WRIST_ANGLE);
       wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
           wristFeedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegrees)));
-    }
   }
 
   public double getWristMotorTemp() {
@@ -143,12 +128,12 @@ public class Wrist extends SubsystemBase {
 
   public WristPosition evalScorePosition(Supplier<ScoreLevel> level) {
     if (level.get().equals(ScoreLevel.LEVEL_1))
-      return WristPosition.LEVEL_1;
+      return WristPosition.LEVEL_1_CONE;
     else if (level.get().equals(ScoreLevel.LEVEL_2))
-      return WristPosition.LEVEL_2;
+      return WristPosition.LEVEL_2_CONE;
     else if (level.get().equals(ScoreLevel.LEVEL_3))
-      return WristPosition.LEVEL_2;
+      return WristPosition.LEVEL_2_CONE;
     else
-      return WristPosition.LEVEL_2;
+      return WristPosition.LEVEL_2_CONE;
   }
 }

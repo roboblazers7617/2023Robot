@@ -18,8 +18,6 @@ public class Pnuematics extends SubsystemBase {
   /** Creates a new Pnuematics. */
   public Pnuematics() {
 
-    //TODO: Lukas. (High) Remove this after pneumatics are fixed so that we are not starting out disabled
-    disable();
   }
 
   @Override

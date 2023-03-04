@@ -4,26 +4,21 @@
 
 package frc.robot.commands.ArmStuff;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.RunCommand;
 import frc.robot.Constants.PieceType;
-import frc.robot.Constants.WristConstants.IntakeConstants.IntakeDirection;
 import frc.robot.subsystems.Intake;
 
 
-public class SpinIntake extends CommandBase {
+public class IntakePiece extends CommandBase {
   /** Creates a new SpinIntake. */
   private  Intake intake;
-  private  boolean isIntaking;
-  private  PieceType piece;
+  private  Supplier<PieceType> piece;
 
-  public SpinIntake(Intake intake, PieceType piece, Boolean isIntaking) {
+  public IntakePiece(Intake intake, Supplier<PieceType> piece) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.intake = intake;
-    this.isIntaking = isIntaking;
     this.piece = piece;
     addRequirements(intake);
 
@@ -33,7 +28,7 @@ public class SpinIntake extends CommandBase {
   @Override
   public void initialize() {
 
-    intake.setIntakeSpeed(piece, isIntaking);
+    intake.setIntakeSpeed(piece.get(), true);
 
   }
 
@@ -50,7 +45,6 @@ public class SpinIntake extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    //return intake.isHoldingGamePiece();
-    return false;
+    return intake.isHoldingGamePiece();
   }
 }

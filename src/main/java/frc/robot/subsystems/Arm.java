@@ -14,7 +14,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Timer;
@@ -30,22 +29,20 @@ import frc.robot.Constants.ScoreLevel;
 
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
-  // TODO: Lukas. Should these all be private final?
-  CANSparkMax shoulderMotor = new CANSparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
-  CANSparkMax shoulderMotorFollower = new CANSparkMax(ArmConstants.SHOULDER_FOLLOWER_MOTOR_ID, MotorType.kBrushless);
-  SparkMaxPIDController controller;
-  SparkMaxPIDController controllerFollower;
-  RelativeEncoder shoulderEncoder = shoulderMotor.getEncoder();
-  RelativeEncoder shoulderFollowerEncoder = shoulderMotorFollower.getEncoder();
-  DoubleSolenoid leftPiston;
-  DoubleSolenoid rightPiston;
+  private CANSparkMax shoulderMotor = new CANSparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
+  private CANSparkMax shoulderMotorFollower = new CANSparkMax(ArmConstants.SHOULDER_FOLLOWER_MOTOR_ID, MotorType.kBrushless);
+  private SparkMaxPIDController controller;
+  private SparkMaxPIDController controllerFollower;
+  private RelativeEncoder shoulderEncoder = shoulderMotor.getEncoder();
+  private RelativeEncoder shoulderFollowerEncoder = shoulderMotorFollower.getEncoder();
+  private DoubleSolenoid leftPiston;
+  private DoubleSolenoid rightPiston;
   private Pnuematics pneumatics;
-  ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
+  private ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
 
-  // TODO: Lukas. comment this out until used so as to not confuse what is the accurate shoulder angle
   //AnalogPotentiometer shoulderAngle = new AnalogPotentiometer(ArmConstants.SHOULDER_POTENTIOMETER_PORT, ArmConstants.SHOULDER_POTENTIOMETER_RANGE, ArmConstants.SHOULDER_POTENTIOMETER_OFFSET);
 
-  DigitalInput isArmStowed = new DigitalInput(ArmConstants.LIMIT_SWITCH_PORT);
+  private DigitalInput isArmStowed = new DigitalInput(ArmConstants.LIMIT_SWITCH_PORT);
 
   private Timer time = new Timer();
 
@@ -56,7 +53,6 @@ public class Arm extends SubsystemBase {
   public Arm(Pnuematics pnuematics) {
     shoulderMotor.restoreFactoryDefaults();
     shoulderMotorFollower.restoreFactoryDefaults();
-    // TODO: Lukas. (High) Set to brake mode after testing is done
     shoulderMotor.setIdleMode(IdleMode.kBrake); 
     shoulderMotorFollower.setIdleMode(IdleMode.kBrake); 
    
@@ -115,7 +111,7 @@ public class Arm extends SubsystemBase {
 
   public ArmPositions evalPickupPosition(Supplier<PickupLocation> location) {
     if (location.get().equals(PickupLocation.FLOOR))
-      return ArmPositions.FLOOR_PICKUP;
+      return ArmPositions.FLOOR_PICKUP_CONE;
     else if (location.get().equals(PickupLocation.DOUBLE))
       return ArmPositions.STATION_PICKUP;
     else
@@ -124,11 +120,11 @@ public class Arm extends SubsystemBase {
 
   public ArmPositions evalScorePosition(Supplier<ScoreLevel> level) {
     if (level.get().equals(ScoreLevel.LEVEL_1))
-      return ArmPositions.LEVEL_1;
+      return ArmPositions.LEVEL_1_CONE;
     else if (level.get().equals(ScoreLevel.LEVEL_2))
-      return ArmPositions.LEVEL_2;
+      return ArmPositions.LEVEL_2_CONE;
     else if (level.get().equals(ScoreLevel.LEVEL_3))
-      return ArmPositions.LEVEL_3;
+      return ArmPositions.LEVEL_3_CONE;
     else
       return ArmPositions.STOW;
   }
@@ -140,19 +136,12 @@ public class Arm extends SubsystemBase {
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
     controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
-      System.out.println("Setpoint: " + setpoint);
-
   }
 
-    //TODO: Lukas. Should this function just call setPosition(double position) once it has the setpoint so as to not duplicate code?
   public void setPosition(ArmPositions position) {
-     setpoint = Math.min(position.getShoulderAngle(), ArmConstants.MAX_SHOULDER_ANGLE);
-    setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
-        feedforward.calculate(Units.degreesToRadians(setpoint), 0));
+    setPosition(position.getShoulderAngle());
   }
 
-    //TODO: Lukas. Should this function just call setPosition(double position) once it has the setpoint so as to not duplicate code?
   public void setVelocity(double velocityDegreesPerSec){
     setpoint = setpoint + velocityDegreesPerSec*dt;
     setpoint = Math.min(setpoint, ArmConstants.MAX_SHOULDER_ANGLE);
@@ -183,7 +172,6 @@ public class Arm extends SubsystemBase {
     return leftPiston.get();
   }
 
-  //TODO: Lukas. (High) May want to add code testing encoder values as well as when stowed it may not consistently trip Limit Switch
   public boolean isArmStowed() {
     return isArmStowed.get();
   }
@@ -192,7 +180,6 @@ public class Arm extends SubsystemBase {
     return shoulderEncoder.getPosition();
   }
 
-  //TODO: Lukas. (High) Check that this is correct
   public boolean atSetpoint(){
     return (Math.abs(getShoulderAngle() - (setpoint)) < (ArmConstants.POSITION_TOLERANCE));
   }
@@ -201,7 +188,6 @@ public class Arm extends SubsystemBase {
     return Commands.waitUntil(() -> atSetpoint());
   }
 
-  // TODO: Lukas (High) check this
   public void enableCompressor(boolean enableCompressor){
     if (enableCompressor)
     {

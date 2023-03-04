@@ -146,7 +146,7 @@ public class Drivetrain extends SubsystemBase {
 
   private void configureMotor(CANSparkMax motorController) {
 
-    motorController.setIdleMode(IdleMode.kBrake);
+    motorController.setIdleMode(IdleMode.kCoast);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
   }
 

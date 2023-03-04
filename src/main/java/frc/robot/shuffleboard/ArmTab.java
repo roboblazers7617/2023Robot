@@ -55,7 +55,6 @@ public class ArmTab extends ShuffleboardTabBase {
 
         // add the network table to shuffleboard, the name must be the same, the default
         // value does not matter.
-        //TODO: Lukas. Update these with data
         widget.add("Angle (Degrees)", 0);
         widget.add("Piston State", "ERROR 404: Position does not exist.");
         widget.add("Stow Limit Switch", false);

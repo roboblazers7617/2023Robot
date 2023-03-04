@@ -6,7 +6,6 @@ package frc.robot.commands.ArmStuff;
 
 import java.util.function.Supplier;
 
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
