@@ -210,9 +210,9 @@ public class RobotContainer {
                 m_operatorController.povUp().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3));
         }
 
-        private void setScoreLevel(ScoreLevel scoreLevel) {
-                this.scoreLevel = scoreLevel;
-        }
+        // private void setScoreLevel(ScoreLevel scoreLevel) {
+        //         this.scoreLevel = scoreLevel;
+        // }
         
 
         private void configureButtonBoxBindings() {
@@ -236,11 +236,11 @@ public class RobotContainer {
                 button9.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE9)));
 
                 Trigger lowButton = new JoystickButton(m_buttonBox, 10);
-                lowButton.onTrue(new InstantCommand(() -> setScoreLevel(ScoreLevel.LEVEL_1)));
+                lowButton.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1));
                 Trigger middleButton = new JoystickButton(m_buttonBox, 11);
-                middleButton.onTrue(new InstantCommand(() -> setScoreLevel(ScoreLevel.LEVEL_2)));
+                middleButton.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2));
                 Trigger highButtons = new JoystickButton(m_buttonBox, 12);
-                highButtons.onTrue(new InstantCommand(() -> setScoreLevel(ScoreLevel.LEVEL_3)));
+                highButtons.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3));
 
                 // what if we made it a loop
                 // for (int i = 1; i <= 9; i++){
