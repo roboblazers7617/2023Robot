@@ -34,12 +34,18 @@ public class ShuffleboardInfo extends SubsystemBase {
   public void addTabs(ArrayList<ShuffleboardTabBase> tabs) {
     this.tabs = tabs;
 
+    for (int i = 0; i < tabs.size(); i ++){
+      if(tabs.get(i).toString().contains("DriverStationTab")){
+        ShuffleboardTabBase tabHolder = tabs.get(i);
+        tabs.remove(i);
+        tabs.add(0, tabHolder);
+      }
+    }
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    //TODO: Brandon. (High) This is a magic number. Need to code this to make sure that DriverStationtab is always the first. Someone could add code in RobotContainer that makes it not
     tabs.get(0).update();
     if (topic.get()) {
       for (int i = 1; i < tabs.size(); i++) {

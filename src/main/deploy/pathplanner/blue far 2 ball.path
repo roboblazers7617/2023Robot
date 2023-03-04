@@ -67,21 +67,21 @@
       "isStopPoint": true,
       "stopEvent": {
         "names": [
-          "aquireObject"
+          "SimplePickup"
         ],
         "executionBehavior": "sequential",
-        "waitBehavior": "after",
+        "waitBehavior": "minimum",
         "waitTime": 0
       }
     },
     {
       "anchorPoint": {
-        "x": 2.0036192230180685,
-        "y": 0.4364627141255143
+        "x": 1.98,
+        "y": 0.43
       },
       "prevControl": {
-        "x": 2.5862727635828557,
-        "y": 0.42809976255803106
+        "x": 2.5626535405647877,
+        "y": 0.4216370484325167
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -90,9 +90,11 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
+        "names": [
+          "SimpleScore"
+        ],
+        "executionBehavior": "sequential",
+        "waitBehavior": "minimum",
         "waitTime": 0
       }
     }

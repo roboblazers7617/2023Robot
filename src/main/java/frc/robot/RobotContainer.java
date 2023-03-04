@@ -17,6 +17,10 @@ import frc.robot.Constants.WristConstants.WristPosition;
 import frc.robot.Constants.WristConstants.IntakeConstants.IntakeDirection;
 import frc.robot.commands.IntakeDown;
 import frc.robot.commands.ArmStuff.SpinIntake;
+import frc.robot.commands.ArmStuff.SimpleMoveToPickup;
+import frc.robot.commands.ArmStuff.SimpleMoveToScore;
+import frc.robot.commands.ArmStuff.SimplePickup;
+import frc.robot.commands.ArmStuff.SimpleScore;
 import frc.robot.commands.ArmStuff.Stow;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.commands.Drivetrain.AutoBalance;
@@ -112,8 +116,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
                 m_driverController.getRightX(), m_driverController.getRightY(), isRightTriggerPressed),drivetrain));
 
-        arm.setDefaultCommand( new RunCommand(() -> arm.setVelocity(m_operatorController.getLeftY()*ArmConstants.MAX_MANNUAL_WRIST_SPEED), arm));
-        wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(m_operatorController.getRightY()*WristConstants.MAX_MANNUAL_WRIST_SPEED), wrist));
+        arm.setDefaultCommand( new RunCommand(() -> arm.setVelocity(m_operatorController.getLeftY()*ArmConstants.MAX_MANNUAL_ARM_SPEED), arm));
+        wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(m_operatorController.getRightY()*WristConstants.MAX_MANNUAL_WRIST_SPEED, arm::getShoulderAngle), wrist));
                 
 
 
@@ -188,30 +192,32 @@ public class RobotContainer {
     }
 
     private void configureOperatorBindings() {
-        //m_operatorController.leftBumper()
-        //        .whileTrue(new SimpleMoveToPickup(arm, intake, () -> getSelectedPiece(), PickupLocation.DOUBLE));
-       // m_operatorController.leftTrigger()
-        //        .whileTrue(new SimpleMoveToPickup(arm, intake, () -> getSelectedPiece(), PickupLocation.FLOOR));
+        m_operatorController.leftBumper()
+                .whileTrue(new SimpleMoveToPickup(arm, wrist, () -> getSelectedPiece(), () ->PickupLocation.DOUBLE));
+        m_operatorController.leftTrigger()
+                .whileTrue(new SimpleMoveToPickup(arm, wrist, () -> getSelectedPiece(), () -> PickupLocation.FLOOR));
+
         m_operatorController.rightBumper()
                 .onTrue( Commands.runOnce(() -> setSelectedPiece(PieceType.CONE)));
         m_operatorController.rightTrigger()
                 .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CUBE)));
 
 
+
         // Test arm movement
         // TODO: Remove after testing
-        m_operatorController.povLeft().and(m_operatorController.leftBumper())
-                .whileTrue(new InstantCommand(() -> arm.setPosition(ArmPositions.STOW.getShoulderAngle()), arm));
-        m_operatorController.povRight().and(m_operatorController.leftBumper())
-                .whileTrue(new InstantCommand(() -> arm.setPosition(-20), arm));
-        m_operatorController.povDown().and(m_operatorController.leftBumper())
-                .whileTrue(new InstantCommand(() -> arm.setPosition(-45), arm));
+        m_operatorController.povLeft()
+                .whileTrue(new Stow(arm, wrist, intake));
+       // m_operatorController.povRight()
+       //         .whileTrue(new InstantCommand(() -> arm.setPosition(-20), arm));
+      //  m_operatorController.povDown()
+         //       .whileTrue(new InstantCommand(() -> arm.setPosition(-45), arm));
         
         // Testing wrist movement
         // TODO: Remove after testing
-        m_operatorController.povLeft().whileTrue(new InstantCommand(() -> wrist.setPosition(WristPosition.STOW.angle()), wrist));
-        m_operatorController.povRight().whileTrue(new InstantCommand(() -> wrist.setPosition(60), wrist));
-        m_operatorController.povDown().whileTrue(new InstantCommand(() -> wrist.setPosition(20), wrist));
+        //m_operatorController.povLeft().whileTrue(new InstantCommand(() -> wrist.setPosition(WristPosition.STOW.angle(), arm::getShoulderAngle), wrist));
+        //m_operatorController.povRight().whileTrue(new InstantCommand(() -> wrist.setPosition(60, arm::getShoulderAngle), wrist));
+        //m_operatorController.povDown().whileTrue(new InstantCommand(() -> wrist.setPosition(20, arm::getShoulderAngle), wrist));
         //TODO: m_operatorController.b().whileTrue(new Stow(arm, intake));
         //m_operatorController.y()
         //        .whileTrue(Commands.runEnd(() -> intake.setIntakeSpeed(IntakeDirection.PICK_CUBE.speed()),
@@ -226,12 +232,13 @@ public class RobotContainer {
                 .whileTrue(Commands.runEnd(() -> intake.setIntakeSpeed(IntakeDirection.PLACE_CONE.speed()),
                         () -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake));
 
-        // Test holding arm in place
-        m_operatorController.a().onTrue(new InstantCommand(()-> arm.setPosition(arm.getShoulderAngle())));
 
-       // m_operatorController.povDown().onTrue(new SimpleMoveToScore(arm, intake, ScoreLevel.LEVEL_1));
-       // m_operatorController.povRight().onTrue(new SimpleMoveToScore(arm, intake, ScoreLevel.LEVEL_2));
-       // m_operatorController.povUp().onTrue(new SimpleMoveToScore(arm, intake, ScoreLevel.LEVEL_3));
+        m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
+
+
+        m_operatorController.povDown().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1));
+        m_operatorController.povRight().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2));
+        m_operatorController.povUp().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3));
     }
 
     public void setTargetPose(Pose2d targetPose) {
@@ -260,15 +267,17 @@ public class RobotContainer {
         drivetrain.setBrakeMode(IdleMode.kCoast);
         return pickAutonomousCommand(driverStationTab.getAutoPath()).andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
     }
+//TODO Sam, I need to see If I can find a way to delete the extra command named null in "red far 2 ball"
 
-
-    //TODO: Sam. (High) Add a boolean parameter to signify if the path should be reversed or not. Shouldn't default to reversed as may cause errors
     public Command pickAutonomousCommand(DrivetrainConstants.AutoPath autopath) {
-        System.out.println(autopath.pathname());
-        System.out.println(autopath.isReverse());
         HashMap<String, Command> eventMap = new HashMap<>();
-        eventMap.put("intakeDown", new IntakeDown());
+        eventMap.put("Stow", new Stow(arm, wrist, intake));
+        eventMap.put("AutoBalance", new AutoBalance(drivetrain));
+        eventMap.put("SimplePickup", new SimplePickup(arm, wrist, intake, () -> autopath.selectedPiece(), () -> autopath.pickupLocation()));
+        eventMap.put("SimpleScore", new SimpleScore(arm, wrist, intake, () -> autopath.selectedPiece(), () -> autopath.scoreLevelSecond()));
+        
 
+// arm, intake, wrist, piecetype, score level
         PathPlannerTrajectory test_path = PathPlanner.loadPath(
                 autopath.pathname(), new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
                         DrivetrainConstants.MAX_AUTO_ACCELERATION),

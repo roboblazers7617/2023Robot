@@ -20,13 +20,13 @@ import frc.robot.subsystems.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimpleMoveToPickup extends SequentialCommandGroup {
   /** Creates a new SimpleMoveArmToPosition. */
-  public SimpleMoveToPickup(Arm arm, Wrist wrist, Supplier<PieceType> piece, PickupLocation location) {
+  public SimpleMoveToPickup(Arm arm, Wrist wrist, Supplier<PieceType> piece, Supplier<PickupLocation> location) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new InstantCommand(() -> arm.setPosition(arm.evalPickupPosition(location)), arm),
         arm.WaitUntilArmInPosition(),
-        arm.actuateSuperstructureCommand(location),
-        new InstantCommand(() -> wrist.setPosition(wrist.evalPickupLocation(location, piece)), wrist),
+        arm.actuateSuperstructureCommandPickup(location),
+        new InstantCommand(() -> wrist.setPosition(wrist.evalPickupLocation(location, piece), arm::getShoulderAngle), wrist),
         wrist.WaitUntilWristInPosition());
 
   }

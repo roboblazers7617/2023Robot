@@ -4,11 +4,13 @@
 
 package frc.robot.commands.ArmStuff;
 
+import java.util.function.Supplier;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.ArmConstants.ArmPositions;
-import frc.robot.Constants.WristConstants.WristPosition;
-import frc.robot.Constants.WristConstants.IntakeConstants.IntakeDirection;
+import frc.robot.Constants.PickupLocation;
+import frc.robot.Constants.PieceType;
+import frc.robot.Constants.ScoreLevel;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Wrist;
@@ -16,13 +18,11 @@ import frc.robot.subsystems.Wrist;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class Stow extends SequentialCommandGroup {
-  /** Creates a new Stow. */
-  public Stow(Arm arm, Wrist wrist, Intake intake) {
+public class SimpleScore extends SequentialCommandGroup {
+  /** Creates a new SimplePickup. */
+  public SimpleScore(Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece, Supplier<ScoreLevel> level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new InstantCommand(() -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake),
-        new InstantCommand(() -> wrist.setPosition(WristPosition.STOW, arm::getShoulderAngle), wrist), wrist.WaitUntilWristInPosition(),
-        new InstantCommand(() -> arm.setPosition(ArmPositions.STOW), arm), arm.WaitUntilArmInPosition());
+    addCommands(new SimpleMoveToScore(arm, wrist,level), intake.SpinIntakeCommand(piece, false));
   }
 }
