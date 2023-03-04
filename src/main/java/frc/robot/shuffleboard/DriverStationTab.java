@@ -52,12 +52,13 @@ public class DriverStationTab extends ShuffleboardTabBase {
         drivetrainMode.addOption("Curvature Drive", DrivetrainMode.curvatureDrive.toString());
         tab.add("Drivetrain Mode", drivetrainMode);
 
-        autoPath.setDefaultOption("blueNodeOne", DrivetrainConstants.AutoPath.blueNodeOne);
-        autoPath.addOption("blueNodeSix", DrivetrainConstants.AutoPath.blueNodeSix);
-        autoPath.addOption("blueNodeNine", DrivetrainConstants.AutoPath.blueNodeNine);
-        autoPath.addOption("redNodeOne", DrivetrainConstants.AutoPath.redNodeOne);
-        autoPath.addOption("redNodeSix", DrivetrainConstants.AutoPath.redNodeSix);
-        autoPath.addOption("redNodeNine", DrivetrainConstants.AutoPath.redNodeNine);
+        autoPath.setDefaultOption("Blue Right Node", DrivetrainConstants.AutoPath.blueNodeOne);
+        autoPath.addOption("Blue Mid Node", DrivetrainConstants.AutoPath.blueNodeSix);
+        autoPath.addOption("Blue Left Node", DrivetrainConstants.AutoPath.blueNodeNine);
+        autoPath.addOption("Red Left Node", DrivetrainConstants.AutoPath.redNodeOne);
+        autoPath.addOption("Red Mid Node", DrivetrainConstants.AutoPath.redNodeSix);
+        autoPath.addOption("Red Right Node", DrivetrainConstants.AutoPath.redNodeNine);
+        autoPath.addOption("Test", DrivetrainConstants.AutoPath.testPath);
         tab.add("Auto Path", autoPath);
 
         //debug mode

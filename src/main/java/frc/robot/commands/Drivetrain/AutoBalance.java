@@ -29,6 +29,7 @@ public class AutoBalance extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    mDrivetrain.turnOnBrakes(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,6 +45,7 @@ public class AutoBalance extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     mDrivetrain.arcadeDrive(0, 0);
+    
   }
 
   // Returns true when the command should end.

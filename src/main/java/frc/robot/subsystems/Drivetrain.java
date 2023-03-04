@@ -115,8 +115,8 @@ public class Drivetrain extends SubsystemBase {
   
 
   public void drive(double leftY, double rightX, double rightY, boolean isQuickTurn) {
-    double lForward = slewRateFilterLeft.calculate(leftY);
-    double rForward = slewRateFilterRight.calculate(rightY);
+    double lForward = leftY; //slewRateFilterLeft.calculate(leftY);
+    double rForward = rightY; //slewRateFilterRight.calculate(rightY);
     if (mode == DrivetrainConstants.DrivetrainMode.arcadeDrive) {
       arcadeDrive(-lForward, -rightX);
     } else if (mode == DrivetrainConstants.DrivetrainMode.tankDrive) {

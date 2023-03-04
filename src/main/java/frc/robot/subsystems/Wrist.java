@@ -73,7 +73,7 @@ public class Wrist extends SubsystemBase {
     dt = time.get() - lastTime;
     lastTime = time.get();
 
-    System.out.println("wrist at setpoint"+atSetpoint());
+    //System.out.println("wrist at setpoint"+atSetpoint());
   
   }
 

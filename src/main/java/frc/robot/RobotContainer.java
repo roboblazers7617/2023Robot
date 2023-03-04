@@ -45,8 +45,10 @@ import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.RamseteAutoBuilder;
+import com.pathplanner.lib.commands.PPRamseteCommand;
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -112,7 +114,7 @@ public class RobotContainer {
 
                 arm.setDefaultCommand(new RunCommand(
                                 () -> arm.setVelocity(
-                                                m_operatorController.getLeftY() * ArmConstants.MAX_MANNUAL_ARM_SPEED),
+                                                -m_operatorController.getLeftY() * ArmConstants.MAX_MANNUAL_ARM_SPEED),
                                 arm));
                 wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(
                                 m_operatorController.getRightY() * WristConstants.MAX_MANNUAL_WRIST_SPEED,
@@ -175,7 +177,7 @@ public class RobotContainer {
                                                 () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
 
                 //m_driverController.b().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d())));
-                m_driverController.a().onTrue(new AutoBalance(drivetrain));
+                m_driverController.a().whileTrue(new AutoBalance(drivetrain));
                 // TODO: Adressable LEDS
 
         }
@@ -287,6 +289,27 @@ public class RobotContainer {
         // TODO Sam, I need to see If I can find a way to delete the extra command named
         // null in "red far 2 ball"
 
+// public Command pickAutonomousCommand(DrivetrainConstants.AutoPath autopath){
+//         PathPlannerTrajectory test_path = PathPlanner.loadPath(
+//                                 autopath.pathname(), new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
+//                                                 DrivetrainConstants.MAX_AUTO_ACCELERATION),
+//                                 autopath.isReverse());
+//         drivetrain.resetOdometry(test_path.getInitialPose());
+//         return new PPRamseteCommand(test_path, drivetrain::getPose2d, new RamseteController(),
+//                                  new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV, DrivetrainConstants.KA),
+//                                   drivetrain.getKinematics(), drivetrain::getWheelSpeeds,
+//                                    new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+//                                    new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN),
+//                                    drivetrain::tankDriveVolts,
+//                                    false,
+//                                    drivetrain);
+// }
+
+
+
+
+
+
         public Command pickAutonomousCommand(DrivetrainConstants.AutoPath autopath) {
                 HashMap<String, Command> eventMap = new HashMap<>();
                 eventMap.put("Stow", new Stow(arm, wrist, intake));
@@ -301,7 +324,7 @@ public class RobotContainer {
                                 autopath.pathname(), new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
                                                 DrivetrainConstants.MAX_AUTO_ACCELERATION),
                                 autopath.isReverse());
-
+                                drivetrain.resetOdometry(test_path.getInitialPose());
                 RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
                                 drivetrain::getPose2d, // Pose2d supplier
                                 drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning
@@ -326,4 +349,4 @@ public class RobotContainer {
 
                 return autoBuilder.fullAuto(test_path);
         }
-}
+ }
