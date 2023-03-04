@@ -72,6 +72,8 @@ public class Wrist extends SubsystemBase {
     // This method will be called once per scheduler run
     dt = time.get() - lastTime;
     lastTime = time.get();
+
+    System.out.println("wrist at setpoint"+atSetpoint());
   
   }
 

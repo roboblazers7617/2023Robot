@@ -93,7 +93,6 @@ public class RobotContainer {
                         new Rotation2d(180));
 
         private PieceType selectedPiece = PieceType.CONE;
-        private ScoreLevel scoreLevel = ScoreLevel.LEVEL_1;
 
         private final DriverStationTab driverStationTab;
 
@@ -183,10 +182,10 @@ public class RobotContainer {
 
         private void configureOperatorBindings() {
                 m_operatorController.leftBumper()
-                                .whileTrue(new SimpleMoveToPickup(arm, wrist, () -> getSelectedPiece(),
+                                .onTrue(new SimpleMoveToPickup(arm, wrist, () -> getSelectedPiece(),
                                                 () -> PickupLocation.DOUBLE));
                 m_operatorController.leftTrigger()
-                                .whileTrue(new SimpleMoveToPickup(arm, wrist, () -> getSelectedPiece(),
+                                .onTrue(new SimpleMoveToPickup(arm, wrist, () -> getSelectedPiece(),
                                                 () -> PickupLocation.FLOOR));
 
                 m_operatorController.rightBumper()
@@ -195,7 +194,7 @@ public class RobotContainer {
                                 .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CUBE)));
 
                 m_operatorController.povLeft()
-                                .whileTrue(new Stow(arm, wrist, intake));
+                                .onTrue(new Stow(arm, wrist, intake));
 
                 m_operatorController.y()
                                 .whileTrue(new IntakePiece(intake, () -> getSelectedPiece()));
