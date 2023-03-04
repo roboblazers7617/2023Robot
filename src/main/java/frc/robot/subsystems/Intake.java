@@ -8,6 +8,8 @@ import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxPIDController;
+import com.revrobotics.CANSparkMax.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -24,6 +26,7 @@ public class Intake extends SubsystemBase {
 //  ColorSensorV3 cubeSensor = new ColorSensorV3(I2C.Port.kOnboard);
   private final DigitalInput isIntakeStored = new DigitalInput(IntakeConstants.INTAKE_LIMIT_SWITCH_ID);
   private final RelativeEncoder intakeEncoder = intakeMotor.getEncoder();
+  private SparkMaxPIDController pidController = intakeMotor.getPIDController(); 
   
 
   /** Creates a new Intake. */
@@ -32,6 +35,12 @@ public class Intake extends SubsystemBase {
     intakeMotor.setSmartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
     intakeMotor.setIdleMode(IdleMode.kBrake);
     intakeEncoder.setVelocityConversionFactor(IntakeConstants.INTAKE_ENCODER_CONVERSION_FACTOR / 60);
+
+    pidController.setP(IntakeConstants.KP);
+    pidController.setI(IntakeConstants.KI);
+    pidController.setD(IntakeConstants.KD);
+    pidController.setOutputRange(-IntakeConstants.MAX_PID_SPEED, IntakeConstants.MAX_PID_SPEED);
+
   }
 
   @Override
@@ -90,6 +99,20 @@ public class Intake extends SubsystemBase {
   public double getCurent()
   {
     return intakeMotor.getOutputCurrent();
+  }
+
+  public void setPIDController(double value)
+  {
+    pidController.setReference(value, ControlType.kPosition);
+  }
+
+  public double getEncoderPosition(){
+    return intakeEncoder.getPosition();
+  }
+
+  public double getMotorTemperature()
+  {
+    return intakeMotor.getMotorTemperature();
   }
 
 }

@@ -77,19 +77,24 @@ public final class Constants {
     public static final double MAX_ANGULAR_VELOCITY = 0.65;// .5
     public static final double MAX_LINEAR_VELOCITY = 0.7;// .5
 
-    public static final double KP_LIN = 3.68;
+    public static final double KP_LIN = 4.3096;
     public static final double KI_LIN = 0.0;
     public static final double KD_LIN = 0.0;
-    public static final double KS_LIN = .192;
+    public static final double KS_LIN = .12529;
 
-    public static final double KP_ROT = 0.015;// 0.015
-    public static final double KI_ROT = 0.0;
-    public static final double KD_ROT = 0.0;
+    public static final double KP_ROT_POS = 0.015;// 0.015
+    public static final double KI_ROT_POS = 0.0;
+    public static final double KD_ROT_POS = 0.0;
     public static final double KS_ROT = 0.3;
 
-    public static final double KS = 0.192;
-    public static final double KV = 4.0;
-    public static final double KA = 0.424;
+    public static final double KP_ROT_VEL = 3.228;// 0.015
+    public static final double KI_ROT_VEL = 0.0;
+    public static final double KD_ROT_VEL = 0.0;
+    
+
+    public static final double KS = 0.12529;
+    public static final double KV = 3.3716;
+    public static final double KA = 0.44561;
 
     public static final double SIMPLE_FF_LINEAR = 0.5;
     public static final double SIMPLE_FF_ANGULAR = 0.3;
@@ -101,8 +106,8 @@ public final class Constants {
     // public static final double LINEAR_ERROR_TARGET_DRIVER =
     // Units.inchesToMeters(3);
 
-    public static final double MAX_AUTO_ACCELERATION = 0.25;
-    public static final double MAX_AUTO_VELOCITY = 0.4;
+    public static final double MAX_AUTO_ACCELERATION = 2;
+    public static final double MAX_AUTO_VELOCITY = 3;
 
     public static final double RAMSETEb = 2.0;
     public static final double RAMSETEzeta = 0.7;
@@ -268,7 +273,7 @@ public final class Constants {
 
     public static final double WRIST_ANGLE_TOLERANCE = 5;
     public static final double MAX_WRIST_ANGLE = 103;
-    public static final double MAX_UPWARD_WRIST_SPEED = 0.25;
+    public static final double MAX_UPWARD_WRIST_SPEED = 0.33; // TODO: Changed 3/4/23 from 0.25
     public static final double MAX_DOWNWARD_WRIST_SPEED = -0.1;
     public static final double MAX_WRIST_ACCEL = 0.12;
     public static final double WRIST_KS = 0.5;
@@ -317,6 +322,12 @@ public final class Constants {
     public static final double INTAKE_ENCODER_CONVERSION_FACTOR = 360.0 * INTAKE_GEAR_RATIO;
     public static final double CUBE_SENSOR_LIMIT = 600;
     public static final double CONE_CURRENT_LIMIT = 30.0;
+
+    public static final double KP = 0.01;
+    public static final double KI = 0.0;
+    public static final double KD = 0.0;
+
+    public static final double MAX_PID_SPEED = 0.50;
     
     public enum IntakeDirection
     {

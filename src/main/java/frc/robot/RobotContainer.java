@@ -120,7 +120,7 @@ public class RobotContainer {
                 tabs.add(new VisionTab(vision, drivetrain));
 
                 tabs.add(new DriveTrainTab(drivetrain));
-                tabs.add(new ColorSensorTab(new ColorSensor()));
+              //  tabs.add(new ColorSensorTab(new ColorSensor()));
                 tabs.add(new IntakeTab(intake, wrist));
                 tabs.add(new ArmTab(arm));
                 // STOP HERE OR DIE
@@ -168,7 +168,7 @@ public class RobotContainer {
                                 .onFalse(new InstantCommand(
                                                 () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
 
-                m_driverController.b().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d())));
+                //m_driverController.b().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d())));
                 m_driverController.a().onTrue(new AutoBalance(drivetrain));
                 // TODO: Adressable LEDS
 
@@ -219,6 +219,14 @@ public class RobotContainer {
                 selectedPiece = piece;
         }
 
+        public void turnOnMechanismBrakes(Boolean isBraked)
+        {
+                wrist.turnOnBrakes(isBraked);
+                arm.turnOnBrakes(isBraked);
+        }
+        public void turnOnBrakesDrivetrain(Boolean isTrue){
+                drivetrain.turnOnBrakes(isTrue);
+        }
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
          *

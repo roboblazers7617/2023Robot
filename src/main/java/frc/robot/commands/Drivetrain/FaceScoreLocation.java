@@ -14,7 +14,7 @@ import frc.robot.subsystems.Drivetrain;
 public class FaceScoreLocation extends CommandBase {
   /** Creates a new FaceScoreLocation. */
   private PIDController turnController = 
-        new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
+        new PIDController(DrivetrainConstants.KP_ROT_POS, DrivetrainConstants.KI_ROT_POS, DrivetrainConstants.KD_ROT_POS);
   private Drivetrain drivetrain;
   private Alliance color;
   private double targetAngle;

@@ -19,7 +19,7 @@ public class centerAndDistanceAlign extends CommandBase {
   boolean done = false;
   double rotOutput;
   double linOutput;
-  PIDController rotationalController = new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
+  PIDController rotationalController = new PIDController(DrivetrainConstants.KP_ROT_POS, DrivetrainConstants.KI_ROT_POS, DrivetrainConstants.KD_ROT_POS);
   PIDController distanceController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
   public centerAndDistanceAlign(Vision vision, Drivetrain drivetrain, double distance) {
     // Use addRequirements() here to declare subsystem dependencies.

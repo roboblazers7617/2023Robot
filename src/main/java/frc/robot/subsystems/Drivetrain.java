@@ -278,6 +278,22 @@ public class Drivetrain extends SubsystemBase {
         return mGyro.getPitch();
     }
 
+    public void turnOnBrakes(Boolean isTrue) {
+      if (isTrue){
+        leftFrontMotor.setIdleMode(IdleMode.kBrake);
+        leftFollowerMotor.setIdleMode(IdleMode.kBrake);
+        rightFrontMotor.setIdleMode(IdleMode.kBrake);
+        rightFollowerMotor.setIdleMode(IdleMode.kBrake);
+
+      }
+      else{
+        leftFrontMotor.setIdleMode(IdleMode.kCoast);
+        leftFollowerMotor.setIdleMode(IdleMode.kCoast);
+        rightFrontMotor.setIdleMode(IdleMode.kCoast);
+        rightFollowerMotor.setIdleMode(IdleMode.kCoast);
+
+      }
+    }
       // public void setTargetPose(String target){
   //   //targetPose = target;
   // }

@@ -15,6 +15,7 @@ public class IntakeTab extends ShuffleboardTabBase {
     DoublePublisher wristSpeedPublisher;
     DoublePublisher intakeSpeedPublisher;
     DoublePublisher wristTempPublisher;
+    DoublePublisher intakeTempPublisher;
     BooleanPublisher isIntakeStoredPublisher;
     BooleanPublisher isHoldingCubePublisher;
     DoublePublisher wristEncoderAnglePublisher;
@@ -36,7 +37,7 @@ public class IntakeTab extends ShuffleboardTabBase {
         isHoldingCubePublisher = networkTable.getBooleanTopic("Have Cube?").publish();
         wristEncoderAnglePublisher = networkTable.getDoubleTopic("Wrist Encoder Angle").publish();
         intakeCurrentPublisher = networkTable.getDoubleTopic("Intake Current").publish();
-
+        intakeTempPublisher = networkTable.getDoubleTopic("Intake Temp").publish();
         //shuffleboardTabTesting.add(new intake.moveToPositionCommand(IntakeConstants.WristPosition.FloorConePickup));
         
     }
@@ -49,6 +50,7 @@ public class IntakeTab extends ShuffleboardTabBase {
         isHoldingCubePublisher.set(intake.isHoldingGamePiece());
        // wristEncoderAnglePublisher.set(intake.getEncoderAngle());
         wristTempPublisher.set((wrist.getWristMotorTemp()*(9.0/5.0)+32.0));
+        intakeTempPublisher.set((intake.getMotorTemperature()*(9.0/5.0)+32.0));
         intakeCurrentPublisher.set(intake.getCurent());
 
     }

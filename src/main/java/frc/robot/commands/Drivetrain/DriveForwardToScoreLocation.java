@@ -70,7 +70,7 @@ public class DriveForwardToScoreLocation extends CommandBase {
     pidController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
     pidController.setTolerance(DrivetrainConstants.MAX_ERROR_LINEAR);
 
-    turnPidController = new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
+    turnPidController = new PIDController(DrivetrainConstants.KP_ROT_POS, DrivetrainConstants.KI_ROT_POS, DrivetrainConstants.KD_ROT_POS);
     turnPidController.enableContinuousInput(-180, 180);
     turnPidController.setTolerance(DrivetrainConstants.MAX_ERROR_LINEAR);
   }

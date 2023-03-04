@@ -109,6 +109,20 @@ public class Arm extends SubsystemBase {
     
   }
 
+  public void turnOnBrakes(Boolean isBraked)
+  {
+    if (isBraked)
+    {
+        shoulderMotor.setIdleMode(IdleMode.kBrake);
+        shoulderMotorFollower.setIdleMode(IdleMode.kBrake);
+    }
+    else
+    {
+      shoulderMotor.setIdleMode(IdleMode.kCoast);
+      shoulderMotorFollower.setIdleMode(IdleMode.kCoast);
+    }
+  }
+  
   public ArmPositions evalPickupPosition(Supplier<PickupLocation> location) {
     if (location.get().equals(PickupLocation.FLOOR))
       return ArmPositions.FLOOR_PICKUP_CONE;
@@ -148,7 +162,7 @@ public class Arm extends SubsystemBase {
     setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
-    System.out.println("Setpoint: " + setpoint);
+    //System.out.println("Setpoint: " + setpoint);
   }
 
   public Command actuateSuperstructureCommandPickup(Supplier<PickupLocation> location) {

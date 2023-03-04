@@ -75,6 +75,19 @@ public class Wrist extends SubsystemBase {
   
   }
 
+  public void turnOnBrakes(Boolean isBraked)
+  {
+    if (isBraked)
+    {
+        wristMotor.setIdleMode(IdleMode.kBrake);
+    }
+    else
+    {
+      wristMotor.setIdleMode(IdleMode.kCoast);
+    }
+  }
+  
+
   public double getWristPosition() {
     return wristEncoder.getPosition();
   }

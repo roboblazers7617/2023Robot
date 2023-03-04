@@ -22,9 +22,9 @@ public class TurnToTag extends PIDCommand {
         // The ProfiledPIDController used by the command
         new PIDController(
             // The PID gains
-            DrivetrainConstants.KP_ROT,
-            DrivetrainConstants.KI_ROT,
-            DrivetrainConstants.KD_ROT),
+            DrivetrainConstants.KP_ROT_POS,
+            DrivetrainConstants.KI_ROT_POS,
+            DrivetrainConstants.KD_ROT_POS),
             // The motion profile constraints
         // This should return the measurement
         vision::getBestTagYaw,
