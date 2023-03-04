@@ -16,6 +16,7 @@ import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.Constants.WristConstants.WristPosition;
 import frc.robot.Constants.WristConstants.IntakeConstants.IntakeDirection;
 import frc.robot.commands.IntakeDown;
+import frc.robot.commands.ArmStuff.SpinIntake;
 import frc.robot.commands.ArmStuff.Stow;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.commands.Drivetrain.AutoBalance;
@@ -36,6 +37,7 @@ import frc.robot.subsystems.Pnuematics;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.function.DoubleSupplier;
@@ -211,11 +213,17 @@ public class RobotContainer {
         m_operatorController.povRight().whileTrue(new InstantCommand(() -> wrist.setPosition(60), wrist));
         m_operatorController.povDown().whileTrue(new InstantCommand(() -> wrist.setPosition(20), wrist));
         //TODO: m_operatorController.b().whileTrue(new Stow(arm, intake));
+        //m_operatorController.y()
+        //        .whileTrue(Commands.runEnd(() -> intake.setIntakeSpeed(IntakeDirection.PICK_CUBE.speed()),
+        //                () -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake));
         m_operatorController.y()
-                .whileTrue(Commands.runEnd(() -> intake.setIntakeSpeed(IntakeDirection.PICK_CUBE.speed()),
-                        () -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake));
+                .whileTrue(new SpinIntake(intake, PieceType.CONE, true));
+
+                        
+        
+        
         m_operatorController.x()
-                .whileTrue(Commands.runEnd(() -> intake.setIntakeSpeed(IntakeDirection.PICK_CONE.speed()),
+                .whileTrue(Commands.runEnd(() -> intake.setIntakeSpeed(IntakeDirection.PLACE_CONE.speed()),
                         () -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake));
 
         // Test holding arm in place

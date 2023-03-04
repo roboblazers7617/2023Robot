@@ -257,7 +257,7 @@ public final class Constants {
     public static final double MAX_DOWNWARD_WRIST_SPEED = -0.1;
     public static final double MAX_WRIST_ACCEL = 0.12;
     public static final double WRIST_KS = 0.5;
-    public static final double WRIST_KG = 0.2;
+    public static final double WRIST_KG = 0.3; // changed from 0.2 because not holding
     public static final double WRIST_KV = 0;
     public static final double WRIST_KP = 0.011;
     public static final double WRIST_KI = 0.0;
@@ -303,15 +303,17 @@ public final class Constants {
     public static final int CURRENT_LIMIT = 20;
     public static final double INTAKE_GEAR_RATIO = 1.0 / 5.0;
     public static final double INTAKE_ENCODER_CONVERSION_FACTOR = 360.0 * INTAKE_GEAR_RATIO;
+    public static final double CUBE_SENSOR_LIMIT = 600;
+    public static final double CONE_CURRENT_LIMIT = 30.0;
     
     //TODO: Lukas. (High) Set these
     public enum IntakeDirection
     {
       STOP (0.0),
-      PICK_CONE (0.75),
-      PICK_CUBE (-0.5),
-      PLACE_CONE (-0.5),
-      PLACE_CUBE (0.75);
+      PICK_CONE (-0.75),
+      PICK_CUBE (0.5),
+      PLACE_CONE (0.5),
+      PLACE_CUBE (-0.50);
 
       private final double speed;
 
