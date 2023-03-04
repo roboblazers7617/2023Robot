@@ -28,7 +28,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
     IntegerSubscriber modeSub;
     private final SendableChooser<String> drivetrainMode = new SendableChooser<>();
     private final SendableChooser<Boolean> debugMode = new SendableChooser<>();
-    private final SendableChooser<FieldPositions.FieldLocation> targetNode = new SendableChooser<>();
+    // private final SendableChooser<FieldPositions.FieldLocation> targetNode = new SendableChooser<>();
     private final SendableChooser<DrivetrainConstants.AutoPath> autoPath = new SendableChooser<>();
 
     private Drivetrain drivetrain;
@@ -67,17 +67,17 @@ public class DriverStationTab extends ShuffleboardTabBase {
         NetworkTable debugNetworkTable = NetworkTableInstance.getDefault().getTable("debug mode table");
         debugModePub = debugNetworkTable.getBooleanTopic("debug mode").publish();
 
-        //path planning target
-        targetNode.setDefaultOption("Node 1", FieldLocation.NODE1);
-        targetNode.addOption("Node 2", FieldLocation.NODE2);
-        targetNode.addOption("Node 3", FieldLocation.NODE3);
-        targetNode.addOption("Node 4", FieldLocation.NODE4);
-        targetNode.addOption("Node 5", FieldLocation.NODE5);
-        targetNode.addOption("Node 6", FieldLocation.NODE6);
-        targetNode.addOption("Node 7", FieldLocation.NODE7);
-        targetNode.addOption("Node 8", FieldLocation.NODE8);
-        targetNode.addOption("Node 9", FieldLocation.NODE9);
-        tab.add("Field Target", targetNode);
+        //path planning target use button box now
+        // targetNode.setDefaultOption("Node 1", FieldLocation.NODE1);
+        // targetNode.addOption("Node 2", FieldLocation.NODE2);
+        // targetNode.addOption("Node 3", FieldLocation.NODE3);
+        // targetNode.addOption("Node 4", FieldLocation.NODE4);
+        // targetNode.addOption("Node 5", FieldLocation.NODE5);
+        // targetNode.addOption("Node 6", FieldLocation.NODE6);
+        // targetNode.addOption("Node 7", FieldLocation.NODE7);
+        // targetNode.addOption("Node 8", FieldLocation.NODE8);
+        // targetNode.addOption("Node 9", FieldLocation.NODE9);
+        // tab.add("Field Target", targetNode);
         
 
 
@@ -103,7 +103,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
     public void update() {
         drivetrain.setDriveTrainMode(DrivetrainMode.valueOf(drivetrainMode.getSelected()));
         maxSpeedPub.set(drivetrain.getMaxDrivetrainSpeed());
-        drivetrain.setTargetNode(targetNode.getSelected());
+        // drivetrain.setTargetNode(targetNode.getSelected());
         pathPlanningTargetPub.set(drivetrain.getTargetPose());
 
         debugModePub.set(debugMode.getSelected());

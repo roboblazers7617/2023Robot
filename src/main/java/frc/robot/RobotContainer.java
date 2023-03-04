@@ -11,6 +11,7 @@ import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.WristConstants;
+import frc.robot.FieldPositions.FieldLocation;
 import frc.robot.commands.ArmStuff.IntakePiece;
 import frc.robot.commands.ArmStuff.OutakePiece;
 import frc.robot.commands.ArmStuff.SimpleMoveToPickup;
@@ -53,11 +54,13 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
 /**
@@ -83,11 +86,14 @@ public class RobotContainer {
 
         private final CommandXboxController m_operatorController = new CommandXboxController(
                         OperatorConstants.OPERATOR_CONTROLLER_PORT);
+        private final Joystick m_buttonBox = new Joystick(OperatorConstants.BUTTON_BOX_CONTROLLER_PORT);
+
         private Pose2d targetPose = new Pose2d(
                         new Translation2d(Units.inchesToMeters(40.45 + 36), Units.inchesToMeters(42.19)),
                         new Rotation2d(180));
 
         private PieceType selectedPiece = PieceType.CONE;
+        private ScoreLevel scoreLevel = ScoreLevel.LEVEL_1;
 
         private final DriverStationTab driverStationTab;
 
@@ -98,6 +104,7 @@ public class RobotContainer {
                 // Configure the trigger bindings
                 configureDriverBindings();
                 configureOperatorBindings();
+                configureButtonBoxBindings();
                 // create shuffleboardinfo.java
                 boolean isRightTriggerPressed = m_driverController.getRightTriggerAxis() > 0.5;
                 drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
@@ -201,6 +208,46 @@ public class RobotContainer {
                 m_operatorController.povDown().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1));
                 m_operatorController.povRight().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2));
                 m_operatorController.povUp().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3));
+        }
+
+        // private void setScoreLevel(ScoreLevel scoreLevel) {
+        //         this.scoreLevel = scoreLevel;
+        // }
+        
+
+        private void configureButtonBoxBindings() {
+                Trigger button1 = new JoystickButton(m_buttonBox, 1);
+                button1.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE1)));
+                Trigger button2 = new JoystickButton(m_buttonBox, 2);
+                button2.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE2)));
+                Trigger button3 = new JoystickButton(m_buttonBox, 3);
+                button3.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE3)));
+                Trigger button4 = new JoystickButton(m_buttonBox, 4);
+                button4.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE4)));
+                Trigger button5 = new JoystickButton(m_buttonBox, 5);
+                button5.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE5)));
+                Trigger button6 = new JoystickButton(m_buttonBox, 6);
+                button6.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE6)));
+                Trigger button7 = new JoystickButton(m_buttonBox, 7);
+                button7.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE7)));
+                Trigger button8 = new JoystickButton(m_buttonBox, 8);
+                button8.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE8)));
+                Trigger button9 = new JoystickButton(m_buttonBox, 9);
+                button9.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE9)));
+
+                Trigger lowButton = new JoystickButton(m_buttonBox, 10);
+                lowButton.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1));
+                Trigger middleButton = new JoystickButton(m_buttonBox, 11);
+                middleButton.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2));
+                Trigger highButtons = new JoystickButton(m_buttonBox, 12);
+                highButtons.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3));
+
+                // what if we made it a loop
+                // for (int i = 1; i <= 9; i++){
+                // Trigger button = new JoystickButton(m_buttonBox, i);
+                // button.onTrue(new InstantCommand(() ->
+                // drivetrain.setTargetNode(FieldLocation.NODE1)));
+                // }
         }
 
         public void setTargetPose(Pose2d targetPose) {
