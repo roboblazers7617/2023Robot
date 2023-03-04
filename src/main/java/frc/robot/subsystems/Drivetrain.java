@@ -97,6 +97,8 @@ public class Drivetrain extends SubsystemBase {
     mKinematics = new DifferentialDriveKinematics(DrivetrainConstants.TRACK_WIDTH_METERS);
     mOdometry = new DifferentialDrivePoseEstimator(mKinematics, mGyro.getRotation2d(), getLeftDistance(), getRightDistance(), new Pose2d());
 
+    targetNode = FieldLocation.NODE1;
+
   }
 
   public void setDriveTrainMode(DrivetrainMode mode) {
