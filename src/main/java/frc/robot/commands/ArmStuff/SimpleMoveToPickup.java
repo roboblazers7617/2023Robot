@@ -21,10 +21,9 @@ public class SimpleMoveToPickup extends SequentialCommandGroup {
   public SimpleMoveToPickup(Arm arm, Wrist wrist, Supplier<PieceType> piece, Supplier<PickupLocation> location) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new InstantCommand(() -> arm.setPosition(arm.evalPickupPosition(location)), arm),
-        arm.actuateSuperstructureCommandPickup(location),
-        arm.WaitUntilArmInPosition(),
-        new InstantCommand(() -> wrist.setPosition(wrist.evalPickupLocation(location, piece), arm::getShoulderAngle), wrist),
+    addCommands(arm.intigratedMoveToPickup(location, piece),
+        new InstantCommand(() -> wrist.setPosition(wrist.evalPickupLocation(location, piece), arm::getArmAngle),
+            wrist),
         wrist.WaitUntilWristInPosition());
 
   }

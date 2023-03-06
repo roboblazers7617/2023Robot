@@ -26,7 +26,7 @@ public class Stow extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new InstantCommand(() -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake),
         new InstantCommand(() -> arm.actuateSuperstructure(PnuematicPositions.RETRACTED)),
-        new InstantCommand(() -> wrist.setPosition(WristPosition.STOW, arm::getShoulderAngle), wrist),
+        new InstantCommand(() -> wrist.setPosition(WristPosition.STOW, arm::getArmAngle), wrist),
         wrist.WaitUntilWristInPosition(),//new WaitCommand(.25),//TODO:get to actually stay position then move
         new InstantCommand(() -> arm.setPosition(ArmPositions.STOW), arm));
   }

@@ -21,6 +21,6 @@ public class SimpleScore extends SequentialCommandGroup {
   public SimpleScore(Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece, Supplier<ScoreLevel> level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new SimpleMoveToScore(arm, wrist,level), intake.SpinIntakeCommand(piece, false));
+    addCommands(new SimpleMoveToScore(arm, wrist,level, piece), intake.SpinIntakeCommand(piece, false));
   }
 }
