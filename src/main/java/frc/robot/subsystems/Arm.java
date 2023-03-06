@@ -95,6 +95,7 @@ public class Arm extends SubsystemBase {
     time.reset();
     time.start();
 
+    actuateSuperstructure(PnuematicPositions.RETRACTED);
   }
 
   @Override
