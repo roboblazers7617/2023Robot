@@ -228,14 +228,14 @@ public class Arm extends SubsystemBase {
 
   public Command intigratedMoveToScore(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
     return new SequentialCommandGroup(new InstantCommand(() -> setPosition(evalScorePosition(level, piece)), this),
-        Commands.waitUntil(() -> (getShoulderAngle()) > 20),
+        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE+20),
         new InstantCommand(() -> actuateSuperstructure(evalScorePosition(level, piece).getPistonPosition())),
         Commands.waitUntil(() -> atSetpoint()));
   }
 
   public Command intigratedMoveToPickup(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
     return new SequentialCommandGroup(new InstantCommand(() -> setPosition(evalPickupPosition(location, piece)), this),
-        Commands.waitUntil(() -> (getShoulderAngle()) > 20),
+        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE+20),
         new InstantCommand(() -> actuateSuperstructure(evalPickupPosition(location, piece).getPistonPosition())),
         Commands.waitUntil(() -> atSetpoint()));
   }
