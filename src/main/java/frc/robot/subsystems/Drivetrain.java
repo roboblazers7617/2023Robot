@@ -245,6 +245,9 @@ public class Drivetrain extends SubsystemBase {
       setBrakeMode(IdleMode.kBrake);
     }
   }
+  public boolean isBrakeMode(){
+    return leftFrontMotor.getIdleMode() == IdleMode.kBrake;
+  }
 
   private void updatePose() {
     // Write code for local Odometry here:
