@@ -11,6 +11,7 @@ import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.WristConstants;
+import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.FieldPositions.FieldLocation;
 import frc.robot.commands.ArmStuff.IntakePiece;
@@ -124,7 +125,7 @@ public class RobotContainer {
                                 arm));
                 wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(
                                 m_operatorController.getRightY() * WristConstants.MAX_MANNUAL_WRIST_SPEED,
-                                arm::getShoulderAngle), wrist));
+                                arm::getArmAngle ), wrist));
 
                 ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
                 // YOUR CODE HERE | | |
@@ -213,9 +214,9 @@ public class RobotContainer {
 
                 m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
 
-                m_operatorController.povDown().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1));
-                m_operatorController.povRight().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2));
-                m_operatorController.povUp().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3));
+                m_operatorController.povDown().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
+                m_operatorController.povRight().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2, () -> getSelectedPiece()));
+                m_operatorController.povUp().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3, () -> getSelectedPiece()));
         }
 
         // private void setScoreLevel(ScoreLevel scoreLevel) {
@@ -244,11 +245,11 @@ public class RobotContainer {
                 button9.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE9)));
 
                 Trigger lowButton = new JoystickButton(m_buttonBox, 10);
-                lowButton.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1));
+                lowButton.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
                 Trigger middleButton = new JoystickButton(m_buttonBox, 11);
-                middleButton.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2));
+                middleButton.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2, () -> getSelectedPiece()));
                 Trigger highButtons = new JoystickButton(m_buttonBox, 12);
-                highButtons.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3));
+                highButtons.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3, () -> getSelectedPiece()));
 
                 // what if we made it a loop
                 // for (int i = 1; i <= 9; i++){
@@ -256,6 +257,10 @@ public class RobotContainer {
                 // button.onTrue(new InstantCommand(() ->
                 // drivetrain.setTargetNode(FieldLocation.NODE1)));
                 // }
+        }
+
+        public void stow(){
+                arm.setPosition(ArmPositions.STOW);
         }
 
         public void setTargetPose(Pose2d targetPose) {

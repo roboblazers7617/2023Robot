@@ -242,14 +242,20 @@ public final class Constants {
     public static final double MAX_MANNUAL_ARM_SPEED = 50.0;
     public static final double MAX_SPEED_DOWNWARD = -0.5; 
     public static final double MAX_SPEED_UPWARD = 0.3;
+    public static final double PISTON_BACK = -90 - MINIMUM_SHOULDER_ANGLE;
+    public static final double PISTON_FORWARD = 0;
 
     // TODO: Lukas. (High) Set the angles
     public enum ArmPositions {
       LEVEL_3_CONE(40, PnuematicPositions.EXTENDED),
       LEVEL_2_CONE(4, PnuematicPositions.RETRACTED),
       LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
+      LEVEL_3_CUBE(40, PnuematicPositions.EXTENDED),//TODO
+      LEVEL_2_CUBE(4, PnuematicPositions.RETRACTED),//TODO
+      LEVEL_1_CUBE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),//TODO
       STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
       FLOOR_PICKUP_CONE( -42, PnuematicPositions.EXTENDED),
+      FLOOR_PICKUP_CUBE( -42, PnuematicPositions.EXTENDED),
       STATION_PICKUP(4.88, PnuematicPositions.RETRACTED);
 
       private final double shoulderAngle;
@@ -304,7 +310,10 @@ public final class Constants {
       DOUBLE_PICKUP(6.7),
       LEVEL_3_CONE(-18),
       LEVEL_2_CONE(-22),
-      LEVEL_1_CONE(37);
+      LEVEL_1_CONE(37),
+      LEVEL_3_CUBE(0),//TODO
+      LEVEL_2_CUBE(-22),//TODO
+      LEVEL_1_CUBE(37);//TODO
 
       private final double angle;
 

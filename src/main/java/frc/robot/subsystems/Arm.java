@@ -20,17 +20,21 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 import frc.robot.Constants.PickupLocation;
+import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   private CANSparkMax shoulderMotor = new CANSparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
-  private CANSparkMax shoulderMotorFollower = new CANSparkMax(ArmConstants.SHOULDER_FOLLOWER_MOTOR_ID, MotorType.kBrushless);
+  private CANSparkMax shoulderMotorFollower = new CANSparkMax(ArmConstants.SHOULDER_FOLLOWER_MOTOR_ID,
+      MotorType.kBrushless);
   private SparkMaxPIDController controller;
   private SparkMaxPIDController controllerFollower;
   private RelativeEncoder shoulderEncoder = shoulderMotor.getEncoder();
@@ -40,7 +44,10 @@ public class Arm extends SubsystemBase {
   private Pnuematics pneumatics;
   private ArmFeedforward feedforward = new ArmFeedforward(ArmConstants.KS, ArmConstants.KG, ArmConstants.KV);
 
-  //AnalogPotentiometer shoulderAngle = new AnalogPotentiometer(ArmConstants.SHOULDER_POTENTIOMETER_PORT, ArmConstants.SHOULDER_POTENTIOMETER_RANGE, ArmConstants.SHOULDER_POTENTIOMETER_OFFSET);
+  // AnalogPotentiometer shoulderAngle = new
+  // AnalogPotentiometer(ArmConstants.SHOULDER_POTENTIOMETER_PORT,
+  // ArmConstants.SHOULDER_POTENTIOMETER_RANGE,
+  // ArmConstants.SHOULDER_POTENTIOMETER_OFFSET);
 
   private DigitalInput isArmStowed = new DigitalInput(ArmConstants.LIMIT_SWITCH_PORT);
 
@@ -53,92 +60,96 @@ public class Arm extends SubsystemBase {
   public Arm(Pnuematics pnuematics) {
     shoulderMotor.restoreFactoryDefaults();
     shoulderMotorFollower.restoreFactoryDefaults();
-    shoulderMotor.setIdleMode(IdleMode.kBrake); 
-    shoulderMotorFollower.setIdleMode(IdleMode.kBrake); 
-   
-    shoulderMotor.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT); 
-    shoulderMotorFollower.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
+    shoulderMotor.setIdleMode(IdleMode.kBrake);
+    shoulderMotorFollower.setIdleMode(IdleMode.kBrake);
 
+    shoulderMotor.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
+    shoulderMotorFollower.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
 
     shoulderMotorFollower.follow(shoulderMotor, true);
 
     shoulderEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
-    shoulderEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR/60.0);
+    shoulderEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR / 60.0);
     shoulderEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
     shoulderFollowerEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
-    shoulderFollowerEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR/60.0);
+    shoulderFollowerEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR / 60.0);
     shoulderFollowerEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
-  
-
 
     controller = shoulderMotor.getPIDController();
     controllerFollower = shoulderMotorFollower.getPIDController();
-  
+
     controllerFollower.setP(ArmConstants.KP);
     controllerFollower.setI(ArmConstants.KI);
     controllerFollower.setD(ArmConstants.KD);
     controllerFollower.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
 
-    
     controller.setP(ArmConstants.KP);
     controller.setI(ArmConstants.KI);
     controller.setD(ArmConstants.KD);
     controller.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
-    
+
     this.pneumatics = pnuematics;
     leftPiston = pnuematics.getLeftArmPiston();
     rightPiston = pnuematics.getRightArmPiston();
 
     time.reset();
     time.start();
+
+    actuateSuperstructure(PnuematicPositions.RETRACTED);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    dt = time.get() -lastTime;
+    dt = time.get() - lastTime;
     lastTime = time.get();
-    //System.out.println("velocity " + shoulderEncoder.getVelocity());    
-    
-    if (getShoulderAngle() > ( ArmConstants.MINIMUM_SHOULDER_ANGLE + 4 )&& setpoint == ArmPositions.STOW.getShoulderAngle())
+    // System.out.println("velocity " + shoulderEncoder.getVelocity());
+
+    if (getShoulderAngle() > (ArmConstants.MINIMUM_SHOULDER_ANGLE + 4)
+        && setpoint == ArmPositions.STOW.getShoulderAngle())
       shoulderMotor.set(0);
-    else if (getShoulderAngle() < ( ArmConstants.MINIMUM_SHOULDER_ANGLE + 4 ) && setpoint == ArmPositions.STOW.getShoulderAngle()){
+    else if (getShoulderAngle() < (ArmConstants.MINIMUM_SHOULDER_ANGLE + 4)
+        && setpoint == ArmPositions.STOW.getShoulderAngle()) {
       controller.setReference(ArmPositions.STOW.getShoulderAngle(), CANSparkMax.ControlType.kPosition, 0,
-      feedforward.calculate(Units.degreesToRadians(ArmPositions.STOW.getShoulderAngle()), 0));
+          feedforward.calculate(Units.degreesToRadians(ArmPositions.STOW.getShoulderAngle()), 0));
     }
-    
+
   }
 
-  public void turnOnBrakes(Boolean isBraked)
-  {
-    if (isBraked)
-    {
-        shoulderMotor.setIdleMode(IdleMode.kBrake);
-        shoulderMotorFollower.setIdleMode(IdleMode.kBrake);
-    }
-    else
-    {
+  public void turnOnBrakes(Boolean isBraked) {
+    if (isBraked) {
+      shoulderMotor.setIdleMode(IdleMode.kBrake);
+      shoulderMotorFollower.setIdleMode(IdleMode.kBrake);
+    } else {
       shoulderMotor.setIdleMode(IdleMode.kCoast);
       shoulderMotorFollower.setIdleMode(IdleMode.kCoast);
     }
   }
-  
-  public ArmPositions evalPickupPosition(Supplier<PickupLocation> location) {
-    if (location.get().equals(PickupLocation.FLOOR))
+
+  public ArmPositions evalPickupPosition(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
+    if (location.get().equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CONE))
       return ArmPositions.FLOOR_PICKUP_CONE;
+    else if (location.get().equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CUBE))
+      return ArmPositions.FLOOR_PICKUP_CUBE;
     else if (location.get().equals(PickupLocation.DOUBLE))
       return ArmPositions.STATION_PICKUP;
     else
       return ArmPositions.STOW;
   }
 
-  public ArmPositions evalScorePosition(Supplier<ScoreLevel> level) {
-    if (level.get().equals(ScoreLevel.LEVEL_1))
+  public ArmPositions evalScorePosition(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
+    if (level.get().equals(ScoreLevel.LEVEL_1) && piece.get().equals(PieceType.CONE))
       return ArmPositions.LEVEL_1_CONE;
-    else if (level.get().equals(ScoreLevel.LEVEL_2))
+    else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CONE))
       return ArmPositions.LEVEL_2_CONE;
-    else if (level.get().equals(ScoreLevel.LEVEL_3))
+    else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CONE))
       return ArmPositions.LEVEL_3_CONE;
+    if (level.get().equals(ScoreLevel.LEVEL_1) && piece.get().equals(PieceType.CUBE))
+      return ArmPositions.LEVEL_1_CUBE;
+    else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CUBE))
+      return ArmPositions.LEVEL_2_CUBE;
+    else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CUBE))
+      return ArmPositions.LEVEL_3_CUBE;
     else
       return ArmPositions.STOW;
   }
@@ -156,21 +167,21 @@ public class Arm extends SubsystemBase {
     setPosition(position.getShoulderAngle());
   }
 
-  public void setVelocity(double velocityDegreesPerSec){
-    setpoint = setpoint + velocityDegreesPerSec*dt;
+  public void setVelocity(double velocityDegreesPerSec) {
+    setpoint = setpoint + velocityDegreesPerSec * dt;
     setpoint = Math.min(setpoint, ArmConstants.MAX_SHOULDER_ANGLE);
     setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
-    //System.out.println("Setpoint: " + setpoint);
+    // System.out.println("Setpoint: " + setpoint);
   }
 
-  public Command actuateSuperstructureCommandPickup(Supplier<PickupLocation> location) {
-    return Commands.runOnce(() -> actuateSuperstructure(evalPickupPosition(location).getPistonPosition()), this);
+  public Command actuateSuperstructureCommandPickup(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
+    return Commands.runOnce(() -> actuateSuperstructure(evalPickupPosition(location, piece).getPistonPosition()), this);
   }
 
-  public Command actuateSuperstructureCommandScore(Supplier<ScoreLevel> level) {
-    return Commands.runOnce(() -> actuateSuperstructure(evalScorePosition(level).getPistonPosition()), this);
+  public Command actuateSuperstructureCommandScore(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
+    return Commands.runOnce(() -> actuateSuperstructure(evalScorePosition(level, piece).getPistonPosition()), this);
   }
 
   public Command actuateSuperstructureCommand(PnuematicPositions position) {
@@ -190,34 +201,50 @@ public class Arm extends SubsystemBase {
     return isArmStowed.get();
   }
 
-  public double getShoulderAngle(){
+  public double getShoulderAngle() {
     return shoulderEncoder.getPosition();
   }
 
-  public boolean atSetpoint(){
+  public double getArmAngle() {
+    return shoulderEncoder.getPosition()
+        + ((getSuperstructureState() == Value.kForward) ? ArmConstants.PISTON_BACK : ArmConstants.PISTON_FORWARD);
+  }
+
+  public boolean atSetpoint() {
     return (Math.abs(getShoulderAngle() - (setpoint)) < (ArmConstants.POSITION_TOLERANCE));
   }
 
-  public Command WaitUntilArmInPosition(){
+  public Command WaitUntilArmInPosition() {
     return Commands.waitUntil(() -> atSetpoint());
   }
 
-  public void enableCompressor(boolean enableCompressor){
-    if (enableCompressor)
-    {
+  public void enableCompressor(boolean enableCompressor) {
+    if (enableCompressor) {
       pneumatics.enable();
-    }
-    else
-    {
+    } else {
       pneumatics.disable();
     }
   }
 
-  public double getShoulderMotorTemp(){
+  public Command intigratedMoveToScore(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
+    return new SequentialCommandGroup(new InstantCommand(() -> setPosition(evalScorePosition(level, piece)), this),
+        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE+20),
+        new InstantCommand(() -> actuateSuperstructure(evalScorePosition(level, piece).getPistonPosition())),
+        Commands.waitUntil(() -> atSetpoint()));
+  }
+
+  public Command intigratedMoveToPickup(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
+    return new SequentialCommandGroup(new InstantCommand(() -> setPosition(evalPickupPosition(location, piece)), this),
+        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE+20),
+        new InstantCommand(() -> actuateSuperstructure(evalPickupPosition(location, piece).getPistonPosition())),
+        Commands.waitUntil(() -> atSetpoint()));
+  }
+
+  public double getShoulderMotorTemp() {
     return shoulderMotor.getMotorTemperature();
   }
 
-public ArmPositions evalScoreLevel(ScoreLevel level) {
+  public ArmPositions evalScoreLevel(ScoreLevel level) {
     return null;
-}
+  }
 }
