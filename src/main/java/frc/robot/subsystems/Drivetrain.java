@@ -5,6 +5,9 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 import org.photonvision.EstimatedRobotPose;
 
 import com.revrobotics.CANSparkMax;
@@ -114,7 +117,7 @@ public class Drivetrain extends SubsystemBase {
 
   
 
-  public void drive(double leftY, double rightX, double rightY, boolean isQuickTurn) {
+  public void drive(double leftY, double rightX, double rightY, Supplier<Boolean> isQuickTurn) {
     double lForward = leftY; //slewRateFilterLeft.calculate(leftY);
     double rForward = rightY; //slewRateFilterRight.calculate(rightY);
     if (mode == DrivetrainConstants.DrivetrainMode.arcadeDrive) {
@@ -134,8 +137,8 @@ public class Drivetrain extends SubsystemBase {
     drivetrain.arcadeDrive(xSpeed, zRotation);
   }
 
-  private void curvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn) {
-    drivetrain.curvatureDrive(xSpeed, zRotation, isQuickTurn);
+  private void curvatureDrive(double xSpeed, double zRotation, Supplier<Boolean> isQuickTurn) {
+    drivetrain.curvatureDrive(xSpeed, zRotation, isQuickTurn.get());
   }
   public void setDrivetrainSpeed(double maxSpeed) {
     maxDrivetrainspeed = maxSpeed;

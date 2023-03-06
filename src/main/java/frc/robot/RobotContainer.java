@@ -107,9 +107,8 @@ public class RobotContainer {
                 configureOperatorBindings();
                 configureButtonBoxBindings();
                 // create shuffleboardinfo.java
-                boolean isRightTriggerPressed = m_driverController.getRightTriggerAxis() > 0.5;
                 drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
-                                m_driverController.getRightX(), m_driverController.getRightY(), isRightTriggerPressed),
+                                m_driverController.getRightX(), m_driverController.getRightY(), ()-> isRightTriggerPressed()),
                                 drivetrain));
 
                 arm.setDefaultCommand(new RunCommand(
@@ -275,6 +274,9 @@ public class RobotContainer {
         public void turnOnBrakesDrivetrain(Boolean isTrue){
                 drivetrain.turnOnBrakes(isTrue);
         }
+        private boolean isRightTriggerPressed(){
+                return m_driverController.getRightTriggerAxis() > 0.5;
+        };
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
          *
