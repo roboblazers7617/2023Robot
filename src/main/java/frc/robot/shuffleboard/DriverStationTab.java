@@ -35,6 +35,8 @@ public class DriverStationTab extends ShuffleboardTabBase {
     private DoublePublisher maxSpeedPub;
     private StringPublisher pathPlanningTargetPub;
     private BooleanPublisher debugModePub;
+    private BooleanPublisher isInBrakeMode;
+
 
     private UsbCamera camera;
 
@@ -68,6 +70,8 @@ public class DriverStationTab extends ShuffleboardTabBase {
         NetworkTable debugNetworkTable = NetworkTableInstance.getDefault().getTable("debug mode table");
         debugModePub = debugNetworkTable.getBooleanTopic("debug mode").publish();
 
+        isInBrakeMode = networkTable.getBooleanTopic("Break mode").publish();
+        tab.add("Break mode", false);
         //path planning target use button box now
         // targetNode.setDefaultOption("Node 1", FieldLocation.NODE1);
         // targetNode.addOption("Node 2", FieldLocation.NODE2);
@@ -108,6 +112,8 @@ public class DriverStationTab extends ShuffleboardTabBase {
         pathPlanningTargetPub.set(drivetrain.getTargetPose());
 
         debugModePub.set(debugMode.getSelected());
+
+        isInBrakeMode.set(drivetrain.isBrakeMode());
         
 
     }

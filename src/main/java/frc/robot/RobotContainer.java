@@ -44,7 +44,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import org.apache.commons.io.input.buffer.PeekableInputStream;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -185,6 +184,7 @@ public class RobotContainer {
 
                 //m_driverController.b().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d())));
                 m_driverController.a().whileTrue(new AutoBalance(drivetrain));
+                m_driverController.x().onTrue(new InstantCommand(() -> drivetrain.toggleBrakeMode()));
                 // TODO: Adressable LEDS
 
         }
