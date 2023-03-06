@@ -40,6 +40,8 @@ import frc.robot.subsystems.Wrist;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -310,9 +312,10 @@ public class RobotContainer {
 
 
 
-
+// private List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup("red near 2 ball", new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY, DrivetrainConstants.MAX_AUTO_ACCELERATION));
 
         public Command pickAutonomousCommand(DrivetrainConstants.AutoPath autopath) {
+                // the hashmap can really just be in constants, it does not need to be here
                 HashMap<String, Command> eventMap = new HashMap<>();
                 eventMap.put("Stow", new Stow(arm, wrist, intake));
                 eventMap.put("AutoBalance", new AutoBalance(drivetrain));
@@ -321,12 +324,13 @@ public class RobotContainer {
                 eventMap.put("SimpleScore", new SimpleScore(arm, wrist, intake, () -> autopath.selectedPiece(),
                                 () -> autopath.scoreLevelSecond()));
 
-                // arm, intake, wrist, piecetype, score level
+                //The code below is used to define a singular path for the robot to follow
                 PathPlannerTrajectory test_path = PathPlanner.loadPath(
                                 autopath.pathname(), new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
                                                 DrivetrainConstants.MAX_AUTO_ACCELERATION),
                                 autopath.isReverse());
                                 drivetrain.resetOdometry(test_path.getInitialPose());
+                // this is the autoBuilder, in theory we do not need this to be here, and we should put it somewher else
                 RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
                                 drivetrain::getPose2d, // Pose2d supplier
                                 drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning
