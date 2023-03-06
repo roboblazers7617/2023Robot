@@ -34,6 +34,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.Pnuematics;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
@@ -41,6 +42,8 @@ import frc.robot.subsystems.Wrist;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import org.apache.commons.io.input.buffer.PeekableInputStream;
 
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
@@ -85,6 +88,7 @@ public class RobotContainer {
         private final Intake intake = new Intake();
         private final Arm arm = new Arm(pnuematics);
         private final Wrist wrist = new Wrist();
+        private final Leds leds = new Leds();
         private final CommandXboxController m_driverController = new CommandXboxController(
                         OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -265,6 +269,12 @@ public class RobotContainer {
         }
 
         public void setSelectedPiece(PieceType piece) {
+                if(piece == PieceType.CONE){
+                        leds.orange();
+                }
+                else{
+                        leds.purple();
+                }
                 selectedPiece = piece;
         }
 
