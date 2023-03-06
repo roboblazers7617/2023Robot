@@ -42,14 +42,14 @@ public class Leds extends SubsystemBase {
      // Fill the buffer with a rainbow
      // Set the LEDs
    
-   private void orange() {
+   public void orange() {
      for (var i = 0; i < m_ledBuffer.getLength(); i++) {
      // Sets the specified LED to the RGB values for cone
-       m_ledBuffer.setRGB(i, 255, 209, 0);
+       m_ledBuffer.setRGB(i, 255, 100, 0);
       }
   }
  
-  private void purple() {
+  public void purple() {
    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
      // Sets the specified LED to the RGB values for cube
      m_ledBuffer.setRGB(i, 148, 0, 211);

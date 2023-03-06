@@ -200,8 +200,8 @@ public class Drivetrain extends SubsystemBase {
 
   public void tankDriveVolts(double leftVolts, double rightVolts)
   {
-    leftFrontMotor.setVoltage(leftVolts);
-    rightFrontMotor.setVoltage(rightVolts);
+    leftMotorGroup.setVoltage(leftVolts);
+    rightMotorGroup.setVoltage(rightVolts);
   }
 
   public void driveWithVelocity(double xVelocity, double rotationVelocity){
@@ -235,7 +235,18 @@ public class Drivetrain extends SubsystemBase {
     mGyro.setYaw(0);
   }
   public double getGyroAngle(){
-    return -mGyro.getAngle();
+    return mGyro.getAngle();
+  }
+
+  public void toggleBrakeMode(){
+    if(leftFrontMotor.getIdleMode() == IdleMode.kBrake){
+      setBrakeMode(IdleMode.kCoast);
+    }else{
+      setBrakeMode(IdleMode.kBrake);
+    }
+  }
+  public boolean isBrakeMode(){
+    return leftFrontMotor.getIdleMode() == IdleMode.kBrake;
   }
 
   private void updatePose() {
