@@ -214,7 +214,9 @@ public class Drivetrain extends SubsystemBase {
     var leftFeedforward = feedForward.calculate(speeds.leftMetersPerSecond);
     var rightFeedforward = feedForward.calculate(speeds.rightMetersPerSecond);
     leftFrontMotor.setVoltage(leftFeedforward);
+    leftFollowerMotor.setVoltage(leftFeedforward);
     rightFrontMotor.setVoltage(rightFeedforward);
+    rightFollowerMotor.setVoltage(rightFeedforward);
     drivetrain.feed();
   }
 
@@ -228,7 +230,9 @@ public class Drivetrain extends SubsystemBase {
   }
   public void resetEncoders(){
     leftFrontEncoder.setPosition(0);
+    leftFollowerEncoder.setPosition(0);
     rightFrontEncoder.setPosition(0);
+    rightFollowerEncoder.setPosition(0);
   }
 
   public void zeroHeading(){

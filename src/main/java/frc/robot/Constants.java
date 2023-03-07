@@ -120,7 +120,7 @@ public final class Constants {
     public static final double ALLIANCE_RED_ROTATION = 0.0;
 
     
-    public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(31.0);
+    public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(38.5);
     public static final double X_OFFSET_FROM_SCORE_LOCATION = LENGTH_OF_ROBOT / 2.0 + Units.inchesToMeters(14.0);
 
     public static final double KP_BALANCE = 2;
