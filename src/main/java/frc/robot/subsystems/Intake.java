@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,8 +27,6 @@ public class Intake extends SubsystemBase {
 //  ColorSensorV3 cubeSensor = new ColorSensorV3(I2C.Port.kOnboard);
   private final DigitalInput isIntakeStored = new DigitalInput(IntakeConstants.INTAKE_LIMIT_SWITCH_ID);
   private final RelativeEncoder intakeEncoder = intakeMotor.getEncoder();
-  private SparkMaxPIDController pidController = intakeMotor.getPIDController(); 
-  
 
   /** Creates a new Intake. */
   public Intake() {
@@ -35,11 +34,6 @@ public class Intake extends SubsystemBase {
     intakeMotor.setSmartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
     intakeMotor.setIdleMode(IdleMode.kBrake);
     intakeEncoder.setVelocityConversionFactor(IntakeConstants.INTAKE_ENCODER_CONVERSION_FACTOR / 60);
-
-    pidController.setP(IntakeConstants.KP);
-    pidController.setI(IntakeConstants.KI);
-    pidController.setD(IntakeConstants.KD);
-    pidController.setOutputRange(-IntakeConstants.MAX_PID_SPEED, IntakeConstants.MAX_PID_SPEED);
 
   }
 
@@ -69,13 +63,9 @@ public class Intake extends SubsystemBase {
   }
 
   public Command SpinIntakeCommand(Supplier<PieceType> piece, boolean isIntaking) {
-
-
-    return new ConditionalCommand(new RunCommand(() -> this.setIntakeSpeed(evalPieceIntake(piece.get(), isIntaking).speed())),
-    new RunCommand(() -> this.setIntakeSpeed(IntakeDirection.STOP.speed())),  () -> !this.isHoldingGamePiece());
-    /*return Commands.startEnd((() -> this.setIntakeSpeed(evalPieceIntake(piece.get(), isIntaking).speed())),
+    return Commands.startEnd((() -> this.setIntakeSpeed(evalPieceIntake(piece.get(), isIntaking).speed())),
         (() -> this.setIntakeSpeed(IntakeDirection.STOP.speed())), this);
-    */
+    
   }
 
 
@@ -99,11 +89,6 @@ public class Intake extends SubsystemBase {
   public double getCurent()
   {
     return intakeMotor.getOutputCurrent();
-  }
-
-  public void setPIDController(double value)
-  {
-    pidController.setReference(value, ControlType.kPosition);
   }
 
   public double getEncoderPosition(){

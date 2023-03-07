@@ -138,14 +138,20 @@ public class Wrist extends SubsystemBase {
       return WristPosition.STOW;
   }
 
-  public WristPosition evalScorePosition(Supplier<ScoreLevel> level) {
-    if (level.get().equals(ScoreLevel.LEVEL_1))
+  public WristPosition evalScorePosition(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
+    if (level.get().equals(ScoreLevel.LEVEL_1 )&& piece.get().equals(PieceType.CONE))
       return WristPosition.LEVEL_1_CONE;
-    else if (level.get().equals(ScoreLevel.LEVEL_2))
+    else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CONE))
       return WristPosition.LEVEL_2_CONE;
-    else if (level.get().equals(ScoreLevel.LEVEL_3))
+    else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CONE))
       return WristPosition.LEVEL_2_CONE;
+    else if (level.get().equals(ScoreLevel.LEVEL_1 )&& piece.get().equals(PieceType.CUBE))
+      return WristPosition.LEVEL_1_CUBE;
+    else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CUBE))
+      return WristPosition.LEVEL_2_CUBE;
+    else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CUBE))
+      return WristPosition.LEVEL_2_CUBE;
     else
-      return WristPosition.LEVEL_2_CONE;
+      return WristPosition.STOW;
   }
 }

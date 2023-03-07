@@ -70,8 +70,8 @@ public class DriverStationTab extends ShuffleboardTabBase {
         NetworkTable debugNetworkTable = NetworkTableInstance.getDefault().getTable("debug mode table");
         debugModePub = debugNetworkTable.getBooleanTopic("debug mode").publish();
 
-        isInBrakeMode = networkTable.getBooleanTopic("Break mode").publish();
-        tab.add("Break mode", false);
+        isInBrakeMode = networkTable.getBooleanTopic("Coast mode").publish();
+        tab.add("Coast mode", false);
         //path planning target use button box now
         // targetNode.setDefaultOption("Node 1", FieldLocation.NODE1);
         // targetNode.addOption("Node 2", FieldLocation.NODE2);
@@ -113,7 +113,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
         debugModePub.set(debugMode.getSelected());
 
-        isInBrakeMode.set(drivetrain.isBrakeMode());
+        isInBrakeMode.set(!drivetrain.isBrakeMode());
         
 
     }

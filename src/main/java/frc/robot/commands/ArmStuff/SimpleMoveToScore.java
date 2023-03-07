@@ -22,7 +22,7 @@ public class SimpleMoveToScore extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(arm.intigratedMoveToScore(level, piece),
-    new InstantCommand(() -> wrist.setPosition(wrist.evalScorePosition(level), arm::getArmAngle), wrist),
+    new InstantCommand(() -> wrist.setPosition(wrist.evalScorePosition(level, piece), arm::getArmAngle), wrist),
     wrist.WaitUntilWristInPosition());
   }
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.commands.ArmStuff;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -25,9 +26,9 @@ public class Stow extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new InstantCommand(() -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake),
-        new InstantCommand(() -> arm.actuateSuperstructure(PnuematicPositions.RETRACTED)),
         new InstantCommand(() -> wrist.setPosition(WristPosition.STOW, arm::getArmAngle), wrist),
-        wrist.WaitUntilWristInPosition(),//new WaitCommand(.25),//TODO:get to actually stay position then move
-        new InstantCommand(() -> arm.setPosition(ArmPositions.STOW), arm));
+        new InstantCommand(() -> arm.setPosition(ArmPositions.STOW), arm),
+       arm.WaitUntilArmInPosition(),
+        new InstantCommand(() -> arm.actuateSuperstructure(PnuematicPositions.RETRACTED)));
   }
 }

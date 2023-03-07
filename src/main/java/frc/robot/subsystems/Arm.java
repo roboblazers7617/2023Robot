@@ -105,15 +105,6 @@ public class Arm extends SubsystemBase {
     lastTime = time.get();
     // System.out.println("velocity " + shoulderEncoder.getVelocity());
 
-    if (getShoulderAngle() > (ArmConstants.MINIMUM_SHOULDER_ANGLE + 4)
-        && setpoint == ArmPositions.STOW.getShoulderAngle())
-      shoulderMotor.set(0);
-    else if (getShoulderAngle() < (ArmConstants.MINIMUM_SHOULDER_ANGLE + 4)
-        && setpoint == ArmPositions.STOW.getShoulderAngle()) {
-      controller.setReference(ArmPositions.STOW.getShoulderAngle(), CANSparkMax.ControlType.kPosition, 0,
-          feedforward.calculate(Units.degreesToRadians(ArmPositions.STOW.getShoulderAngle()), 0));
-    }
-
   }
 
   public void turnOnBrakes(Boolean isBraked) {
@@ -173,7 +164,8 @@ public class Arm extends SubsystemBase {
     setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
-    // System.out.println("Setpoint: " + setpoint);
+        controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+            feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
   }
 
   public Command actuateSuperstructureCommandPickup(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
@@ -228,14 +220,14 @@ public class Arm extends SubsystemBase {
 
   public Command intigratedMoveToScore(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
     return new SequentialCommandGroup(new InstantCommand(() -> setPosition(evalScorePosition(level, piece)), this),
-        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE+20),
+        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE+5),
         new InstantCommand(() -> actuateSuperstructure(evalScorePosition(level, piece).getPistonPosition())),
         Commands.waitUntil(() -> atSetpoint()));
   }
 
   public Command intigratedMoveToPickup(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
     return new SequentialCommandGroup(new InstantCommand(() -> setPosition(evalPickupPosition(location, piece)), this),
-        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE+20),
+        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE+5),
         new InstantCommand(() -> actuateSuperstructure(evalPickupPosition(location, piece).getPistonPosition())),
         Commands.waitUntil(() -> atSetpoint()));
   }

@@ -71,8 +71,6 @@ public final class Constants {
 
     public static final int CURRENT_LIMIT = 40;
 
-    public static final double THE_NUMBER_3 = 7.0;
-
     public static final double REG_SPEED = 0.5;
     public static final double SLOW_SPEED = 0.25;
     public static final double FAST_SPEED = 1;
@@ -223,11 +221,11 @@ public final class Constants {
     public static final int SHOULDER_FOLLOWER_MOTOR_ID = 32;
     public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
 
-    public static final double KP = 0.1; 
+    public static final double KP = 0.07; 
     public static final double KI = 0;
     public static final double KD = 0;
     public static final double KS = 0.0;
-    public static final double KG = 0.06; 
+    public static final double KG = 0.01; 
     public static final double KV = 0;
 
     //TODO: Lukas. (High) Set a position tolerance
@@ -250,13 +248,13 @@ public final class Constants {
       LEVEL_3_CONE(40, PnuematicPositions.EXTENDED),
       LEVEL_2_CONE(4, PnuematicPositions.RETRACTED),
       LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
-      LEVEL_3_CUBE(40, PnuematicPositions.EXTENDED),//TODO
-      LEVEL_2_CUBE(4, PnuematicPositions.RETRACTED),//TODO
+      LEVEL_3_CUBE(37, PnuematicPositions.EXTENDED),//TODO
+      LEVEL_2_CUBE(-27, PnuematicPositions.RETRACTED),//TODO
       LEVEL_1_CUBE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),//TODO
       STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
       FLOOR_PICKUP_CONE( -42, PnuematicPositions.EXTENDED),
-      FLOOR_PICKUP_CUBE( -42, PnuematicPositions.EXTENDED),
-      STATION_PICKUP(4.88, PnuematicPositions.RETRACTED);
+      FLOOR_PICKUP_CUBE( -39, PnuematicPositions.EXTENDED),
+      STATION_PICKUP(10, PnuematicPositions.RETRACTED);
 
       private final double shoulderAngle;
       private final PnuematicPositions pistonPosition;
@@ -302,18 +300,17 @@ public final class Constants {
 
     public static final double MAX_MANNUAL_WRIST_SPEED = 50;
 
-    // TODO: Lukas. (High) Determine these
     public enum WristPosition {
       STOW(WristConstants.MAX_WRIST_ANGLE),
-      FLOOR_CUBE_PICKUP(24),
-      FLOOR_CONE_PICKUP(35),
+      FLOOR_CUBE_PICKUP(36),
+      FLOOR_CONE_PICKUP(39),
       DOUBLE_PICKUP(6.7),
-      LEVEL_3_CONE(-18),
-      LEVEL_2_CONE(-22),
-      LEVEL_1_CONE(37),
-      LEVEL_3_CUBE(0),//TODO
-      LEVEL_2_CUBE(-22),//TODO
-      LEVEL_1_CUBE(37);//TODO
+      LEVEL_3_CONE(-9),
+      LEVEL_2_CONE(-8),
+      LEVEL_1_CONE(41),
+      LEVEL_3_CUBE(21),//TODO
+      LEVEL_2_CUBE(79),//TODO
+      LEVEL_1_CUBE(WristConstants.MAX_WRIST_ANGLE);//TODO
 
       private final double angle;
 
@@ -349,7 +346,7 @@ public final class Constants {
       PICK_CONE (-0.75),
       PICK_CUBE (0.5),
       PLACE_CONE (0.5),
-      PLACE_CUBE (-0.9);
+      PLACE_CUBE (-1);
 
       private final double speed;
 

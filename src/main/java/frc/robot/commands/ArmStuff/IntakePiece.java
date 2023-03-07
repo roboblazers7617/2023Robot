@@ -40,7 +40,6 @@ public class IntakePiece extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     intake.setIntakeSpeed(0.0);
-    intake.setPIDController(intake.getEncoderPosition());
   }
 
   // Returns true when the command should end.
