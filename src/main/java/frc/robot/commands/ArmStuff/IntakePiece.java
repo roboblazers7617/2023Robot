@@ -28,7 +28,7 @@ public class IntakePiece extends CommandBase {
   @Override
   public void initialize() {
 
-    intake.setIntakeSpeed(piece.get(), true);
+    intake.setIntakeSpeed(piece, true);
 
   }
 

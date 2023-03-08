@@ -57,9 +57,9 @@ public class Intake extends SubsystemBase {
     intakeMotor.set(speed);
   }
 
-  public void setIntakeSpeed(PieceType piece, boolean isIntaking)
+  public void setIntakeSpeed(Supplier<PieceType> piece, boolean isIntaking)
   {
-    setIntakeSpeed(evalPieceIntake(piece, isIntaking).speed());
+    setIntakeSpeed(evalPieceIntake(piece.get(), isIntaking).speed());
   }
 
   public Command SpinIntakeCommand(Supplier<PieceType> piece, boolean isIntaking) {

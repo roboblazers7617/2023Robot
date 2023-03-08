@@ -6,6 +6,7 @@ package frc.robot.commands.ArmStuff;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
@@ -21,6 +22,7 @@ public class SimpleScore extends SequentialCommandGroup {
   public SimpleScore(Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece, Supplier<ScoreLevel> level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new SimpleMoveToScore(arm, wrist,level, piece), intake.SpinIntakeCommand(piece, false));
+    addCommands(new SimpleMoveToScore(arm, wrist, level, piece), new OutakePiece(intake, piece),
+        Commands.waitSeconds(.25), new Stow(arm, wrist, intake));
   }
 }

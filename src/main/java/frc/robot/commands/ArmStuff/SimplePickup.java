@@ -6,6 +6,8 @@ package frc.robot.commands.ArmStuff;
 
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
@@ -18,9 +20,12 @@ import frc.robot.subsystems.Wrist;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimplePickup extends SequentialCommandGroup {
   /** Creates a new SimplePickup. */
-  public SimplePickup(Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece, Supplier<PickupLocation> location) {
+  public SimplePickup(Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece,
+      Supplier<PickupLocation> location) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new SimpleMoveToPickup(arm, wrist, piece, location), intake.SpinIntakeCommand(piece, true));
+    addCommands(new SimpleMoveToPickup(arm, wrist, piece, location),
+        new InstantCommand(() -> intake.setIntakeSpeed(piece, true), intake),
+        Commands.waitSeconds(1.5), new Stow(arm, wrist, intake));
   }
 }

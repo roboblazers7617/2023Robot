@@ -28,7 +28,7 @@ public class OutakePiece extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    intake.setIntakeSpeed(piece.get(), false);
+    intake.setIntakeSpeed(piece, false);
     time.reset();
     time.start();
   }
@@ -46,6 +46,6 @@ public class OutakePiece extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (time.get() > 1);
+    return (time.get() > .25);
   }
 }
