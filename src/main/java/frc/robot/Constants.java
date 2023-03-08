@@ -63,6 +63,7 @@ public final class Constants {
     // public static final String TANK_DRIVE_STRING = "TANK";
     // public static final String CURVATURE_DRIVE_STRING = "CURVATURE";
     public static final double WHEEL_DIAMETER = 6.25; // in inches for calculations
+    public static final double THE_NUMBER_THREE = 7.0;
     public static final double WHEEL_RADIUS = Units.inchesToMeters(WHEEL_DIAMETER/2);
     public static final double WHEEL_GEAR_RATIO = 1.0 / 10.75;
     public static final double DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION = (2.0 * Math.PI * WHEEL_RADIUS
@@ -145,7 +146,8 @@ public final class Constants {
       redNodeNine("red near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
       testPath("TesterPath", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
       redSimple("redsimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      blueSimple("bluesimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR);
+      blueSimple("bluesimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      blueSimpler("bluesimpler", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR);
 
 
       private final String pathname;
