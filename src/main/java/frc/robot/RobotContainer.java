@@ -328,7 +328,7 @@ public class RobotContainer {
                                 drivetrain);
         }
 
-        public SequentialCommandGroup ScoreAndLeave(AutoPath AutoPath) {
+        public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
                 // Add your commands in the addCommands() call, e.g.
                 // addCommands(new FooCommand(), new BarCommand());
                 return new SequentialCommandGroup(
@@ -336,7 +336,8 @@ public class RobotContainer {
                                                 () -> driverStationTab.getAutoPath().selectedPiece(),
                                                 () -> driverStationTab.getAutoPath().scoreLevelFirst()),
                                 new Stow(arm, wrist, intake),
-                                getPathPlannerCommand());
+                                getPathPlannerCommand(),
+                                new AutoBalance(drivetrain));
         }
 
         /**
@@ -347,7 +348,7 @@ public class RobotContainer {
 
         public Command getAutonomousCommand() {
                 drivetrain.setBrakeMode(IdleMode.kCoast);
-                return ScoreAndLeave(driverStationTab.getAutoPath())
+                return SimpleAuto(driverStationTab.getAutoPath())
                                 .andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
         }
         // TODO Sam, I need to see If I can find a way to delete the extra command named
