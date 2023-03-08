@@ -336,7 +336,8 @@ public class RobotContainer {
                                                 () -> driverStationTab.getAutoPath().selectedPiece(),
                                                 () -> driverStationTab.getAutoPath().scoreLevelFirst()),
                                 new Stow(arm, wrist, intake),
-                                getPathPlannerCommand());
+                                getPathPlannerCommand(),
+                                new AutoBalance(drivetrain));
         }
 
         /**
