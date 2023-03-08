@@ -377,8 +377,7 @@ public class RobotContainer {
         // DrivetrainConstants.MAX_AUTO_ACCELERATION),
         // autopath.isReverse());
         // drivetrain.resetOdometry(test_path.getInitialPose());
-        // // this is the autoBuilder, in theory we do not need this to be here, and we
-        // should put it somewher else
+        // //this is the autoBuilder, in theory we do not need this to be here, and we should put it somewher else
         // RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
         // drivetrain::getPose2d, // Pose2d supplier
         // drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the
@@ -391,8 +390,7 @@ public class RobotContainer {
         // () -> drivetrain.getWheelSpeeds(), // WheelSpeeds supplier
         // new PIDConstants(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
         // DrivetrainConstants.KD_LIN),
-        // // PID constants to correct for rotation error (used to create the rotation
-        // controller)
+        // // PID constants to correct for rotation error (used to create the rotation controller)
         // drivetrain::tankDriveVolts, // Module states consumer used to output to the
         // drive subsystem
         // eventMap,
