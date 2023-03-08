@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
@@ -73,22 +74,17 @@ public class Wrist extends SubsystemBase {
     dt = time.get() - lastTime;
     lastTime = time.get();
 
-    System.out.println("wrist at setpoint"+atSetpoint());
-  
+    // System.out.println("wrist at setpoint"+atSetpoint());
+
   }
 
-  public void turnOnBrakes(Boolean isBraked)
-  {
-    if (isBraked)
-    {
-        wristMotor.setIdleMode(IdleMode.kBrake);
-    }
-    else
-    {
+  public void turnOnBrakes(Boolean isBraked) {
+    if (isBraked) {
+      wristMotor.setIdleMode(IdleMode.kBrake);
+    } else {
       wristMotor.setIdleMode(IdleMode.kCoast);
     }
   }
-  
 
   public double getWristPosition() {
     return wristEncoder.getPosition();
@@ -99,10 +95,10 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setPosition(double position, Supplier<Double> armAngleSupplier) {
-      setpoint = Math.min(position, WristConstants.MAX_WRIST_ANGLE);
-      setpoint = Math.max(setpoint, WristConstants.MIN_WRIST_ANGLE);
-      wristController.setReference(position, CANSparkMax.ControlType.kPosition, 0,
-          wristFeedforward.calculate(Units.degreesToRadians(setpoint), 0));
+    setpoint = Math.min(position, WristConstants.MAX_WRIST_ANGLE);
+    wristController.setReference(position, CANSparkMax.ControlType.kPosition, 0,
+        wristFeedforward.calculate(
+            Units.degreesToRadians(setpoint + (armAngleSupplier.get() - ArmConstants.MINIMUM_SHOULDER_ANGLE)), 0));
   }
 
   public void setPosition(WristPosition position, Supplier<Double> armAngleSupplier) {
@@ -110,11 +106,12 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setVelocity(double velocityDegrees, Supplier<Double> armAngleSupplier) {
-      setpoint = setpoint + velocityDegrees * dt;
-      setpoint = Math.min(setpoint, WristConstants.MAX_WRIST_ANGLE);
-      setpoint = Math.max(setpoint, WristConstants.MIN_WRIST_ANGLE);
-      wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
-          wristFeedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegrees)));
+    setpoint = setpoint + velocityDegrees * dt;
+    setpoint = Math.min(setpoint, WristConstants.MAX_WRIST_ANGLE);
+    wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+        wristFeedforward.calculate(
+            Units.degreesToRadians(setpoint + (armAngleSupplier.get() - ArmConstants.MINIMUM_SHOULDER_ANGLE)),
+            Units.degreesToRadians(velocityDegrees)));
   }
 
   public double getWristMotorTemp() {
@@ -141,14 +138,20 @@ public class Wrist extends SubsystemBase {
       return WristPosition.STOW;
   }
 
-  public WristPosition evalScorePosition(Supplier<ScoreLevel> level) {
-    if (level.get().equals(ScoreLevel.LEVEL_1))
+  public WristPosition evalScorePosition(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
+    if (level.get().equals(ScoreLevel.LEVEL_1 )&& piece.get().equals(PieceType.CONE))
       return WristPosition.LEVEL_1_CONE;
-    else if (level.get().equals(ScoreLevel.LEVEL_2))
+    else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CONE))
       return WristPosition.LEVEL_2_CONE;
-    else if (level.get().equals(ScoreLevel.LEVEL_3))
+    else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CONE))
       return WristPosition.LEVEL_2_CONE;
+    else if (level.get().equals(ScoreLevel.LEVEL_1 )&& piece.get().equals(PieceType.CUBE))
+      return WristPosition.LEVEL_1_CUBE;
+    else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CUBE))
+      return WristPosition.LEVEL_2_CUBE;
+    else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CUBE))
+      return WristPosition.LEVEL_2_CUBE;
     else
-      return WristPosition.LEVEL_2_CONE;
+      return WristPosition.STOW;
   }
 }

@@ -11,6 +11,9 @@ import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.WristConstants;
+import frc.robot.Constants.ArmConstants.ArmPositions;
+import frc.robot.Constants.DrivetrainConstants.AutoPath;
+import frc.robot.Constants.WristConstants.WristPosition;
 import frc.robot.FieldPositions.FieldLocation;
 import frc.robot.commands.ArmStuff.IntakePiece;
 import frc.robot.commands.ArmStuff.OutakePiece;
@@ -34,19 +37,24 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.ColorSensor;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Leds;
 import frc.robot.subsystems.Pnuematics;
 import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.RamseteAutoBuilder;
+import com.pathplanner.lib.commands.PPRamseteCommand;
 import com.revrobotics.CANSparkMax.IdleMode;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -59,6 +67,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -81,6 +90,7 @@ public class RobotContainer {
         private final Intake intake = new Intake();
         private final Arm arm = new Arm(pnuematics);
         private final Wrist wrist = new Wrist();
+        private final Leds leds = new Leds();
         private final CommandXboxController m_driverController = new CommandXboxController(
                         OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -105,18 +115,22 @@ public class RobotContainer {
                 configureOperatorBindings();
                 configureButtonBoxBindings();
                 // create shuffleboardinfo.java
-                boolean isRightTriggerPressed = m_driverController.getRightTriggerAxis() > 0.5;
                 drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
-                                m_driverController.getRightX(), m_driverController.getRightY(), isRightTriggerPressed),
+                                m_driverController.getRightX(), m_driverController.getRightY(),
+                                () -> isRightTriggerPressed()),
                                 drivetrain));
 
                 arm.setDefaultCommand(new RunCommand(
                                 () -> arm.setVelocity(
-                                                m_operatorController.getLeftY() * ArmConstants.MAX_MANNUAL_ARM_SPEED),
+                                                (Math.abs(m_operatorController.getLeftY()) > OperatorConstants.DEADZONE
+                                                                ? -m_operatorController.getLeftY()
+                                                                : 0) * ArmConstants.MAX_MANNUAL_ARM_SPEED),
                                 arm));
                 wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(
-                                m_operatorController.getRightY() * WristConstants.MAX_MANNUAL_WRIST_SPEED,
-                                arm::getShoulderAngle), wrist));
+                                (Math.abs(m_operatorController.getRightY()) > OperatorConstants.DEADZONE
+                                                ? -m_operatorController.getRightY()
+                                                : 0) * WristConstants.MAX_MANNUAL_WRIST_SPEED,
+                                arm::getArmAngle), wrist));
 
                 ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
                 // YOUR CODE HERE | | |
@@ -126,7 +140,7 @@ public class RobotContainer {
                 tabs.add(new VisionTab(vision, drivetrain));
 
                 tabs.add(new DriveTrainTab(drivetrain));
-              //  tabs.add(new ColorSensorTab(new ColorSensor()));
+                // tabs.add(new ColorSensorTab(new ColorSensor()));
                 tabs.add(new IntakeTab(intake, wrist));
                 tabs.add(new ArmTab(arm));
                 // STOP HERE OR DIE
@@ -174,8 +188,10 @@ public class RobotContainer {
                                 .onFalse(new InstantCommand(
                                                 () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
 
-                //m_driverController.b().onTrue(new InstantCommand(() -> drivetrain.resetOdometry(new Pose2d())));
-                m_driverController.a().onTrue(new AutoBalance(drivetrain));
+                // m_driverController.b().onTrue(new InstantCommand(() ->
+                // drivetrain.resetOdometry(new Pose2d())));
+                m_driverController.a().whileTrue(new AutoBalance(drivetrain));
+                m_driverController.x().onTrue(new InstantCommand(() -> drivetrain.toggleBrakeMode()));
                 // TODO: Adressable LEDS
 
         }
@@ -196,23 +212,24 @@ public class RobotContainer {
                 m_operatorController.povLeft()
                                 .onTrue(new Stow(arm, wrist, intake));
 
-                m_operatorController.y()
-                                .whileTrue(new IntakePiece(intake, () -> getSelectedPiece()));
+                m_operatorController.y().whileTrue(new IntakePiece(intake, () -> getSelectedPiece()));
 
                 m_operatorController.x()
                                 .whileTrue(new OutakePiece(intake, () -> getSelectedPiece()));
 
                 m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
 
-                m_operatorController.povDown().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1));
-                m_operatorController.povRight().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2));
-                m_operatorController.povUp().onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3));
+                m_operatorController.povDown().onTrue(
+                                new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
+                m_operatorController.povRight().onTrue(
+                                new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2, () -> getSelectedPiece()));
+                m_operatorController.povUp().onTrue(
+                                new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3, () -> getSelectedPiece()));
         }
 
         // private void setScoreLevel(ScoreLevel scoreLevel) {
-        //         this.scoreLevel = scoreLevel;
+        // this.scoreLevel = scoreLevel;
         // }
-        
 
         private void configureButtonBoxBindings() {
                 Trigger button1 = new JoystickButton(m_buttonBox, 1);
@@ -235,11 +252,13 @@ public class RobotContainer {
                 button9.onTrue(new InstantCommand(() -> drivetrain.setTargetNode(FieldLocation.NODE9)));
 
                 Trigger lowButton = new JoystickButton(m_buttonBox, 10);
-                lowButton.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1));
+                lowButton.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
                 Trigger middleButton = new JoystickButton(m_buttonBox, 11);
-                middleButton.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2));
+                middleButton.onTrue(
+                                new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2, () -> getSelectedPiece()));
                 Trigger highButtons = new JoystickButton(m_buttonBox, 12);
-                highButtons.onTrue(new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3));
+                highButtons.onTrue(
+                                new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3, () -> getSelectedPiece()));
 
                 // what if we made it a loop
                 // for (int i = 1; i <= 9; i++){
@@ -247,6 +266,11 @@ public class RobotContainer {
                 // button.onTrue(new InstantCommand(() ->
                 // drivetrain.setTargetNode(FieldLocation.NODE1)));
                 // }
+        }
+
+        public void stow() {
+                arm.setPosition(ArmPositions.STOW);
+                wrist.setPosition(WristPosition.STOW, () -> arm.getArmAngle());
         }
 
         public void setTargetPose(Pose2d targetPose) {
@@ -262,17 +286,59 @@ public class RobotContainer {
         }
 
         public void setSelectedPiece(PieceType piece) {
+                if (piece == PieceType.CONE) {
+                        leds.orange();
+                } else {
+                        leds.purple();
+                }
                 selectedPiece = piece;
         }
 
-        public void turnOnMechanismBrakes(Boolean isBraked)
-        {
+        public void turnOnMechanismBrakes(Boolean isBraked) {
                 wrist.turnOnBrakes(isBraked);
                 arm.turnOnBrakes(isBraked);
         }
-        public void turnOnBrakesDrivetrain(Boolean isTrue){
+
+        public void turnOnBrakesDrivetrain(Boolean isTrue) {
                 drivetrain.turnOnBrakes(isTrue);
         }
+
+        private boolean isRightTriggerPressed() {
+                return m_driverController.getRightTriggerAxis() > 0.5;
+        };
+
+        public Command getPathPlannerCommand() {
+                PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pathname(),
+                                new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
+                                                DrivetrainConstants.MAX_AUTO_ACCELERATION),
+                                driverStationTab.getAutoPath().isReverse());
+                return new PPRamseteCommand(path,
+                                drivetrain::getPose2d,
+                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
+                                new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
+                                                DrivetrainConstants.KA),
+                                drivetrain.getKinematics(),
+                                drivetrain::getWheelSpeeds,
+                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                                DrivetrainConstants.KD_LIN),
+                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                                DrivetrainConstants.KP_LIN),
+                                drivetrain::tankDriveVolts,
+                                false,
+                                drivetrain);
+        }
+
+        public SequentialCommandGroup ScoreAndLeave(AutoPath AutoPath) {
+                // Add your commands in the addCommands() call, e.g.
+                // addCommands(new FooCommand(), new BarCommand());
+                return new SequentialCommandGroup(
+                                new SimpleScore(arm, wrist, intake,
+                                                () -> driverStationTab.getAutoPath().selectedPiece(),
+                                                () -> driverStationTab.getAutoPath().scoreLevelFirst()),
+                                new Stow(arm, wrist, intake),
+                                getPathPlannerCommand());
+        }
+
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
          *
@@ -281,49 +347,59 @@ public class RobotContainer {
 
         public Command getAutonomousCommand() {
                 drivetrain.setBrakeMode(IdleMode.kCoast);
-                return pickAutonomousCommand(driverStationTab.getAutoPath())
+                return ScoreAndLeave(driverStationTab.getAutoPath())
                                 .andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
         }
         // TODO Sam, I need to see If I can find a way to delete the extra command named
         // null in "red far 2 ball"
 
-        public Command pickAutonomousCommand(DrivetrainConstants.AutoPath autopath) {
-                HashMap<String, Command> eventMap = new HashMap<>();
-                eventMap.put("Stow", new Stow(arm, wrist, intake));
-                eventMap.put("AutoBalance", new AutoBalance(drivetrain));
-                eventMap.put("SimplePickup", new SimplePickup(arm, wrist, intake, () -> autopath.selectedPiece(),
-                                () -> autopath.pickupLocation()));
-                eventMap.put("SimpleScore", new SimpleScore(arm, wrist, intake, () -> autopath.selectedPiece(),
-                                () -> autopath.scoreLevelSecond()));
+        // private List<PathPlannerTrajectory> pathGroup =
+        // PathPlanner.loadPathGroup("red near 2 ball", new
+        // PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
+        // DrivetrainConstants.MAX_AUTO_ACCELERATION));
 
-                // arm, intake, wrist, piecetype, score level
-                PathPlannerTrajectory test_path = PathPlanner.loadPath(
-                                autopath.pathname(), new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
-                                                DrivetrainConstants.MAX_AUTO_ACCELERATION),
-                                autopath.isReverse());
+        // public Command pickAutonomousCommand(DrivetrainConstants.AutoPath autopath) {
+        // // the hashmap can really just be in constants, it does not need to be here
+        // HashMap<String, Command> eventMap = new HashMap<>();
+        // eventMap.put("Stow", new Stow(arm, wrist, intake));
+        // eventMap.put("AutoBalance", new AutoBalance(drivetrain));
+        // eventMap.put("SimplePickup", new SimplePickup(arm, wrist, intake, () ->
+        // autopath.selectedPiece(),
+        // () -> autopath.pickupLocation()));
+        // eventMap.put("SimpleScore", new SimpleScore(arm, wrist, intake, () ->
+        // autopath.selectedPiece(),
+        // () -> autopath.scoreLevelSecond()));
 
-                RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
-                                drivetrain::getPose2d, // Pose2d supplier
-                                drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the beginning
-                                                           // of auto
-                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
-                                drivetrain.getKinematics(),
-                                new SimpleMotorFeedforward(DrivetrainConstants.KS_LIN, DrivetrainConstants.KV),
-                                () -> drivetrain.getWheelSpeeds(), // WheelSpeeds supplier
-                                new PIDConstants(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                // PID constants to correct for rotation error (used to create the rotation
-                                // controller)
-                                drivetrain::tankDriveVolts, // Module states consumer used to output to the drive
-                                                            // subsystem
-                                eventMap,
-                                false, // Should the path be automatically mirrored depending on alliance color.
-                                       // Optional, defaults to true
-                                drivetrain // The drive subsystem. Used to properly set the requirements of path
-                                           // following
-                                           // commands
-                );
+        // //The code below is used to define a singular path for the robot to follow
+        // PathPlannerTrajectory test_path = PathPlanner.loadPath(
+        // autopath.pathname(), new
+        // PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
+        // DrivetrainConstants.MAX_AUTO_ACCELERATION),
+        // autopath.isReverse());
+        // drivetrain.resetOdometry(test_path.getInitialPose());
+        // //this is the autoBuilder, in theory we do not need this to be here, and we should put it somewher else
+        // RamseteAutoBuilder autoBuilder = new RamseteAutoBuilder(
+        // drivetrain::getPose2d, // Pose2d supplier
+        // drivetrain::resetOdometry, // Pose2d consumer, used to reset odometry at the
+        // beginning of auto
+        // new RamseteController(DrivetrainConstants.RAMSETEb,
+        // DrivetrainConstants.RAMSETEzeta),
+        // drivetrain.getKinematics(),
+        // new SimpleMotorFeedforward(DrivetrainConstants.KS_LIN,
+        // DrivetrainConstants.KV),
+        // () -> drivetrain.getWheelSpeeds(), // WheelSpeeds supplier
+        // new PIDConstants(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+        // DrivetrainConstants.KD_LIN),
+        // // PID constants to correct for rotation error (used to create the rotation controller)
+        // drivetrain::tankDriveVolts, // Module states consumer used to output to the
+        // drive subsystem
+        // eventMap,
+        // false, // Should the path be automatically mirrored depending on alliance
+        // color, Optional, defaults to true
+        // drivetrain // The drive subsystem. Used to properly set the requirements of
+        // path following commands
+        // );
 
-                return autoBuilder.fullAuto(test_path);
-        }
+        // return autoBuilder.fullAuto(pathGroup);
+        // }
 }

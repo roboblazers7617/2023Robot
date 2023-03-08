@@ -5,6 +5,9 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
+
 import org.photonvision.EstimatedRobotPose;
 
 import com.revrobotics.CANSparkMax;
@@ -114,9 +117,9 @@ public class Drivetrain extends SubsystemBase {
 
   
 
-  public void drive(double leftY, double rightX, double rightY, boolean isQuickTurn) {
-    double lForward = slewRateFilterLeft.calculate(leftY);
-    double rForward = slewRateFilterRight.calculate(rightY);
+  public void drive(double leftY, double rightX, double rightY, Supplier<Boolean> isQuickTurn) {
+    double lForward = leftY; //slewRateFilterLeft.calculate(leftY);
+    double rForward = rightY; //slewRateFilterRight.calculate(rightY);
     if (mode == DrivetrainConstants.DrivetrainMode.arcadeDrive) {
       arcadeDrive(-lForward, -rightX);
     } else if (mode == DrivetrainConstants.DrivetrainMode.tankDrive) {
@@ -134,8 +137,8 @@ public class Drivetrain extends SubsystemBase {
     drivetrain.arcadeDrive(xSpeed, zRotation);
   }
 
-  private void curvatureDrive(double xSpeed, double zRotation, boolean isQuickTurn) {
-    drivetrain.curvatureDrive(xSpeed, zRotation, isQuickTurn);
+  private void curvatureDrive(double xSpeed, double zRotation, Supplier<Boolean> isQuickTurn) {
+    drivetrain.curvatureDrive(xSpeed, zRotation, isQuickTurn.get());
   }
   public void setDrivetrainSpeed(double maxSpeed) {
     maxDrivetrainspeed = maxSpeed;
@@ -197,8 +200,8 @@ public class Drivetrain extends SubsystemBase {
 
   public void tankDriveVolts(double leftVolts, double rightVolts)
   {
-    leftFrontMotor.setVoltage(leftVolts);
-    rightFrontMotor.setVoltage(rightVolts);
+    leftMotorGroup.setVoltage(leftVolts);
+    rightMotorGroup.setVoltage(rightVolts);
   }
 
   public void driveWithVelocity(double xVelocity, double rotationVelocity){
@@ -211,7 +214,9 @@ public class Drivetrain extends SubsystemBase {
     var leftFeedforward = feedForward.calculate(speeds.leftMetersPerSecond);
     var rightFeedforward = feedForward.calculate(speeds.rightMetersPerSecond);
     leftFrontMotor.setVoltage(leftFeedforward);
+    leftFollowerMotor.setVoltage(leftFeedforward);
     rightFrontMotor.setVoltage(rightFeedforward);
+    rightFollowerMotor.setVoltage(rightFeedforward);
     drivetrain.feed();
   }
 
@@ -225,14 +230,27 @@ public class Drivetrain extends SubsystemBase {
   }
   public void resetEncoders(){
     leftFrontEncoder.setPosition(0);
+    leftFollowerEncoder.setPosition(0);
     rightFrontEncoder.setPosition(0);
+    rightFollowerEncoder.setPosition(0);
   }
 
   public void zeroHeading(){
     mGyro.setYaw(0);
   }
   public double getGyroAngle(){
-    return -mGyro.getAngle();
+    return mGyro.getAngle();
+  }
+
+  public void toggleBrakeMode(){
+    if(leftFrontMotor.getIdleMode() == IdleMode.kBrake){
+      setBrakeMode(IdleMode.kCoast);
+    }else{
+      setBrakeMode(IdleMode.kBrake);
+    }
+  }
+  public boolean isBrakeMode(){
+    return leftFrontMotor.getIdleMode() == IdleMode.kBrake;
   }
 
   private void updatePose() {

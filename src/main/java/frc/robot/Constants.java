@@ -62,16 +62,14 @@ public final class Constants {
     // public static final String ARCADE_DRIVE_STRING = "ARCADE";
     // public static final String TANK_DRIVE_STRING = "TANK";
     // public static final String CURVATURE_DRIVE_STRING = "CURVATURE";
-
-    public static final double WHEEL_RADIUS = Units.inchesToMeters(3.0);
-    public static final double WHEEL_GEAR_RATIO = 1.0 / 12.75;
+    public static final double WHEEL_DIAMETER = 6.25; // in inches for calculations
+    public static final double WHEEL_RADIUS = Units.inchesToMeters(WHEEL_DIAMETER/2);
+    public static final double WHEEL_GEAR_RATIO = 1.0 / 10.75;
     public static final double DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION = (2.0 * Math.PI * WHEEL_RADIUS
         * WHEEL_GEAR_RATIO);
     public static final double DRIVETRAIN_ENCODER_VELOCITY = (DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION / 60.0);
 
     public static final int CURRENT_LIMIT = 40;
-
-    public static final double THE_NUMBER_3 = 7.0;
 
     public static final double REG_SPEED = 0.5;
     public static final double SLOW_SPEED = 0.25;
@@ -122,15 +120,15 @@ public final class Constants {
     public static final double ALLIANCE_RED_ROTATION = 0.0;
 
     
-    public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(31.0);
+    public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(38.5);
     public static final double X_OFFSET_FROM_SCORE_LOCATION = LENGTH_OF_ROBOT / 2.0 + Units.inchesToMeters(14.0);
 
-    public static final double KP_BALANCE = 0.01;
+    public static final double KP_BALANCE = 2;
     public static final double KI_BALANCE = 0;
     public static final double KD_BALANCE = 0;
     public static final double BALANCING_TOLERANCE = 1;
     // TODO: Lukas. (High) Decide this value
-    public static final double MAX_BALANCE_SPEED = 0.25;
+    public static final double MAX_BALANCE_SPEED = 0.50;
 
     public enum DrivetrainMode {
       arcadeDrive,
@@ -144,7 +142,11 @@ public final class Constants {
       blueNodeNine("blue near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
       redNodeOne("red far 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
       redNodeSix("red mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      redNodeNine("red near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR);
+      redNodeNine("red near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      testPath("TesterPath", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      redSimple("redsimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      blueSimple("bluesimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR);
+
 
       private final String pathname;
       private final boolean isReverse;
@@ -219,11 +221,11 @@ public final class Constants {
     public static final int SHOULDER_FOLLOWER_MOTOR_ID = 32;
     public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
 
-    public static final double KP = 0.1; 
+    public static final double KP = 0.07; 
     public static final double KI = 0;
     public static final double KD = 0;
     public static final double KS = 0.0;
-    public static final double KG = 0.47; 
+    public static final double KG = 0.01; 
     public static final double KV = 0;
 
     //TODO: Lukas. (High) Set a position tolerance
@@ -236,17 +238,23 @@ public final class Constants {
     public static final double MINIMUM_SHOULDER_ANGLE = -51; 
     public static final double MAX_SHOULDER_ANGLE = 50;
     public static final double MAX_MANNUAL_ARM_SPEED = 50.0;
-    public static final double MAX_SPEED_DOWNWARD = -0.3; 
+    public static final double MAX_SPEED_DOWNWARD = -0.5; 
     public static final double MAX_SPEED_UPWARD = 0.3;
+    public static final double PISTON_BACK = -90 - MINIMUM_SHOULDER_ANGLE;
+    public static final double PISTON_FORWARD = 0;
 
     // TODO: Lukas. (High) Set the angles
     public enum ArmPositions {
       LEVEL_3_CONE(40, PnuematicPositions.EXTENDED),
       LEVEL_2_CONE(4, PnuematicPositions.RETRACTED),
       LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
+      LEVEL_3_CUBE(37, PnuematicPositions.EXTENDED),//TODO
+      LEVEL_2_CUBE(-27, PnuematicPositions.RETRACTED),//TODO
+      LEVEL_1_CUBE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),//TODO
       STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
       FLOOR_PICKUP_CONE( -42, PnuematicPositions.EXTENDED),
-      STATION_PICKUP(0, PnuematicPositions.EXTENDED);
+      FLOOR_PICKUP_CUBE( -39, PnuematicPositions.EXTENDED),
+      STATION_PICKUP(10, PnuematicPositions.RETRACTED);
 
       private final double shoulderAngle;
       private final PnuematicPositions pistonPosition;
@@ -276,10 +284,10 @@ public final class Constants {
     public static final double WRIST_ANGLE_TOLERANCE = 5;
     public static final double MAX_WRIST_ANGLE = 103;
     public static final double MAX_UPWARD_WRIST_SPEED = 0.33; // TODO: Changed 3/4/23 from 0.25
-    public static final double MAX_DOWNWARD_WRIST_SPEED = -0.1;
+    public static final double MAX_DOWNWARD_WRIST_SPEED = -0.2;
     public static final double MAX_WRIST_ACCEL = 0.12;
     public static final double WRIST_KS = 0.5;
-    public static final double WRIST_KG = 0.3; 
+    public static final double WRIST_KG = 0.35; 
     public static final double WRIST_KV = 0;
     public static final double WRIST_KP = 0.011;
     public static final double WRIST_KI = 0.0;
@@ -287,21 +295,22 @@ public final class Constants {
     public static final double WRIST_POT_OFFSET = -199;// so stowed is 120
     public static final double WRIST_GEAR_RATIO = 1.0/80.0;
     public static final double WRIST_ENCODER_CONVERSION_FACTOR = 360.0 * WRIST_GEAR_RATIO;
-    public static final double MIN_WRIST_ANGLE = -32;
+    public static final double MIN_WRIST_ANGLE = -42;
     public static final int WRIST_POT_SCALE = 340;
 
     public static final double MAX_MANNUAL_WRIST_SPEED = 50;
-    public static final double MIN_ANGLE_TO_RAISE_ARM = -50;
 
-    // TODO: Lukas. (High) Determine these
     public enum WristPosition {
       STOW(WristConstants.MAX_WRIST_ANGLE),
-      FLOOR_CUBE_PICKUP(24),
-      FLOOR_CONE_PICKUP(35),
-      DOUBLE_PICKUP(70),
-      LEVEL_3_CONE(-28),
-      LEVEL_2_CONE(-29),
-      LEVEL_1_CONE(37);
+      FLOOR_CUBE_PICKUP(36),
+      FLOOR_CONE_PICKUP(39),
+      DOUBLE_PICKUP(6.7),
+      LEVEL_3_CONE(-9),
+      LEVEL_2_CONE(-8),
+      LEVEL_1_CONE(41),
+      LEVEL_3_CUBE(21),//TODO
+      LEVEL_2_CUBE(79),//TODO
+      LEVEL_1_CUBE(WristConstants.MAX_WRIST_ANGLE);//TODO
 
       private final double angle;
 
@@ -334,10 +343,10 @@ public final class Constants {
     public enum IntakeDirection
     {
       STOP (0.0),
-      PICK_CONE (-0.5),
+      PICK_CONE (-0.75),
       PICK_CUBE (0.5),
       PLACE_CONE (0.5),
-      PLACE_CUBE (-0.5);
+      PLACE_CUBE (-1);
 
       private final double speed;
 

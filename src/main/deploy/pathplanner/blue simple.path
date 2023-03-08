@@ -2,13 +2,13 @@
   "waypoints": [
     {
       "anchorPoint": {
-        "x": 14.87,
-        "y": 4.93
+        "x": 1.664589424963355,
+        "y": 3.29
       },
       "prevControl": null,
       "nextControl": {
-        "x": 13.87,
-        "y": 4.93
+        "x": 2.664589424963355,
+        "y": 3.29
       },
       "holonomicAngle": 0,
       "isReversal": false,
@@ -24,16 +24,16 @@
     },
     {
       "anchorPoint": {
-        "x": 11.46,
-        "y": 4.922967869156224
+        "x": 6.266274984020238,
+        "y": 3.29
       },
       "prevControl": {
-        "x": 10.382565680032023,
-        "y": 4.9295022704842975
+        "x": 5.0330246103992256,
+        "y": 3.290000000000028
       },
       "nextControl": {
-        "x": 10.382565680032023,
-        "y": 4.9295022704842975
+        "x": 5.0330246103992256,
+        "y": 3.290000000000028
       },
       "holonomicAngle": 0,
       "isReversal": true,
@@ -49,39 +49,12 @@
     },
     {
       "anchorPoint": {
-        "x": 10.1,
-        "y": 4.588397707896219
+        "x": 4.63874675430015,
+        "y": 3.29
       },
       "prevControl": {
-        "x": 11.094288026533107,
-        "y": 4.588397707896219
-      },
-      "nextControl": {
-        "x": 9.042652412009328,
-        "y": 4.588397707896219
-      },
-      "holonomicAngle": 0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": true,
-      "stopEvent": {
-        "names": [
-          "SimplePickup"
-        ],
-        "executionBehavior": "sequential",
-        "waitBehavior": "minimum",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 14.87,
-        "y": 4.9147571359921365
-      },
-      "prevControl": {
-        "x": 14.365209357694253,
-        "y": 4.9147571359921365
+        "x": 6.06519339925663,
+        "y": 3.29
       },
       "nextControl": null,
       "holonomicAngle": 0,
@@ -90,11 +63,9 @@
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
-        "names": [
-          "SimpleScore"
-        ],
-        "executionBehavior": "sequential",
-        "waitBehavior": "minimum",
+        "names": [],
+        "executionBehavior": "parallel",
+        "waitBehavior": "none",
         "waitTime": 0
       }
     }
