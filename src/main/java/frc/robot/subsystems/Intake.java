@@ -42,9 +42,10 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-  public boolean isHoldingGamePiece() {
+// Current NON FUNCTIONAL!! Do not use
+ /*  public boolean isHoldingGamePiece() {
   
-        if ((intakeMotor.getOutputCurrent() >= IntakeConstants.CONE_CURRENT_LIMIT ) /*|| (cubeSensor.getProximity() >= IntakeConstants.CUBE_SENSOR_LIMIT) */){
+        if ((intakeMotor.getOutputCurrent() >= IntakeConstants.CONE_CURRENT_LIMIT ) || (cubeSensor.getProximity() >= IntakeConstants.CUBE_SENSOR_LIMIT) ){
       return true;
     }
     else {
@@ -52,6 +53,7 @@ public class Intake extends SubsystemBase {
     }
 
   }
+  */
 
   public void setIntakeSpeed(double speed) {
     intakeMotor.set(speed);
@@ -70,9 +72,9 @@ public class Intake extends SubsystemBase {
 
 
   private IntakeDirection evalPieceIntake(PieceType piece, boolean isIntaking) {
-    if (piece.equals(PieceType.CONE) && isIntaking && !isHoldingGamePiece())
+    if (piece.equals(PieceType.CONE) && isIntaking /*&& !isHoldingGamePiece()*/)
       return IntakeDirection.PICK_CONE;
-    else if (piece.equals(PieceType.CUBE) && isIntaking && !isHoldingGamePiece())
+    else if (piece.equals(PieceType.CUBE) && isIntaking /*&& !isHoldingGamePiece()*/)
       return IntakeDirection.PICK_CUBE;
     if (piece.equals(PieceType.CONE) && !isIntaking)
       return IntakeDirection.PLACE_CONE;

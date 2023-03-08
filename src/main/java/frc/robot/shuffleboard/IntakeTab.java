@@ -47,7 +47,7 @@ public class IntakeTab extends ShuffleboardTabBase {
         wristSpeedPublisher.set(wrist.getWristVelocity());
         intakeSpeedPublisher.set(intake.getIntakeSpeed());
        // isIntakeStoredPublisher.set(intake.isStored());
-        isHoldingCubePublisher.set(intake.isHoldingGamePiece());
+       // isHoldingCubePublisher.set(intake.isHoldingGamePiece());
        // wristEncoderAnglePublisher.set(intake.getEncoderAngle());
         wristTempPublisher.set((wrist.getWristMotorTemp()*(9.0/5.0)+32.0));
         intakeTempPublisher.set((intake.getMotorTemperature()*(9.0/5.0)+32.0));
