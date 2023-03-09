@@ -22,7 +22,7 @@ public class SimpleScore extends SequentialCommandGroup {
   public SimpleScore(Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece, Supplier<ScoreLevel> level) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AutonMoveToScore(arm, wrist, level, piece), new OutakePiece(intake, piece),
-        Commands.waitSeconds(1), new StowAuton(arm, wrist, intake));
+    addCommands(new SimpleMoveToScore(arm, wrist, level, piece), new OutakePiece(intake, piece),
+        Commands.waitSeconds(.25), new Stow(arm, wrist, intake));
   }
 }
