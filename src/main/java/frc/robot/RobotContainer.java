@@ -340,7 +340,7 @@ public class RobotContainer {
                                 new SimpleScore(arm, wrist, intake,
                                                 () -> driverStationTab.getAutoPath().selectedPiece(),
                                                 () -> driverStationTab.getAutoPath().scoreLevelFirst()),
-                                new StowAuton(arm, wrist, intake),
+                                new Stow(arm, wrist, intake),
                                 getPathPlannerCommand(),
                                 new AutoBalance(drivetrain));
         }
