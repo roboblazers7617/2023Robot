@@ -21,7 +21,7 @@ public class AutoBalance extends CommandBase {
     mDrivetrain = drivetrain;
     addRequirements(drivetrain);
     //TODO: Lukas. (High) Make this a constant
-    controller.setSetpoint(8);
+    controller.setSetpoint(5);
     controller.setTolerance(DrivetrainConstants.BALANCING_TOLERANCE);
     controller.enableContinuousInput(-180, 180);
   }

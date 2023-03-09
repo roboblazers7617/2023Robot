@@ -63,7 +63,7 @@ public class Robot extends TimedRobot {
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     m_robotContainer.turnOnMechanismBrakes(true);
-    m_robotContainer.turnOnBrakesDrivetrain(true);
+    m_robotContainer.turnOnBrakesDrivetrain(false);
 
     // schedule the autonomous command (example)
     if (m_autonomousCommand != null) {
