@@ -122,8 +122,10 @@ public class Arm extends SubsystemBase {
       return ArmPositions.FLOOR_PICKUP_CONE;
     else if (location.get().equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CUBE))
       return ArmPositions.FLOOR_PICKUP_CUBE;
-    else if (location.get().equals(PickupLocation.DOUBLE))
-      return ArmPositions.STATION_PICKUP;
+    else if (location.get().equals(PickupLocation.DOUBLE) && piece.get().equals(PieceType.CONE))
+      return ArmPositions.STATION_PICKUP_CONE;
+    else if (location.get().equals(PickupLocation.DOUBLE) && piece.get().equals(PieceType.CUBE))
+      return ArmPositions.STATION_PICKUP_CUBE;
     else
       return ArmPositions.STOW;
   }
