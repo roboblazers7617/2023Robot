@@ -254,7 +254,8 @@ public final class Constants {
       STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
       FLOOR_PICKUP_CONE( -42, PnuematicPositions.EXTENDED),
       FLOOR_PICKUP_CUBE( -39, PnuematicPositions.EXTENDED),
-      STATION_PICKUP(10, PnuematicPositions.RETRACTED);
+      STATION_PICKUP_CONE(9, PnuematicPositions.RETRACTED),
+      STATION_PICKUP_CUBE(6.35, PnuematicPositions.RETRACTED);
 
       private final double shoulderAngle;
       private final PnuematicPositions pistonPosition;
@@ -304,7 +305,8 @@ public final class Constants {
       STOW(WristConstants.MAX_WRIST_ANGLE),
       FLOOR_CUBE_PICKUP(36),
       FLOOR_CONE_PICKUP(39),
-      DOUBLE_PICKUP(6.7),
+      DOUBLE_PICKUP_CONE(-6),
+      DOUBLE_PICKUP_CONE(10),
       LEVEL_3_CONE(-9),
       LEVEL_2_CONE(-8),
       LEVEL_1_CONE(41),
