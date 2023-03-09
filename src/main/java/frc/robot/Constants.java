@@ -145,7 +145,8 @@ public final class Constants {
       redNodeNine("red near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
       testPath("TesterPath", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
       redSimple("redsimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      blueSimple("bluesimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR);
+      blueSimple("bluesimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      blueSimpler("bluesimpler", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR);
 
 
       private final String pathname;
@@ -306,7 +307,7 @@ public final class Constants {
       FLOOR_CUBE_PICKUP(36),
       FLOOR_CONE_PICKUP(39),
       DOUBLE_PICKUP_CONE(-6),
-      DOUBLE_PICKUP_CONE(10),
+      DOUBLE_PICKUP_CUBE(10),
       LEVEL_3_CONE(-9),
       LEVEL_2_CONE(-8),
       LEVEL_1_CONE(41),
