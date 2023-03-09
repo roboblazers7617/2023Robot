@@ -63,6 +63,7 @@ public final class Constants {
     // public static final String TANK_DRIVE_STRING = "TANK";
     // public static final String CURVATURE_DRIVE_STRING = "CURVATURE";
     public static final double WHEEL_DIAMETER = 6.25; // in inches for calculations
+    public static final double THE_NUMBER_THREE = 7.0;
     public static final double WHEEL_RADIUS = Units.inchesToMeters(WHEEL_DIAMETER/2);
     public static final double WHEEL_GEAR_RATIO = 1.0 / 10.75;
     public static final double DRIVETRAIN_ENCODER_DISTANCE_PER_ROTATION = (2.0 * Math.PI * WHEEL_RADIUS
@@ -77,7 +78,7 @@ public final class Constants {
     public static final double MAX_ANGULAR_VELOCITY = 0.65;// .5
     public static final double MAX_LINEAR_VELOCITY = 0.7;// .5
 
-    public static final double KP_LIN = 4.3096;
+    public static final double KP_LIN = 3.3174;
     public static final double KI_LIN = 0.0;
     public static final double KD_LIN = 0.0;
     public static final double KS_LIN = .12529;
@@ -85,16 +86,18 @@ public final class Constants {
     public static final double KP_ROT_POS = 0.015;// 0.015
     public static final double KI_ROT_POS = 0.0;
     public static final double KD_ROT_POS = 0.0;
-    public static final double KS_ROT = 0.3;
+    public static final double KS_ROT = 0.48693;
+    public static final double KV_ROT = 2.9804;
+    public static final double KA_ROT = 0.21385;
 
-    public static final double KP_ROT_VEL = 3.228;// 0.015
+    public static final double KP_ROT_VEL = 0.54643;// 0.015
     public static final double KI_ROT_VEL = 0.0;
     public static final double KD_ROT_VEL = 0.0;
     
 
-    public static final double KS = 0.12529;
-    public static final double KV = 3.3716;
-    public static final double KA = 0.44561;
+    public static final double KS = 0.10721;
+    public static final double KV = 2.7934;
+    public static final double KA = 0.274;
 
     public static final double SIMPLE_FF_LINEAR = 0.5;
     public static final double SIMPLE_FF_ANGULAR = 0.3;
@@ -126,7 +129,7 @@ public final class Constants {
     public static final double KP_BALANCE = 2;
     public static final double KI_BALANCE = 0;
     public static final double KD_BALANCE = 0;
-    public static final double BALANCING_TOLERANCE = 1;
+    public static final double BALANCING_TOLERANCE = 2.5;
     // TODO: Lukas. (High) Decide this value
     public static final double MAX_BALANCE_SPEED = 0.50;
 
@@ -144,8 +147,9 @@ public final class Constants {
       redNodeSix("red mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
       redNodeNine("red near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
       testPath("TesterPath", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      redSimple("redsimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      blueSimple("bluesimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR);
+      redSimple("red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      blueSimple("blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
+      blueSimpler("blue simpler", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR);
 
 
       private final String pathname;
