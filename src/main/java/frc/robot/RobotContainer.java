@@ -342,7 +342,9 @@ public class RobotContainer {
                                                         () -> driverStationTab.getAutoPath().selectedPiece(),
                                                         () -> driverStationTab.getAutoPath().scoreLevelFirst()),
                                         new Stow(arm, wrist, intake),
-                                        getPathPlannerCommand());
+                                        new InstantCommand(()->turnOnBrakesDrivetrain(false)),
+                                        getPathPlannerCommand(),
+                                        new InstantCommand(()->turnOnBrakesDrivetrain(true)));
                                         // new AutoBalance(drivetrain));
                 }
                 else{
@@ -351,7 +353,9 @@ public class RobotContainer {
                                                         () -> driverStationTab.getAutoPath().selectedPiece(),
                                                         () -> driverStationTab.getAutoPath().scoreLevelFirst()),
                                         new Stow(arm, wrist, intake),
-                                        getPathPlannerCommand());
+                                        new InstantCommand(()->turnOnBrakesDrivetrain(false)),
+                                        getPathPlannerCommand(),
+                                        new InstantCommand(()->turnOnBrakesDrivetrain(true)));
                 }
         }
 
