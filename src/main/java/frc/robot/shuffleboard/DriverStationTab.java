@@ -63,6 +63,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
         autoPath.addOption("Test", DrivetrainConstants.AutoPath.testPath);
         autoPath.addOption("Red Simple", DrivetrainConstants.AutoPath.redSimple);
         autoPath.addOption("Blue Simple", DrivetrainConstants.AutoPath.blueSimple);
+        autoPath.addOption("BlueSimpler", DrivetrainConstants.AutoPath.blueSimpler);
         tab.add("Auto Path", autoPath);
 
         //debug mode

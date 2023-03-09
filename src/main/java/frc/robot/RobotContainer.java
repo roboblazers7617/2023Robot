@@ -13,6 +13,7 @@ import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.DrivetrainConstants.AutoPath;
+import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 import frc.robot.Constants.WristConstants.WristPosition;
 import frc.robot.FieldPositions.FieldLocation;
 import frc.robot.commands.ArmStuff.IntakePiece;
@@ -22,6 +23,7 @@ import frc.robot.commands.ArmStuff.SimpleMoveToScore;
 import frc.robot.commands.ArmStuff.SimplePickup;
 import frc.robot.commands.ArmStuff.SimpleScore;
 import frc.robot.commands.ArmStuff.Stow;
+import frc.robot.commands.ArmStuff.StowAuton;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.commands.Drivetrain.AutoBalance;
 import frc.robot.commands.Drivetrain.DriveToScoreGrid;
@@ -271,6 +273,7 @@ public class RobotContainer {
         public void stow() {
                 arm.setPosition(ArmPositions.STOW);
                 wrist.setPosition(WristPosition.STOW, () -> arm.getArmAngle());
+                arm.actuateSuperstructure(PnuematicPositions.RETRACTED);
         }
 
         public void setTargetPose(Pose2d targetPose) {
@@ -309,9 +312,11 @@ public class RobotContainer {
 
         public Command getPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pathname(),
-                                new PathConstraints(DrivetrainConstants.MAX_AUTO_VELOCITY,
-                                                DrivetrainConstants.MAX_AUTO_ACCELERATION),
+                                new PathConstraints(0.5,
+                                                0.5),
                                 driverStationTab.getAutoPath().isReverse());
+
+                drivetrain.resetOdometry(path.getInitialPose());
                 return new PPRamseteCommand(path,
                                 drivetrain::getPose2d,
                                 new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
@@ -322,13 +327,13 @@ public class RobotContainer {
                                 new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
                                                 DrivetrainConstants.KD_LIN),
                                 new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KP_LIN),
+                                                DrivetrainConstants.KD_LIN),
                                 drivetrain::tankDriveVolts,
                                 false,
                                 drivetrain);
         }
 
-        public SequentialCommandGroup ScoreAndLeave(AutoPath AutoPath) {
+        public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
                 // Add your commands in the addCommands() call, e.g.
                 // addCommands(new FooCommand(), new BarCommand());
                 return new SequentialCommandGroup(
@@ -348,7 +353,7 @@ public class RobotContainer {
 
         public Command getAutonomousCommand() {
                 drivetrain.setBrakeMode(IdleMode.kCoast);
-                return ScoreAndLeave(driverStationTab.getAutoPath())
+                return SimpleAuto(driverStationTab.getAutoPath())
                                 .andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
         }
         // TODO Sam, I need to see If I can find a way to delete the extra command named

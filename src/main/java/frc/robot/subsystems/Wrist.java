@@ -132,10 +132,8 @@ public class Wrist extends SubsystemBase {
       return WristPosition.FLOOR_CONE_PICKUP;
     else if (location.get().equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CUBE))
       return WristPosition.FLOOR_CUBE_PICKUP;
-    else if (location.get().equals(PickupLocation.DOUBLE) && piece.get().equals(PieceType.CONE))
-      return WristPosition.DOUBLE_PICKUP_CONE;
-      else if (location.get().equals(PickupLocation.DOUBLE) && piece.get().equals(PieceType.CUBE))
-      return WristPosition.DOUBLE_PICKUP_CUBE;
+    else if (location.get().equals(PickupLocation.DOUBLE))
+      return WristPosition.DOUBLE_PICKUP;
     else
       return WristPosition.STOW;
   }
