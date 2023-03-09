@@ -336,13 +336,23 @@ public class RobotContainer {
         public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
                 // Add your commands in the addCommands() call, e.g.
                 // addCommands(new FooCommand(), new BarCommand());
-                return new SequentialCommandGroup(
-                                new SimpleScore(arm, wrist, intake,
-                                                () -> driverStationTab.getAutoPath().selectedPiece(),
-                                                () -> driverStationTab.getAutoPath().scoreLevelFirst()),
-                                new Stow(arm, wrist, intake),
-                                getPathPlannerCommand(),
-                                new AutoBalance(drivetrain));
+                if (driverStationTab.getAutoPath().autoBalance()){
+                        return new SequentialCommandGroup(
+                                        new SimpleScore(arm, wrist, intake,
+                                                        () -> driverStationTab.getAutoPath().selectedPiece(),
+                                                        () -> driverStationTab.getAutoPath().scoreLevelFirst()),
+                                        new Stow(arm, wrist, intake),
+                                        getPathPlannerCommand());
+                                        // new AutoBalance(drivetrain));
+                }
+                else{
+                        return new SequentialCommandGroup(
+                                        new SimpleScore(arm, wrist, intake,
+                                                        () -> driverStationTab.getAutoPath().selectedPiece(),
+                                                        () -> driverStationTab.getAutoPath().scoreLevelFirst()),
+                                        new Stow(arm, wrist, intake),
+                                        getPathPlannerCommand());
+                }
         }
 
         /**

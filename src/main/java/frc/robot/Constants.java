@@ -140,17 +140,18 @@ public final class Constants {
     }
 
     public enum AutoPath {
-      blueNodeOne("blue far 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      blueNodeSix("blue mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      blueNodeNine("blue near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      redNodeOne("red far 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      redNodeSix("red mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      redNodeNine("red near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      testPath("TesterPath", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      redSimple("redsimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      blueSimple("bluesimple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR),
-      blueSimpler("bluesimpler", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR);
-
+      blueNodeOne("blue far 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
+      blueNodeSix("blue mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true),
+      blueNodeNine("blue near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
+      redNodeOne("red far 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
+      redNodeSix("red mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true),
+      redNodeNine("red near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
+      leftBlueSimple("left blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
+      midBlueSimple("mid blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true),
+      rightBlueSimple("right blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
+      leftRedSimple("left red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
+      midRedSimple("mid red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true),
+      rightRedSimple("right red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false);
 
       private final String pathname;
       private final boolean isReverse;
@@ -158,14 +159,16 @@ public final class Constants {
       private final ScoreLevel ScoreLevelFirst;
       private final ScoreLevel ScoreLevelSecond;
       private final PickupLocation pickupLocation;
+      private final boolean autoBalance;
 
-      AutoPath(String pathname, boolean isReverse, PieceType selectedPiece, ScoreLevel ScoreLevelFirst, ScoreLevel ScoreLevelSecond, PickupLocation pickupLocation) {
+      AutoPath(String pathname, boolean isReverse, PieceType selectedPiece, ScoreLevel ScoreLevelFirst, ScoreLevel ScoreLevelSecond, PickupLocation pickupLocation, boolean autoBalance) {
         this.pathname = pathname;
         this.isReverse = isReverse;
         this.selectedPiece = selectedPiece;
         this.ScoreLevelFirst = ScoreLevelFirst;
         this.ScoreLevelSecond = ScoreLevelSecond;
         this.pickupLocation = pickupLocation;
+        this.autoBalance = autoBalance;
       }
       public String pathname(){
         return pathname;
@@ -184,6 +187,9 @@ public final class Constants {
       }
       public PickupLocation pickupLocation(){
         return pickupLocation;
+      }
+      public boolean autoBalance(){
+        return autoBalance;
       }
     }
   }

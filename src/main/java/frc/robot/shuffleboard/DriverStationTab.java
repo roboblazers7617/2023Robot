@@ -54,16 +54,18 @@ public class DriverStationTab extends ShuffleboardTabBase {
         drivetrainMode.addOption("Curvature Drive", DrivetrainMode.curvatureDrive.toString());
         tab.add("Drivetrain Mode", drivetrainMode);
 
-        autoPath.setDefaultOption("Blue Right Node", DrivetrainConstants.AutoPath.blueNodeOne);
-        autoPath.addOption("Blue Mid Node", DrivetrainConstants.AutoPath.blueNodeSix);
-        autoPath.addOption("Blue Left Node", DrivetrainConstants.AutoPath.blueNodeNine);
-        autoPath.addOption("Red Left Node", DrivetrainConstants.AutoPath.redNodeOne);
-        autoPath.addOption("Red Mid Node", DrivetrainConstants.AutoPath.redNodeSix);
-        autoPath.addOption("Red Right Node", DrivetrainConstants.AutoPath.redNodeNine);
-        autoPath.addOption("Test", DrivetrainConstants.AutoPath.testPath);
-        autoPath.addOption("Red Simple", DrivetrainConstants.AutoPath.redSimple);
-        autoPath.addOption("Blue Simple", DrivetrainConstants.AutoPath.blueSimple);
-        autoPath.addOption("BlueSimpler", DrivetrainConstants.AutoPath.blueSimpler);
+        // autoPath.setDefaultOption("Blue Right Node", DrivetrainConstants.AutoPath.blueNodeOne);
+        // autoPath.addOption("Blue Mid Node", DrivetrainConstants.AutoPath.blueNodeSix);
+        // autoPath.addOption("Blue Left Node", DrivetrainConstants.AutoPath.blueNodeNine);
+        // autoPath.addOption("Red Left Node", DrivetrainConstants.AutoPath.redNodeOne);
+        // autoPath.addOption("Red Mid Node", DrivetrainConstants.AutoPath.redNodeSix);
+        // autoPath.addOption("Red Right Node", DrivetrainConstants.AutoPath.redNodeNine);
+        autoPath.setDefaultOption("left blue simple", DrivetrainConstants.AutoPath.leftBlueSimple);
+        autoPath.addOption("mid blue simple", DrivetrainConstants.AutoPath.midBlueSimple);
+        autoPath.addOption("right blue simple", DrivetrainConstants.AutoPath.rightBlueSimple);
+        autoPath.addOption("left red simple", DrivetrainConstants.AutoPath.leftRedSimple);
+        autoPath.addOption("mid red simple", DrivetrainConstants.AutoPath.midRedSimple);
+        autoPath.addOption("right red simple", DrivetrainConstants.AutoPath.rightRedSimple);
         tab.add("Auto Path", autoPath);
 
         //debug mode
