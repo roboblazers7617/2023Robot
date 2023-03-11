@@ -21,9 +21,10 @@ public class AutoBalance extends CommandBase {
     mDrivetrain = drivetrain;
     addRequirements(drivetrain);
     //TODO: Lukas. (High) Make this a constant
-    controller.setSetpoint(8);
-    controller.setTolerance(DrivetrainConstants.BALANCING_TOLERANCE);
+    controller.setSetpoint(-12.5);
+    controller.setTolerance(1);
     controller.enableContinuousInput(-180, 180);
+
   }
 
   // Called when the command is initially scheduled.
@@ -39,6 +40,7 @@ public class AutoBalance extends CommandBase {
         MathUtil.clamp(controller.calculate(mDrivetrain.getPitch()), -DrivetrainConstants.MAX_BALANCE_SPEED,
             DrivetrainConstants.MAX_BALANCE_SPEED),
         0);
+        System.out.println("pitch is " + mDrivetrain.getPitch());
   }
 
   // Called once the command ends or is interrupted.

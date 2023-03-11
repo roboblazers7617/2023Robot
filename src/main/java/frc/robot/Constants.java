@@ -11,6 +11,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
+import frc.robot.commands.Drivetrain.AutoBalance;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -151,7 +152,8 @@ public final class Constants {
       rightBlueSimple("right blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
       leftRedSimple("left red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
       midRedSimple("mid red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true),
-      rightRedSimple("right red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false);
+      rightRedSimple("right red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
+      autoBalanceTest("autobalance test", false, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true);
 
       private final String pathname;
       private final boolean isReverse;
