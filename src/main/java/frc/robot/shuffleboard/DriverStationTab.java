@@ -107,7 +107,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
         // //path planning target
          pathPlanningTargetPub = networkTable.getStringTopic("target position for path planning").publish();
-         tab.add("target position for path planning", "NA").withPosition(1, 0);
+         tab.add("target position for path planning", "NA").withPosition(1, 2);
 
         camera = CameraServer.startAutomaticCapture();
         if (camera.isConnected()) {
