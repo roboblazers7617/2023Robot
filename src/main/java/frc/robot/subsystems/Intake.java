@@ -34,8 +34,8 @@ public class Intake extends SubsystemBase {
     intakeMotor.setSmartCurrentLimit(IntakeConstants.CURRENT_LIMIT);
     intakeMotor.setIdleMode(IdleMode.kBrake);
     intakeEncoder.setVelocityConversionFactor(IntakeConstants.INTAKE_ENCODER_CONVERSION_FACTOR / 60);
-    intakeMotor.setSecondaryCurrentLimit(35);
-    intakeMotor.burnFlash();
+    // intakeMotor.setSecondaryCurrentLimit(35);
+    // intakeMotor.burnFlash();
 
   }
 

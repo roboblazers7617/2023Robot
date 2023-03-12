@@ -52,7 +52,7 @@ public class IntakeTab extends ShuffleboardTabBase {
         wristTempPublisher.set((wrist.getWristMotorTemp()*(9.0/5.0)+32.0));
         intakeTempPublisher.set((intake.getMotorTemperature()*(9.0/5.0)+32.0));
         intakeCurrentPublisher.set(intake.getCurent());
-        System.out.println("intak current is " + intake.getCurent());
+        // System.out.println("intak current is " + intake.getCurent());
 
     }
     

@@ -129,7 +129,7 @@ public final class Constants {
 
     public static final double KP_BALANCE = 2;
     public static final double KI_BALANCE = 0;
-    public static final double KD_BALANCE = 0;
+    public static final double KD_BALANCE = 0.5;
     public static final double BALANCING_TOLERANCE = 2.5;
     // TODO: Lukas. (High) Decide this value
     public static final double MAX_BALANCE_SPEED = 0.50;
@@ -141,19 +141,27 @@ public final class Constants {
     }
 
     public enum AutoPath {
-      blueNodeOne("blue far 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
-      blueNodeSix("blue mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true),
-      blueNodeNine("blue near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
-      redNodeOne("red far 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
-      redNodeSix("red mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true),
-      redNodeNine("red near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
-      leftBlueSimple("left blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
-      midBlueSimple("mid blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true),
-      rightBlueSimple("right blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
-      leftRedSimple("left red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
-      midRedSimple("mid red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true),
-      rightRedSimple("right red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false),
-      autoBalanceTest("autobalance test", false, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true);
+      blueNodeOne("blue far 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      blueNodeSix("blue mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
+      blueNodeNine("blue near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      redNodeOne("red far 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      redNodeSix("red mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
+      redNodeNine("red near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      leftBlueSimple("left blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      midBlueSimple("mid red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
+      rightBlueSimple("right blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      leftRedSimple("left red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      midRedSimple("mid red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
+      rightRedSimple("right red simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      midleftBlueSimple("left blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      midmidBlueSimple("mid blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
+      midrightBlueSimple("right blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      midleftRedSimple("left red simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      midmidRedSimple("mid red simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
+      midrightRedSimple("right red simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
+      lowsimple("right red simple", true, PieceType.CUBE, ScoreLevel.LEVEL_1, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true),
+      lowsimplebalance("mid blue simple", true, PieceType.CUBE, ScoreLevel.LEVEL_1, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true),
+      autobalanceTest("autobalance test", false, PieceType.CUBE, ScoreLevel.LEVEL_1, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, false);
 
       private final String pathname;
       private final boolean isReverse;
@@ -162,8 +170,9 @@ public final class Constants {
       private final ScoreLevel ScoreLevelSecond;
       private final PickupLocation pickupLocation;
       private final boolean autoBalance;
+      private final boolean scoring;
 
-      AutoPath(String pathname, boolean isReverse, PieceType selectedPiece, ScoreLevel ScoreLevelFirst, ScoreLevel ScoreLevelSecond, PickupLocation pickupLocation, boolean autoBalance) {
+      AutoPath(String pathname, boolean isReverse, PieceType selectedPiece, ScoreLevel ScoreLevelFirst, ScoreLevel ScoreLevelSecond, PickupLocation pickupLocation, boolean autoBalance, boolean scoring) {
         this.pathname = pathname;
         this.isReverse = isReverse;
         this.selectedPiece = selectedPiece;
@@ -171,6 +180,7 @@ public final class Constants {
         this.ScoreLevelSecond = ScoreLevelSecond;
         this.pickupLocation = pickupLocation;
         this.autoBalance = autoBalance;
+        this.scoring = scoring;
       }
       public String pathname(){
         return pathname;
@@ -192,6 +202,9 @@ public final class Constants {
       }
       public boolean autoBalance(){
         return autoBalance;
+      }
+      public boolean scoring(){
+        return scoring;
       }
     }
   }
@@ -266,8 +279,8 @@ public final class Constants {
       STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
       FLOOR_PICKUP_CONE( -42, PnuematicPositions.EXTENDED),
       FLOOR_PICKUP_CUBE( -39, PnuematicPositions.EXTENDED),
-      STATION_PICKUP_CONE(9, PnuematicPositions.RETRACTED),
-      STATION_PICKUP_CUBE(6.35, PnuematicPositions.RETRACTED);
+      STATION_PICKUP_CONE(17.0, PnuematicPositions.RETRACTED),
+      STATION_PICKUP_CUBE(10.5, PnuematicPositions.RETRACTED);
 
       private final double shoulderAngle;
       private final PnuematicPositions pistonPosition;
@@ -311,14 +324,14 @@ public final class Constants {
     public static final double MIN_WRIST_ANGLE = -42;
     public static final int WRIST_POT_SCALE = 340;
 
-    public static final double MAX_MANNUAL_WRIST_SPEED = 50;
+    public static final double MAX_MANNUAL_WRIST_SPEED = 65;
 
     public enum WristPosition {
       STOW(WristConstants.MAX_WRIST_ANGLE),
       FLOOR_CUBE_PICKUP(36),
       FLOOR_CONE_PICKUP(39),
-      DOUBLE_PICKUP_CONE(-6),
-      DOUBLE_PICKUP_CUBE(10),
+      DOUBLE_PICKUP_CONE(-15),
+      DOUBLE_PICKUP_CUBE(-3.5),
       LEVEL_3_CONE(-9),
       LEVEL_2_CONE(-8),
       LEVEL_1_CONE(41),

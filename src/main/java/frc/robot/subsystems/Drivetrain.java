@@ -153,6 +153,7 @@ public class Drivetrain extends SubsystemBase {
 
     motorController.setIdleMode(IdleMode.kCoast);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
+    // motorController.setOpenLoopRampRate(0.5);
   }
 
   private void configureEncoder(RelativeEncoder motorEncoder) {

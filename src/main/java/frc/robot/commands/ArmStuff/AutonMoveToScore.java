@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.subsystems.Arm;
@@ -24,6 +25,7 @@ public class AutonMoveToScore extends SequentialCommandGroup {
     addCommands(new InstantCommand(() -> arm.setPosition(arm.evalScorePosition(level, piece))), arm.WaitUntilArmInPosition(),
     arm.actuateSuperstructureCommandScore(level, piece),
     new InstantCommand(() -> wrist.setPosition(wrist.evalScorePosition(level, piece), arm::getArmAngle), wrist),
+    new WaitCommand(1),
     wrist.WaitUntilWristInPosition());
   }
 }

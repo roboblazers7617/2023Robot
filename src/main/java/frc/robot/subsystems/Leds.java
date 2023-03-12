@@ -23,10 +23,15 @@ public class Leds extends SubsystemBase {
     // Reuse buffer
     // Default to a length of 60, start empty output
   //change the length later!
-    m_ledBuffer = new AddressableLEDBuffer(60);
+    m_ledBuffer = new AddressableLEDBuffer(12);
     m_led.setLength(m_ledBuffer.getLength());
 
+
     // Set the data
+    for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+      // Sets the specified LED to the RGB values for cube
+      m_ledBuffer.setRGB(i, 148, 0, 211);
+   }
     m_led.setData(m_ledBuffer);
     m_led.start();
 

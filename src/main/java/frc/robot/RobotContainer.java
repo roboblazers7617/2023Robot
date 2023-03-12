@@ -48,6 +48,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.lang.model.util.ElementScanner14;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
@@ -170,11 +172,11 @@ public class RobotContainer {
          */
         private void configureDriverBindings() {
 
-                m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain,
-                                () -> m_driverController.getLeftY(),
-                                () -> m_driverController.getRightY(),
-                                () -> m_driverController.getRightX(),
-                                DriverStation.getAlliance()));
+                //m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain,
+                                // () -> m_driverController.getLeftY(),
+                                // () -> m_driverController.getRightY(),
+                                // () -> m_driverController.getRightX(),
+                                // DriverStation.getAlliance()));
 
                 m_driverController.rightBumper()
                                 .onTrue(new InstantCommand(
@@ -312,8 +314,8 @@ public class RobotContainer {
 
         public Command getPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pathname(),
-                                new PathConstraints(0.5,
-                                                0.5),
+                                new PathConstraints(2,
+                                                1.5),
                                 driverStationTab.getAutoPath().isReverse());
 
                 drivetrain.resetOdometry(path.getInitialPose());
@@ -336,6 +338,7 @@ public class RobotContainer {
         public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
                 // Add your commands in the addCommands() call, e.g.
                 // addCommands(new FooCommand(), new BarCommand());
+            if (driverStationTab.getAutoPath().scoring()){
                 if (driverStationTab.getAutoPath().autoBalance()){
                         return new SequentialCommandGroup(
                                         new SimpleScore(arm, wrist, intake,
@@ -344,8 +347,8 @@ public class RobotContainer {
                                         new Stow(arm, wrist, intake),
                                         new InstantCommand(()->turnOnBrakesDrivetrain(false)),
                                         getPathPlannerCommand(),
-                                        new InstantCommand(()->turnOnBrakesDrivetrain(true)));
-                                        // new AutoBalance(drivetrain));
+                                        new InstantCommand(()->turnOnBrakesDrivetrain(true)),
+                                        new AutoBalance(drivetrain));
                 }
                 else{
                         return new SequentialCommandGroup(
@@ -356,6 +359,21 @@ public class RobotContainer {
                                         new InstantCommand(()->turnOnBrakesDrivetrain(false)),
                                         getPathPlannerCommand(),
                                         new InstantCommand(()->turnOnBrakesDrivetrain(true)));
+                }
+                }
+                else     
+                        if (driverStationTab.getAutoPath().autoBalance()){
+                                return new SequentialCommandGroup(
+                                                new InstantCommand(()->turnOnBrakesDrivetrain(false)),
+                                                getPathPlannerCommand(),
+                                                new InstantCommand(()->turnOnBrakesDrivetrain(true)),
+                                                new AutoBalance(drivetrain));
+                        }
+                        else{
+                                return new SequentialCommandGroup(
+                                                new InstantCommand(()->turnOnBrakesDrivetrain(false)),
+                                                getPathPlannerCommand(),
+                                                new InstantCommand(()->turnOnBrakesDrivetrain(true)));
                 }
         }
 

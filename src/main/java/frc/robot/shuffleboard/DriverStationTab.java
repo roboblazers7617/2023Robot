@@ -52,7 +52,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
         drivetrainMode.setDefaultOption("Arcade Drive", DrivetrainConstants.DrivetrainMode.arcadeDrive.toString());
         drivetrainMode.addOption("Tank Drive", DrivetrainMode.tankDrive.toString());
         drivetrainMode.addOption("Curvature Drive", DrivetrainMode.curvatureDrive.toString());
-        tab.add("Drivetrain Mode", drivetrainMode);
+        tab.add("Drivetrain Mode", drivetrainMode).withPosition(0, 0);
 
         // autoPath.setDefaultOption("Blue Right Node", DrivetrainConstants.AutoPath.blueNodeOne);
         // autoPath.addOption("Blue Mid Node", DrivetrainConstants.AutoPath.blueNodeSix);
@@ -66,18 +66,27 @@ public class DriverStationTab extends ShuffleboardTabBase {
         autoPath.addOption("left red simple", DrivetrainConstants.AutoPath.leftRedSimple);
         autoPath.addOption("mid red simple", DrivetrainConstants.AutoPath.midRedSimple);
         autoPath.addOption("right red simple", DrivetrainConstants.AutoPath.rightRedSimple);
-        autoPath.addOption("autobalance test", DrivetrainConstants.AutoPath.autoBalanceTest);
-        tab.add("Auto Path", autoPath);
+        // autoPath.addOption("autobalance test", DrivetrainConstants.AutoPath.autoBalanceTest);
+        autoPath.setDefaultOption("mid left blue simple", DrivetrainConstants.AutoPath.midleftBlueSimple);
+        autoPath.addOption("mid mid blue simple", DrivetrainConstants.AutoPath.midmidBlueSimple);
+        autoPath.addOption("mid right blue simple", DrivetrainConstants.AutoPath.midrightBlueSimple);
+        autoPath.addOption("mid left red simple", DrivetrainConstants.AutoPath.midleftRedSimple);
+        autoPath.addOption("mid mid red simple", DrivetrainConstants.AutoPath.midmidRedSimple);
+        autoPath.addOption("mid right red simple", DrivetrainConstants.AutoPath.midrightRedSimple);
+        autoPath.addOption("cube simple", DrivetrainConstants.AutoPath.lowsimple);
+        autoPath.addOption("cube simple balance", DrivetrainConstants.AutoPath.lowsimplebalance);
+        autoPath.addOption("Autobalance Test", DrivetrainConstants.AutoPath.autobalanceTest);
+        tab.add("Auto Path", autoPath).withPosition(1, 0);
 
         //debug mode
-        debugMode.setDefaultOption("True", true);
-        debugMode.addOption("false", false);
-        tab.add("Debug Mode", debugMode);
+        debugMode.setDefaultOption("false", false);
+        debugMode.addOption("True", true);
+        tab.add("Debug Mode", debugMode).withPosition(2, 0);
         NetworkTable debugNetworkTable = NetworkTableInstance.getDefault().getTable("debug mode table");
         debugModePub = debugNetworkTable.getBooleanTopic("debug mode").publish();
 
         isInBrakeMode = networkTable.getBooleanTopic("Coast mode").publish();
-        tab.add("Coast mode", false);
+        tab.add("Coast mode", false).withPosition(3, 0);
         //path planning target use button box now
         // targetNode.setDefaultOption("Node 1", FieldLocation.NODE1);
         // targetNode.addOption("Node 2", FieldLocation.NODE2);
@@ -94,11 +103,11 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
         //current speed modifier
         maxSpeedPub = networkTable.getDoubleTopic("max SPEED").publish();
-        tab.add("max SPEED", 20.0);
+        tab.add("max SPEED", 20.0).withPosition(0, 1);
 
-        //path planning target
-        pathPlanningTargetPub = networkTable.getStringTopic("target position for path planning").publish();
-        tab.add("target position for path planning", "NA");
+        // //path planning target
+         pathPlanningTargetPub = networkTable.getStringTopic("target position for path planning").publish();
+         tab.add("target position for path planning", "NA").withPosition(1, 0);
 
         camera = CameraServer.startAutomaticCapture();
         if (camera.isConnected()) {
