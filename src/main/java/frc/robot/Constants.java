@@ -132,7 +132,7 @@ public final class Constants {
     public static final double KD_BALANCE = 0.5;
     public static final double BALANCING_TOLERANCE = 2.5;
     // TODO: Lukas. (High) Decide this value
-    public static final double MAX_BALANCE_SPEED = 0.50;
+    public static final double MAX_BALANCE_SPEED = 0.550;//TODO: .5
 
     public enum DrivetrainMode {
       arcadeDrive,
@@ -148,16 +148,16 @@ public final class Constants {
       redNodeSix("red mid 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
       redNodeNine("red near 2 ball", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
       leftBlueSimple("left blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
-      midBlueSimple("mid red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
+      midBlueSimple("mid blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
       rightBlueSimple("right blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
       leftRedSimple("left red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
-      midRedSimple("mid red simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
+      midRedSimple("mid blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
       rightRedSimple("right red simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
       midleftBlueSimple("left blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
       midmidBlueSimple("mid blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
       midrightBlueSimple("right blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
       midleftRedSimple("left red simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
-      midmidRedSimple("mid red simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
+      midmidRedSimple("mid blue simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true),
       midrightRedSimple("right red simple", true, PieceType.CONE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true),
       lowsimple("right red simple", true, PieceType.CUBE, ScoreLevel.LEVEL_1, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true),
       lowsimplebalance("mid blue simple", true, PieceType.CUBE, ScoreLevel.LEVEL_1, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true),

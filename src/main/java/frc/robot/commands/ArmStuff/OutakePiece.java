@@ -46,6 +46,6 @@ public class OutakePiece extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return (time.get() > .25);
+    return (time.get() > .32);
   }
 }
