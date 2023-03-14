@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
-import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;

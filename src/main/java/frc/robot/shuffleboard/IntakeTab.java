@@ -5,7 +5,6 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Wrist;
 
@@ -26,7 +25,7 @@ public class IntakeTab extends ShuffleboardTabBase {
         this.wrist = wrist;
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         NetworkTable networkTable = inst.getTable("Shuffleboard/Intake");
-        ShuffleboardTab shuffleboardTabTesting = Shuffleboard.getTab("Intake");
+        Shuffleboard.getTab("Intake");
 
         
         wristAnglePublisher = networkTable.getDoubleTopic("Wrist Angle").publish();

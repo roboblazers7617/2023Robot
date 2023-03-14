@@ -15,10 +15,8 @@ import edu.wpi.first.networktables.StringPublisher;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import frc.robot.FieldPositions;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.DrivetrainConstants.DrivetrainMode;
-import frc.robot.FieldPositions.FieldLocation;
 import frc.robot.subsystems.Drivetrain;
 
 //if auto things are happining
