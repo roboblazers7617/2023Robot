@@ -121,7 +121,7 @@ public class RobotContainer {
         ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
         // YOUR CODE HERE | | |
         // \/ \/ \/
-        driverStationTab = new DriverStationTab(drivetrain);
+        driverStationTab = new DriverStationTab(drivetrain, intake);
         tabs.add(driverStationTab);
         tabs.add(new VisionTab(vision, drivetrain));
 
