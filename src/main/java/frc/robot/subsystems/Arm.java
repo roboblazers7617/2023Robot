@@ -103,7 +103,6 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
     dt = time.get() - lastTime;
     lastTime = time.get();
-    // System.out.println("velocity " + shoulderEncoder.getVelocity());
 
   }
 

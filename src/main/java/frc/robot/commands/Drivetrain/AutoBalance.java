@@ -41,20 +41,17 @@ public class AutoBalance extends CommandBase {
           MathUtil.clamp(controller.calculate(mDrivetrain.getPitch() + .2), -DrivetrainConstants.MAX_BALANCE_SPEED,
               DrivetrainConstants.MAX_BALANCE_SPEED),
           0);
-      System.out.println("pitch is " + mDrivetrain.getPitch());
     } else if (mDrivetrain.getPitch() > 15) {
       mDrivetrain.arcadeDrive(
           MathUtil.clamp(controller.calculate(mDrivetrain.getPitch() - .2), -DrivetrainConstants.MAX_BALANCE_SPEED,
               DrivetrainConstants.MAX_BALANCE_SPEED),
           0);
-      System.out.println("pitch is " + mDrivetrain.getPitch());
     } else {
       mDrivetrain.arcadeDrive(
         MathUtil.clamp(controller.calculate(mDrivetrain.getPitch()), -DrivetrainConstants.MAX_BALANCE_SPEED,
             DrivetrainConstants.MAX_BALANCE_SPEED),
         0);
     }
-    System.out.println("angle " + mDrivetrain.getPitch());
   }
 
   // Called once the command ends or is interrupted.
