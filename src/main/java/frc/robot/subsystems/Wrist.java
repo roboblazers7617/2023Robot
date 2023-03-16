@@ -74,7 +74,7 @@ public class Wrist extends SubsystemBase {
     dt = time.get() - lastTime;
     lastTime = time.get();
 
-    // System.out.println("wrist at setpoint"+atSetpoint());
+    // System.out.println("wrst at setpoint"+atSetpoint());
 
   }
 
@@ -117,8 +117,7 @@ public class Wrist extends SubsystemBase {
   public double getWristMotorTemp() {
     return wristMotor.getMotorTemperature();
   }
-
-  // TODO: Lukas. (High) Check this code is correct
+  
   public boolean atSetpoint() {
     return (Math.abs(getWristPosition() - (setpoint)) < (WristConstants.WRIST_ANGLE_TOLERANCE));
   }

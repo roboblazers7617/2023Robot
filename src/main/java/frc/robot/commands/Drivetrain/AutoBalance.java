@@ -22,7 +22,7 @@ public class AutoBalance extends CommandBase {
     addRequirements(drivetrain);
     // TODO: Lukas. (High) Make this a constant
     controller.setSetpoint(0);
-    controller.setTolerance(13.75);
+    controller.setTolerance(DrivetrainConstants.BALANCING_TOLERANCE);
     controller.enableContinuousInput(-180, 180);
 
   }
@@ -36,25 +36,22 @@ public class AutoBalance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (mDrivetrain.getPitch() < -15) {
+    if (mDrivetrain.getPitch() < -DrivetrainConstants.BALANCE_SPEED_BOOST_TOLERANCE) {
       mDrivetrain.arcadeDrive(
           MathUtil.clamp(controller.calculate(mDrivetrain.getPitch() + .2), -DrivetrainConstants.MAX_BALANCE_SPEED,
               DrivetrainConstants.MAX_BALANCE_SPEED),
           0);
-      System.out.println("pitch is " + mDrivetrain.getPitch());
-    } else if (mDrivetrain.getPitch() > 15) {
+    } else if (mDrivetrain.getPitch() > DrivetrainConstants.BALANCE_SPEED_BOOST_TOLERANCE) {
       mDrivetrain.arcadeDrive(
-          MathUtil.clamp(controller.calculate(mDrivetrain.getPitch() - .2), -DrivetrainConstants.MAX_BALANCE_SPEED,
+          MathUtil.clamp(controller.calculate(mDrivetrain.getPitch() - DrivetrainConstants.BALANCE_OFFEST), -DrivetrainConstants.MAX_BALANCE_SPEED,
               DrivetrainConstants.MAX_BALANCE_SPEED),
           0);
-      System.out.println("pitch is " + mDrivetrain.getPitch());
     } else {
       mDrivetrain.arcadeDrive(
         MathUtil.clamp(controller.calculate(mDrivetrain.getPitch()), -DrivetrainConstants.MAX_BALANCE_SPEED,
             DrivetrainConstants.MAX_BALANCE_SPEED),
         0);
     }
-    System.out.println("angle " + mDrivetrain.getPitch());
   }
 
   // Called once the command ends or is interrupted.

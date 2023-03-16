@@ -55,7 +55,7 @@ public class Arm extends SubsystemBase {
 
   private double dt, lastTime;
 
-  private double setpoint = -54;
+  private double setpoint = ArmPositions.STOW.getShoulderAngle();
 
   public Arm(Pnuematics pnuematics) {
     shoulderMotor.restoreFactoryDefaults();
@@ -103,7 +103,6 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
     dt = time.get() - lastTime;
     lastTime = time.get();
-    // System.out.println("velocity " + shoulderEncoder.getVelocity());
 
   }
 
@@ -222,16 +221,14 @@ public class Arm extends SubsystemBase {
 
   public Command intigratedMoveToScore(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
     return new SequentialCommandGroup(new InstantCommand(() -> setPosition(evalScorePosition(level, piece)), this),
-        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE+5),
-        new InstantCommand(() -> actuateSuperstructure(evalScorePosition(level, piece).getPistonPosition())),
-        Commands.waitUntil(() -> atSetpoint()));
+        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS),
+        new InstantCommand(() -> actuateSuperstructure(evalScorePosition(level, piece).getPistonPosition())));
   }
 
   public Command intigratedMoveToPickup(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
     return new SequentialCommandGroup(new InstantCommand(() -> setPosition(evalPickupPosition(location, piece)), this),
-        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE+5),
-        new InstantCommand(() -> actuateSuperstructure(evalPickupPosition(location, piece).getPistonPosition())),
-        Commands.waitUntil(() -> atSetpoint()));
+        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS),
+        new InstantCommand(() -> actuateSuperstructure(evalPickupPosition(location, piece).getPistonPosition())));
   }
 
   public double getShoulderMotorTemp() {

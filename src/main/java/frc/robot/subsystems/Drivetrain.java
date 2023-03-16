@@ -258,10 +258,10 @@ public class Drivetrain extends SubsystemBase {
     mOdometry.update(mGyro.getRotation2d(), getLeftDistance(), getRightDistance());
 
     Optional<EstimatedRobotPose> cameraPose = mVision.getEstimatedGlobalPose(getPose2d().plus(new Transform2d(new Translation2d(0, 0), new Rotation2d(Math.PI))));
-    if(cameraPose.isPresent()){
-    mOdometry.addVisionMeasurement(cameraPose.get().estimatedPose.toPose2d(), cameraPose.get().timestampSeconds);
+    //if(cameraPose.isPresent()){
+   // mOdometry.addVisionMeasurement(cameraPose.get().estimatedPose.toPose2d(), cameraPose.get().timestampSeconds);
     //mGyro.setYaw(mOdometry.getEstimatedPosition().getRotation().getDegrees());
-    }
+    //}
   }
 
 

@@ -45,8 +45,6 @@ public final class Constants {
     public static class OperatorConstants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
         public static final int OPERATOR_CONTROLLER_PORT = 1;
-        public static final int BUTTON_BOX_CONTROLLER_PORT = 2;
-
         public static final double DEADZONE = 0.1;
     }
 
@@ -127,9 +125,13 @@ public final class Constants {
         public static final double KP_BALANCE = 2;
         public static final double KI_BALANCE = 0;
         public static final double KD_BALANCE = 0.5;
-        public static final double BALANCING_TOLERANCE = 2.5;
+        public static final double BALANCING_TOLERANCE = 13.75;
         // TODO: Lukas. (High) Decide this value
-        public static final double MAX_BALANCE_SPEED = 0.550;// TODO: .5
+        public static final double MAX_BALANCE_SPEED = 0.550;
+
+        public static final int BALANCE_SPEED_BOOST_TOLERANCE = 15;
+
+        public static final double BALANCE_OFFEST = 0.2;
 
         public enum DrivetrainMode {
             arcadeDrive,
@@ -283,6 +285,7 @@ public final class Constants {
         public static final double MAX_SPEED_UPWARD = 0.3;
         public static final double PISTON_BACK = -90 - MINIMUM_SHOULDER_ANGLE;
         public static final double PISTON_FORWARD = 0;
+        public static final double MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS = MINIMUM_SHOULDER_ANGLE+5;
 
         // TODO: Lukas. (High) Set the angles
         public enum ArmPositions {

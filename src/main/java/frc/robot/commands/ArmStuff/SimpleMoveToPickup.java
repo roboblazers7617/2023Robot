@@ -8,6 +8,7 @@ import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.subsystems.Arm;
@@ -21,10 +22,13 @@ public class SimpleMoveToPickup extends SequentialCommandGroup {
   public SimpleMoveToPickup(Arm arm, Wrist wrist, Supplier<PieceType> piece, Supplier<PickupLocation> location) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    double logicalNumber = 0;
     addCommands(arm.intigratedMoveToPickup(location, piece),
-        new InstantCommand(() -> wrist.setPosition(wrist.evalPickupLocation(location, piece), arm::getArmAngle),
-            wrist),
-        wrist.WaitUntilWristInPosition());
+      new WaitUntilCommand(() -> (arm.getArmAngle() > logicalNumber)),
+      new InstantCommand(() -> wrist.setPosition(wrist.evalPickupLocation(location, piece), arm::getArmAngle),
+        wrist),
+      arm.WaitUntilArmInPosition(),
+      wrist.WaitUntilWristInPosition());
 
   }
 }
