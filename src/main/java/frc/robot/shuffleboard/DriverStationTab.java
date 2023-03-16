@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.DrivetrainConstants.DrivetrainMode;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Intake;
 
 //if auto things are happining
 
@@ -30,19 +31,22 @@ public class DriverStationTab extends ShuffleboardTabBase {
     private final SendableChooser<DrivetrainConstants.AutoPath> autoPath = new SendableChooser<>();
 
     private Drivetrain drivetrain;
+    private Intake intake;
     private DoublePublisher maxSpeedPub;
     private StringPublisher pathPlanningTargetPub;
     private BooleanPublisher debugModePub;
     private BooleanPublisher isInBrakeMode;
+    private BooleanPublisher isIntakeSpinning;
 
 
     private UsbCamera camera;
 
-    public DriverStationTab(Drivetrain drivetrain) {
+    public DriverStationTab(Drivetrain drivetrain, Intake intake) {
         //tab and network table
         ShuffleboardTab tab = Shuffleboard.getTab("Driver Station");
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         this.drivetrain = drivetrain;
+        this.intake = intake;
         NetworkTable networkTable = inst.getTable("Shuffleboard/Driver Station");
 
         //drive mode
@@ -85,6 +89,8 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
         isInBrakeMode = networkTable.getBooleanTopic("Coast mode").publish();
         tab.add("Coast mode", false).withPosition(3, 0);
+        isIntakeSpinning = networkTable.getBooleanTopic("Is Intake Spinning").publish();
+        tab.add("Is Intake Spinning", false).withPosition(4, 0);
         //path planning target use button box now
         // targetNode.setDefaultOption("Node 1", FieldLocation.NODE1);
         // targetNode.addOption("Node 2", FieldLocation.NODE2);
@@ -127,6 +133,9 @@ public class DriverStationTab extends ShuffleboardTabBase {
         debugModePub.set(debugMode.getSelected());
 
         isInBrakeMode.set(!drivetrain.isBrakeMode());
+
+        //if intake speed is not equal to zero set isIntakeSpinning to true
+        isIntakeSpinning.set(intake.getIntakeSpeed() != 0 ? true: false);
         
 
     }
