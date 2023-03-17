@@ -80,7 +80,7 @@ public class RobotContainer {
     private final Pnuematics pnuematics = new Pnuematics();
     private final Intake intake = new Intake();
     private final Arm arm = new Arm(pnuematics);
-    private final Leds leds = new Leds();
+    private final Leds leds = new Leds(intake);
     private final CommandXboxController m_driverController = new CommandXboxController(
             OperatorConstants.DRIVER_CONTROLLER_PORT);
 
