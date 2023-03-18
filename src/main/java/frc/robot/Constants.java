@@ -270,10 +270,10 @@ public final class Constants {
         public static final int SHOULDER_FOLLOWER_MOTOR_ID = 32;
         public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
 
-        public static final double KP = 0.07;
+        public static final double KP = 0.05;//0 .07
         public static final double KI = 0;
         public static final double KD = 0;
-        public static final double KS = 0.0;
+        public static final double KS = 0.09;
         public static final double KG = 0.01;
         public static final double KV = 0;
 

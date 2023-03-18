@@ -93,7 +93,7 @@ public class Leds extends SubsystemBase {
       setSpeed(drivetrain.getMaxDrivetrainSpeed());    
     }
     else{
-      if(timer % 10 == 0){
+      if(timer % 5 == 0){
         autoColor();
       }
       timer++;

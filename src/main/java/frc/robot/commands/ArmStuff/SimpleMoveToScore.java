@@ -7,6 +7,7 @@ package frc.robot.commands.ArmStuff;
 import java.util.function.Supplier;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.PieceType;
@@ -22,9 +23,11 @@ public class SimpleMoveToScore extends SequentialCommandGroup {
   public SimpleMoveToScore(Arm arm, Wrist wrist, Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    double logicalNumber = 0;
+    double logicalNumber = -30;
     addCommands(arm.intigratedMoveToScore(level, piece),
-    new WaitUntilCommand(() -> (arm.getArmAngle() > logicalNumber)),
+    new ParallelRaceGroup(
+      arm.WaitUntilArmInPosition(),
+      new WaitUntilCommand( () ->(arm.getArmAngle() > logicalNumber))),
     new InstantCommand(() -> wrist.setPosition(wrist.evalScorePosition(level, piece), arm::getArmAngle),
       wrist),
     arm.WaitUntilArmInPosition(),

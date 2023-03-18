@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -155,9 +156,9 @@ public class Arm extends SubsystemBase {
   public void setPosition(double positionDegrees) {
     setpoint = Math.min(positionDegrees, ArmConstants.MAX_SHOULDER_ANGLE);
     setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    controller.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
+    controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
-    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
+    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
   }
 
@@ -169,10 +170,10 @@ public class Arm extends SubsystemBase {
     setpoint = setpoint + velocityDegreesPerSec * dt;
     setpoint = Math.min(setpoint, ArmConstants.MAX_SHOULDER_ANGLE);
     setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    controller.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
+    controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
-        controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
-            feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
+    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+        feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
   }
 
   public Command actuateSuperstructureCommandPickup(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
@@ -210,6 +211,7 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean atSetpoint() {
+    System.out.println("Arm is " + getShoulderAngle());
     return (Math.abs(getShoulderAngle() - (setpoint)) < (ArmConstants.POSITION_TOLERANCE));
   }
 
@@ -227,13 +229,18 @@ public class Arm extends SubsystemBase {
 
   public Command intigratedMoveToScore(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
     return new SequentialCommandGroup(new InstantCommand(() -> setPosition(evalScorePosition(level, piece)), this),
-        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS),
+        new ParallelRaceGroup(
+            Commands.waitUntil(
+                () -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS),
+            Commands.waitUntil(
+                () -> getSuperstructureState() == evalScorePosition(level, piece).getPistonPosition().getValue())),
         new InstantCommand(() -> actuateSuperstructure(evalScorePosition(level, piece).getPistonPosition())));
   }
 
   public Command intigratedMoveToPickup(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
     return new SequentialCommandGroup(new InstantCommand(() -> setPosition(evalPickupPosition(location, piece)), this),
-        Commands.waitUntil(() -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS),
+        Commands.waitUntil(
+            () -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS),
         new InstantCommand(() -> actuateSuperstructure(evalPickupPosition(location, piece).getPistonPosition())));
   }
 
