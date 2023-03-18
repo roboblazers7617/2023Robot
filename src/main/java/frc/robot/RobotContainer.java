@@ -10,6 +10,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
+import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.DrivetrainConstants.AutoPath;
@@ -23,6 +24,7 @@ import frc.robot.commands.ArmStuff.SimplePickup;
 import frc.robot.commands.ArmStuff.SimpleScore;
 import frc.robot.commands.ArmStuff.Stow;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
+import frc.robot.commands.Drivetrain.AlignToDouble;
 import frc.robot.commands.Drivetrain.AutoBalance;
 import frc.robot.commands.Drivetrain.FaceScoreLocation;
 import frc.robot.shuffleboard.ArmTab;
@@ -164,25 +166,35 @@ public class RobotContainer {
         // DriverStation.getAlliance()));
 
         m_driverController.rightBumper()
-                .onTrue(new InstantCommand(
-                        () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED)));
+                        .onTrue(new InstantCommand(
+                                        () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED)));
         m_driverController.rightBumper()
-                .onFalse(new InstantCommand(
-                        () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
+                        .onFalse(new InstantCommand(
+                                        () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
 
         m_driverController.leftBumper()
-                .onTrue(new InstantCommand(
-                        () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED)));
+                        .onTrue(new InstantCommand(
+                                        () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED)));
         m_driverController.leftBumper()
-                .onFalse(new InstantCommand(
-                        () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
+                        .onFalse(new InstantCommand(
+                                        () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
 
         // m_driverController.b().onTrue(new InstantCommand(() ->
         // drivetrain.resetOdometry(new Pose2d())));
         m_driverController.a().whileTrue(new AutoBalance(drivetrain));
         m_driverController.x().onTrue(new InstantCommand(() -> drivetrain.toggleBrakeMode()));
+        Trigger doubleSubstationAlign = new Trigger(() -> (vision
+                        .getBestTagDistance() > VisionConstants.IN_RANGE_OF_TAG)
+                        && ((vision.getBestTagId() == VisionConstants.RED_PICKUP_STATION_TAG)
+                                        || vision.getBestTagId() == VisionConstants.BLUE_PICKUP_STATION_TAG));
+        doubleSubstationAlign.and(m_driverController.b().negate())
+                        .onTrue(new AlignToDouble(vision, drivetrain, arm, wrist, intake,
+                                        () -> getSelectedPiece(),
+                                        m_driverController::getLeftY, m_driverController::getRightY,
+                                        m_driverController::getRightX, () -> isRightTriggerPressed()))
+                        .onFalse(new Stow(arm, wrist, intake));
 
-    }
+}
 
     private void configureOperatorBindings() {
         m_operatorController.leftBumper()
