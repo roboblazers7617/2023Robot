@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import java.util.Optional;
+import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
 import org.photonvision.EstimatedRobotPose;
@@ -62,6 +63,7 @@ public class Drivetrain extends SubsystemBase {
 
   private final DifferentialDrive drivetrain;
   private double maxDrivetrainspeed = DrivetrainConstants.REG_SPEED;
+  private double prevMaxDrivetrainspeed = DrivetrainConstants.REG_SPEED;
 
   private DrivetrainMode mode;
 
@@ -110,6 +112,14 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     updatePose();
+    /*if(maxDrivetrainspeed > prevMaxDrivetrainspeed){
+      prevMaxDrivetrainspeed += DrivetrainConstants.SPEED_INCREMENT;
+      drivetrain.setMaxOutput(prevMaxDrivetrainspeed);
+    }
+    else if(maxDrivetrainspeed < prevMaxDrivetrainspeed){
+      prevMaxDrivetrainspeed += DrivetrainConstants.SPEED_DECREMENT;
+      drivetrain.setMaxOutput(prevMaxDrivetrainspeed);
+    }*/
   }
 
 
@@ -126,6 +136,10 @@ public class Drivetrain extends SubsystemBase {
     } else if (mode == DrivetrainConstants.DrivetrainMode.curvatureDrive) {
       curvatureDrive(-lForward, -rightX, isQuickTurn);
   }
+}
+
+public void drive(DoubleSupplier leftY, DoubleSupplier rightX, DoubleSupplier rightY, Supplier<Boolean> isQuickTurn) {
+ drive(leftY.getAsDouble(), rightX.getAsDouble(), rightY.getAsDouble(), isQuickTurn);
 }
 
   private void tankDrive(double leftSpeed, double rightSpeed) {
@@ -152,7 +166,7 @@ public class Drivetrain extends SubsystemBase {
 
     motorController.setIdleMode(IdleMode.kCoast);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
-    // motorController.setOpenLoopRampRate(0.5);
+     motorController.setOpenLoopRampRate(0.3);
   }
 
   private void configureEncoder(RelativeEncoder motorEncoder) {

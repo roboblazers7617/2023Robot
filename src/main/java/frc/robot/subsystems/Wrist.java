@@ -61,7 +61,9 @@ public class Wrist extends SubsystemBase {
     wristController.setI(WristConstants.WRIST_KI);
     wristController.setD(WristConstants.WRIST_KD);
     wristController.setOutputRange(WristConstants.MAX_DOWNWARD_WRIST_SPEED, WristConstants.MAX_UPWARD_WRIST_SPEED);
-    wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+    wristController.setSmartMotionMaxAccel(WristConstants.MAX_ACCEL, 0);
+    wristController.setSmartMotionMaxVelocity(WristConstants.MAX_VEL, 0);
+    wristController.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
         wristFeedforward.calculate(Units.degreesToRadians(setpoint), 0));
 
     time.reset();
@@ -96,7 +98,7 @@ public class Wrist extends SubsystemBase {
 
   public void setPosition(double position, Supplier<Double> armAngleSupplier) {
     setpoint = Math.min(position, WristConstants.MAX_WRIST_ANGLE);
-    wristController.setReference(position, CANSparkMax.ControlType.kPosition, 0,
+    wristController.setReference(position, CANSparkMax.ControlType.kSmartMotion, 0,
         wristFeedforward.calculate(
             Units.degreesToRadians(setpoint + (armAngleSupplier.get() - ArmConstants.MINIMUM_SHOULDER_ANGLE)), 0));
   }
@@ -108,7 +110,7 @@ public class Wrist extends SubsystemBase {
   public void setVelocity(double velocityDegrees, Supplier<Double> armAngleSupplier) {
     setpoint = setpoint + velocityDegrees * dt;
     setpoint = Math.min(setpoint, WristConstants.MAX_WRIST_ANGLE);
-    wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+    wristController.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
         wristFeedforward.calculate(
             Units.degreesToRadians(setpoint + (armAngleSupplier.get() - ArmConstants.MINIMUM_SHOULDER_ANGLE)),
             Units.degreesToRadians(velocityDegrees)));
@@ -117,7 +119,7 @@ public class Wrist extends SubsystemBase {
   public double getWristMotorTemp() {
     return wristMotor.getMotorTemperature();
   }
-  
+
   public boolean atSetpoint() {
     return (Math.abs(getWristPosition() - (setpoint)) < (WristConstants.WRIST_ANGLE_TOLERANCE));
   }
