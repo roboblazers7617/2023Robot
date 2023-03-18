@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj.util.Color;
 public class Leds extends SubsystemBase {
   /** Creates a new Leds. */
   private final Intake intake;
+  private final Drivetrain drivetrain;
   private AddressableLED m_led;
   private AddressableLEDBuffer m_ledBuffer;
   private final int NUMBER_OF_LEDS = 30;
@@ -22,7 +23,7 @@ public class Leds extends SubsystemBase {
   private double centerMultiplier = 1.0;
   // private Color mode;
 
-  public Leds(Intake intake) {
+  public Leds(Intake intake, Drivetrain drivetrain) {
     // PWM port 9?
     // Must be a PWM header, not MXP or DIO
     this.intake = intake;
@@ -44,6 +45,8 @@ public class Leds extends SubsystemBase {
     m_led.setData(m_ledBuffer);
     m_led.start();
 
+    this.drivetrain = drivetrain;
+
   }
 
   @Override
@@ -53,7 +56,7 @@ public class Leds extends SubsystemBase {
       if (goingUp && centerMultiplier >= 1.0) {
         goingUp = false;
       }
-      if (!goingUp && centerMultiplier <= 0.5) {
+      if (!goingUp && centerMultiplier <= 0.1) {
         goingUp = true;
       }
 
@@ -73,6 +76,8 @@ public class Leds extends SubsystemBase {
     for (var i = EDGE_GAP; i < m_ledBuffer.getLength() - EDGE_GAP; i++) {
       m_ledBuffer.setLED(i, centerColorWithMultiplier);
     }
+
+    setSpeed(drivetrain.getMaxDrivetrainSpeed());    
     m_led.setData(m_ledBuffer);
 
   }

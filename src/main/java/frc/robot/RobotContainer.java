@@ -80,7 +80,7 @@ public class RobotContainer {
     private final Pnuematics pnuematics = new Pnuematics();
     private final Intake intake = new Intake();
     private final Arm arm = new Arm(pnuematics);
-    private final Leds leds = new Leds(intake);
+    private final Leds leds = new Leds(intake, drivetrain);
     private final CommandXboxController m_driverController = new CommandXboxController(
             OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -91,7 +91,7 @@ public class RobotContainer {
             new Translation2d(Units.inchesToMeters(40.45 + 36), Units.inchesToMeters(42.19)),
             new Rotation2d(180));
 
-    private PieceType selectedPiece = PieceType.CONE;
+    private PieceType selectedPiece;
 
     private final DriverStationTab driverStationTab;
 
@@ -99,6 +99,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+        setSelectedPiece(PieceType.CONE);
         // Configure the trigger bindings
         configureDriverBindings();
         configureOperatorBindings();
