@@ -185,9 +185,11 @@ public class RobotContainer {
                                 && ((vision.getBestTagId() == VisionConstants.RED_PICKUP_STATION_TAG)
                                                 || vision.getBestTagId() == VisionConstants.BLUE_PICKUP_STATION_TAG));
                 doubleSubstationAlign.and(m_driverController.b().negate())
-                                .onTrue(new AlignToDouble(vision, drivetrain, arm, wrist, () -> getSelectedPiece(),
+                                .onTrue(new AlignToDouble(vision, drivetrain, arm, wrist, intake,
+                                                () -> getSelectedPiece(),
                                                 m_driverController::getLeftY, m_driverController::getRightY,
-                                                m_driverController::getRightX, () -> isRightTriggerPressed())).onFalse(new Stow(arm, wrist, intake));
+                                                m_driverController::getRightX, () -> isRightTriggerPressed()))
+                                .onFalse(new Stow(arm, wrist, intake));
 
         }
 

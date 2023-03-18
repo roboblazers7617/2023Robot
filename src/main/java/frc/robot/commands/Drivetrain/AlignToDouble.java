@@ -43,6 +43,6 @@ public class AlignToDouble extends SequentialCommandGroup {
                     || vision.getBestTagId() == VisionConstants.BLUE_PICKUP_STATION_TAG)),
             new RunCommand(() -> drivetrain.drive(leftY, rightX, rightY, isQuickTurn)),
             new SimpleMoveToPickup(arm, wrist, piece, () -> PickupLocation.DOUBLE)),
-        intake.SpinIntakeCommand(piece, true));
+    new InstantCommand(() -> intake.setIntakeSpeed(piece, true), intake));
   }
 }
