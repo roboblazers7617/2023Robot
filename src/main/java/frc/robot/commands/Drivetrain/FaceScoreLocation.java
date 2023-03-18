@@ -19,6 +19,7 @@ public class FaceScoreLocation extends CommandBase {
   private Alliance color;
   private double targetAngle;
   private final double angleTolerance = DrivetrainConstants.MAX_ERROR_ROTATION;
+  private boolean manuelAngle = false;
 
   public FaceScoreLocation(Drivetrain drivetrain, Alliance color) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -29,19 +30,32 @@ public class FaceScoreLocation extends CommandBase {
     addRequirements(drivetrain);
 
   }
+  public FaceScoreLocation(Drivetrain drivetrain, double targetAngle) {
+    manuelAngle = true;
+    this.drivetrain = drivetrain;
+    this.targetAngle = targetAngle;
+    turnController.setTolerance(angleTolerance);
+    turnController.enableContinuousInput(-180, 180);
+    addRequirements(drivetrain);
+  }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    if (color == Alliance.Blue)
-    {
-      targetAngle = DrivetrainConstants.ALLIANCE_BLUE_ROTATION;
+    if (manuelAngle == false){
+      if (color == Alliance.Blue)
+      {
+        targetAngle = DrivetrainConstants.ALLIANCE_BLUE_ROTATION;
+      }
+      else
+      {
+        targetAngle = DrivetrainConstants.ALLIANCE_RED_ROTATION;
+      }
+    turnController.setSetpoint(targetAngle);
     }
-    else
-    {
-      targetAngle = DrivetrainConstants.ALLIANCE_RED_ROTATION;
+    else {
+      turnController.setSetpoint(targetAngle);
     }
-   turnController.setSetpoint(targetAngle);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

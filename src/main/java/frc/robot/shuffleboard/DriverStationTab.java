@@ -75,9 +75,6 @@ public class DriverStationTab extends ShuffleboardTabBase {
         autoPath.addOption("mid cone score left red simple", DrivetrainConstants.AutoPath.midleftRedSimple);
         autoPath.addOption("mid cone score mid red simple", DrivetrainConstants.AutoPath.midmidRedSimple);
         autoPath.addOption("mid cone score right red simple", DrivetrainConstants.AutoPath.midrightRedSimple);
-        autoPath.addOption("low cube score simple", DrivetrainConstants.AutoPath.lowsimple);
-        autoPath.addOption("low cube score simple balance", DrivetrainConstants.AutoPath.lowsimplebalance);
-        autoPath.addOption("Autobalance Test", DrivetrainConstants.AutoPath.autobalanceTest);
         tab.add("Auto Path", autoPath).withPosition(1, 0);
 
         //debug mode

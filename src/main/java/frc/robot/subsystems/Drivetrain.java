@@ -125,7 +125,7 @@ public class Drivetrain extends SubsystemBase {
 
 
   
-
+//TODO: do the sin thing, for better control and maybe less jerkiness
   public void drive(double leftY, double rightX, double rightY, Supplier<Boolean> isQuickTurn) {
     double lForward = leftY; //slewRateFilterLeft.calculate(leftY);
     double rForward = rightY; //slewRateFilterRight.calculate(rightY);
