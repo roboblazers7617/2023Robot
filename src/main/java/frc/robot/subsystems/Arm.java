@@ -82,11 +82,17 @@ public class Arm extends SubsystemBase {
     controllerFollower.setI(ArmConstants.KI);
     controllerFollower.setD(ArmConstants.KD);
     controllerFollower.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
+    controllerFollower.setSmartMotionMaxAccel(ArmConstants.MAX_ACCEL, 0);
+    controllerFollower.setSmartMotionMaxVelocity(ArmConstants.MAX_VEL, 0);
 
     controller.setP(ArmConstants.KP);
     controller.setI(ArmConstants.KI);
     controller.setD(ArmConstants.KD);
     controller.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
+    controller.setSmartMotionMaxAccel(ArmConstants.MAX_ACCEL, 0);
+    controller.setSmartMotionMaxVelocity(ArmConstants.MAX_VEL, 0);
+
+    controller.setP(ArmConstants.KP);
 
     this.pneumatics = pnuematics;
     leftPiston = pnuematics.getLeftArmPiston();
@@ -149,9 +155,9 @@ public class Arm extends SubsystemBase {
   public void setPosition(double positionDegrees) {
     setpoint = Math.min(positionDegrees, ArmConstants.MAX_SHOULDER_ANGLE);
     setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+    controller.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
-    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
   }
 
@@ -163,9 +169,9 @@ public class Arm extends SubsystemBase {
     setpoint = setpoint + velocityDegreesPerSec * dt;
     setpoint = Math.min(setpoint, ArmConstants.MAX_SHOULDER_ANGLE);
     setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+    controller.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
-        controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+        controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
             feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
   }
 

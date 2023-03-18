@@ -133,6 +133,8 @@ public final class Constants {
 
         public static final double BALANCE_OFFEST = 0.2;
 
+        public static final double SPEED_INCREMENT = (.4)/25;//delta between normal and fast, diveded by cycles of 20 mills to accell
+
         public enum DrivetrainMode {
             arcadeDrive,
             tankDrive,
@@ -225,6 +227,10 @@ public final class Constants {
                         Units.inchesToMeters(0), Units.inchesToMeters(30.5)),
                 new Rotation3d(0, CAMERA_PITCH, 0));
         public static final String CAMERA_NAME = "eyeball";
+        public static final double IN_RANGE_OF_TAG = 3;// meters
+        public static final int RED_PICKUP_STATION_TAG = 5;
+        public static final int BLUE_PICKUP_STATION_TAG = 4;
+        public static final double STOP_AT_DOUBLE_STATION = .5;// meters
     }
 
     public static class PnuematicsConstants {
@@ -278,6 +284,8 @@ public final class Constants {
         public static final double PISTON_BACK = -90 - MINIMUM_SHOULDER_ANGLE;
         public static final double PISTON_FORWARD = 0;
         public static final double MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS = MINIMUM_SHOULDER_ANGLE+5;
+        public static final double MAX_ACCEL =10;//degrees per sec squared?
+        public static final double MAX_VEL = 30;//degrees per sec?
 
         // TODO: Lukas. (High) Set the angles
         public enum ArmPositions {
@@ -336,6 +344,8 @@ public final class Constants {
         public static final int WRIST_POT_SCALE = 340;
 
         public static final double MAX_MANNUAL_WRIST_SPEED = 65;
+        public static final double MAX_ACCEL = 10;//degrees per sec squared?
+        public static final double MAX_VEL = 30;//degrees per sec?
 
         public enum WristPosition {
             STOW(WristConstants.MAX_WRIST_ANGLE),
