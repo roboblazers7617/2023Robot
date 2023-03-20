@@ -21,7 +21,7 @@ public class Leds extends SubsystemBase {
   private AddressableLED m_led;
   private AddressableLEDBuffer m_ledBuffer;
   private final int NUMBER_OF_LEDS = 30;
-  private final int EDGE_GAP = 4;
+  private final int EDGE_GAP = 0;//DO NOT DISPLAY THE SPEED
   /** the number of leds including the lit led */
   private final int MOVING_LED_GAP = 5;
   private boolean goingUp = false;
