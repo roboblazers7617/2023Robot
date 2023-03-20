@@ -29,7 +29,6 @@ public class Vision extends SubsystemBase {
   AprilTagFieldLayout layout;
   PhotonPoseEstimator poseEstimator;
 
-
   public Vision() {
     try {
       layout = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
@@ -69,10 +68,10 @@ public class Vision extends SubsystemBase {
       return 0;
   }
 
-  public Transform3d getTransformToTag(){
-    if(bestTag != null)
+  public Transform3d getTransformToTag() {
+    if (bestTag != null)
       return bestTag.getBestCameraToTarget();
-    else 
+    else
       return null;
   }
 
@@ -81,6 +80,24 @@ public class Vision extends SubsystemBase {
       return bestTag.getFiducialId();
     else
       return -1;
+  }
+
+  public boolean inRangeOfDoubleStation() {
+    return (getBestTagDistance() > VisionConstants.IN_RANGE_OF_TAG)
+        && ((getBestTagId() == VisionConstants.RED_PICKUP_STATION_TAG)
+            || getBestTagId() == VisionConstants.BLUE_PICKUP_STATION_TAG);
+  }
+
+  public boolean inRangeOfDoubleStationDeploy() {
+    return (getBestTagDistance() > VisionConstants.DEPLOY_ARM_AT_DOUBLE_STATION)
+        && ((getBestTagId() == VisionConstants.RED_PICKUP_STATION_TAG)
+            || getBestTagId() == VisionConstants.BLUE_PICKUP_STATION_TAG);
+  }
+
+  public boolean inRangeOfDoubleStationStop() {
+    return (getBestTagDistance() > VisionConstants.STOP_AT_DOUBLE_STATION)
+        && ((getBestTagId() == VisionConstants.RED_PICKUP_STATION_TAG)
+            || getBestTagId() == VisionConstants.BLUE_PICKUP_STATION_TAG);
   }
 
 }

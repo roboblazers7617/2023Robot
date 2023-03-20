@@ -153,7 +153,7 @@ public class Wrist extends SubsystemBase {
     else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CUBE))
       return WristPosition.LEVEL_2_CUBE;
     else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CUBE))
-      return WristPosition.LEVEL_2_CUBE;
+      return WristPosition.LEVEL_3_CUBE;
     else
       return WristPosition.STOW;
   }

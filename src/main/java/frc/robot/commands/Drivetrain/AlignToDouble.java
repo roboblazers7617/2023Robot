@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 import java.util.function.Supplier;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -29,20 +30,49 @@ import frc.robot.commands.ArmStuff.SimpleMoveToPickup;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AlignToDouble extends SequentialCommandGroup {
+public class AlignToDouble extends CommandBase {
+  Drivetrain mDrivetrain;
+  Vision mVision;
+  DoubleSupplier mLeftY;
+  DoubleSupplier mRightY;
+  DoubleSupplier mRightX;
+  Supplier<Boolean> mIsQuickTurn;
+
   /** Creates a new AlignToDouble. */
-  public AlignToDouble(Vision vision, Drivetrain drivetrain, Arm arm, Wrist wrist, Intake intake, Supplier<PieceType> piece,
-      DoubleSupplier leftY, DoubleSupplier rightY, DoubleSupplier rightX, Supplier<Boolean> isQuickTurn) {
-    // Add your commands in the addCommands() call, e.g.
-    // addCommands(new FooCommand(), new BarCommand());
-    addCommands(
-        new InstantCommand(() -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED), drivetrain),
-        new ParallelDeadlineGroup(
-            new WaitUntilCommand(() -> (vision.getBestTagDistance() > VisionConstants.STOP_AT_DOUBLE_STATION)
-                && ((vision.getBestTagId() == VisionConstants.RED_PICKUP_STATION_TAG)
-                    || vision.getBestTagId() == VisionConstants.BLUE_PICKUP_STATION_TAG)),
-            new RunCommand(() -> drivetrain.drive(leftY, rightX, rightY, isQuickTurn)),
-            new SimpleMoveToPickup(arm, wrist, piece, () -> PickupLocation.DOUBLE)),
-    new InstantCommand(() -> intake.setIntakeSpeed(piece, true), intake));
+  public AlignToDouble(Vision vision, Drivetrain drivetrain, DoubleSupplier leftY, DoubleSupplier rightY, DoubleSupplier rightX, Supplier<Boolean> isQuickTurn) {
+    addRequirements(drivetrain);
+    mDrivetrain = drivetrain;
+    mVision = vision;
+    mLeftY = leftY;
+    mRightY = rightY;
+    mRightX = rightX;
+    mIsQuickTurn = isQuickTurn;
+
+  }
+
+  @Override
+  public void initialize() {
+    mDrivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED);
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    if(!mVision.inRangeOfDoubleStationStop() && mVision.inRangeOfDoubleStation()){
+      mDrivetrain.drive(mLeftY, mRightX, mRightY, mIsQuickTurn);
+    }
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+    mDrivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED);
+    mDrivetrain.driveWithVelocity(0, 0);
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return false;
   }
 }
