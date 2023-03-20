@@ -69,8 +69,8 @@ public class Leds extends SubsystemBase {
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
     if (DriverStation.isEnabled() && DriverStation.isTeleop() && inst.isConnected()) {
       // Set the LEDs
-      if (intake.getIntakeSpeed() >= -IntakeConstants.INTAKE_SPEED_DEADBAND
-          && intake.getIntakeSpeed() <= IntakeConstants.INTAKE_SPEED_DEADBAND) {
+      if (!(intake.getIntakeSpeed() >= -IntakeConstants.INTAKE_SPEED_DEADBAND
+          && intake.getIntakeSpeed() <= IntakeConstants.INTAKE_SPEED_DEADBAND)) {
         if (goingUp && centerMultiplier >= 1.0) {
           goingUp = false;
         }
