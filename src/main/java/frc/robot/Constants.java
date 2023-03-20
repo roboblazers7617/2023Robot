@@ -395,6 +395,8 @@ public final class Constants {
 
             public static final double MAX_PID_SPEED = 0.50;
 
+            public static final double INTAKE_SPEED_DEADBAND = 0.01;
+
             public enum IntakeDirection {
                 STOP(0.0),
                 PICK_CONE(-0.75),
