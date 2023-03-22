@@ -154,7 +154,9 @@ public final class Constants {
             midrightBlueSimple("right blue simple","right blue simple return", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true),
             midleftRedSimple("left red simple","left red simple return",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true),
             midmidRedSimple("mid red simple","null",                           true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false),
-            midrightRedSimple("right red simple","right red simple return",    true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true);
+            midrightRedSimple("right red simple","right red simple return",    true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true),
+
+            testpath("simple", "null",                                         false, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true);
       
             private final String pathname;
             private final String returnpathname;

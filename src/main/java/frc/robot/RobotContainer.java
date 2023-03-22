@@ -56,6 +56,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -272,6 +273,13 @@ public class RobotContainer {
     private boolean isRightTriggerPressed() {
         return m_driverController.getRightTriggerAxis() > 0.5;
     };
+    private double turningAuto() {
+        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+            return 0.0;
+        } else {
+            return 180.0;
+        }
+    }
 
     public Command getPathPlannerCommand() {
         PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pathname(),
@@ -301,7 +309,6 @@ public class RobotContainer {
                         1.5),
                 driverStationTab.getAutoPath().isReverse());
 
-        drivetrain.resetOdometry(path.getInitialPose());
         return new PPRamseteCommand(path,
                 drivetrain::getPose2d,
                 new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
@@ -334,9 +341,9 @@ public class RobotContainer {
                 auto.addCommands(new AutoBalance(drivetrain));
                 }
         else if (driverStationTab.getAutoPath().Pickup()){
-                auto.addCommands(new FaceScoreLocation(drivetrain, 0.0));
+                auto.addCommands(new FaceScoreLocation(drivetrain, turningAuto()));
                 auto.addCommands(new SimplePickup(arm, wrist, intake, () -> driverStationTab.getAutoPath().selectedPiece2nd(), ()-> driverStationTab.getAutoPath().pickupLocation()));
-                auto.addCommands(new Stow(arm, wrist, intake));
+                auto.addCommands(new FaceScoreLocation(drivetrain, (turningAuto()-180)));
                 auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                                 getReturnPathPlannerCommand(),
                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
