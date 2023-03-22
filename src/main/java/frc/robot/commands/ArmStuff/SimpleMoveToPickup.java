@@ -22,9 +22,9 @@ public class SimpleMoveToPickup extends SequentialCommandGroup {
   public SimpleMoveToPickup(Arm arm, Wrist wrist, Supplier<PieceType> piece, Supplier<PickupLocation> location) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    double logicalNumber = 0;
+    double logicalNumber = -40;
     addCommands(arm.intigratedMoveToPickup(location, piece),
-      new WaitUntilCommand(() -> (arm.getArmAngle() > logicalNumber)),
+     // new WaitUntilCommand(() -> (arm.getArmAngle() > logicalNumber)),
       new InstantCommand(() -> wrist.setPosition(wrist.evalPickupLocation(location, piece), arm::getArmAngle),
         wrist),
       arm.WaitUntilArmInPosition(),

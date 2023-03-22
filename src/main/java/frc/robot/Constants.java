@@ -233,14 +233,15 @@ public final class Constants {
         // TODO: Lukas. (High) Confirm these location constants for camera
         public static final double CAMERA_PITCH = 0;
         public static final Transform3d CAMERA_POSITION = new Transform3d(
-                new Translation3d(Units.inchesToMeters(-5.8125),
-                        Units.inchesToMeters(0), Units.inchesToMeters(30.5)),
+                new Translation3d(Units.inchesToMeters(-8.25),
+                        Units.inchesToMeters(0), Units.inchesToMeters(28.875)),
                 new Rotation3d(0, CAMERA_PITCH, 0));
         public static final String CAMERA_NAME = "eyeball";
         public static final double IN_RANGE_OF_TAG = 3;// meters
         public static final int RED_PICKUP_STATION_TAG = 5;
         public static final int BLUE_PICKUP_STATION_TAG = 4;
         public static final double STOP_AT_DOUBLE_STATION = .5;// meters
+        public static final double DEPLOY_ARM_AT_DOUBLE_STATION = 2.7;
     }
 
     public static class PnuematicsConstants {
@@ -272,10 +273,10 @@ public final class Constants {
         public static final int SHOULDER_FOLLOWER_MOTOR_ID = 32;
         public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
 
-        public static final double KP = 0.05;//0 .07
+        public static final double KP = 0.07;//0 .07
         public static final double KI = 0;
         public static final double KD = 0;
-        public static final double KS = 0.09;
+        public static final double KS = 0.00;
         public static final double KG = 0.01;
         public static final double KV = 0;
 
@@ -367,7 +368,7 @@ public final class Constants {
             LEVEL_2_CONE(-8),
             LEVEL_1_CONE(41),
             LEVEL_3_CUBE(21), // TODO
-            LEVEL_2_CUBE(79), // TODO
+            LEVEL_2_CUBE(64), // TODO
             LEVEL_1_CUBE(WristConstants.MAX_WRIST_ANGLE);// TODO
 
             private final double angle;
@@ -396,6 +397,8 @@ public final class Constants {
             public static final double KD = 0.0;
 
             public static final double MAX_PID_SPEED = 0.50;
+
+            public static final double INTAKE_SPEED_DEADBAND = 0.01;
 
             public enum IntakeDirection {
                 STOP(0.0),

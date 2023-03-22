@@ -23,7 +23,7 @@ public class SimpleMoveToScore extends SequentialCommandGroup {
   public SimpleMoveToScore(Arm arm, Wrist wrist, Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    double logicalNumber = -30;
+    double logicalNumber = -35;
     addCommands(arm.intigratedMoveToScore(level, piece),
     new ParallelRaceGroup(
       arm.WaitUntilArmInPosition(),

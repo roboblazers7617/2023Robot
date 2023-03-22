@@ -6,6 +6,7 @@ package frc.robot.commands.ArmStuff;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
@@ -25,9 +26,10 @@ public class Stow extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new InstantCommand(() -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake),
         new InstantCommand(() -> wrist.setPosition(WristPosition.STOW, arm::getArmAngle), wrist),
-        new InstantCommand(() -> arm.setPosition(ArmPositions.STOW), arm),
-       new WaitUntilCommand(() -> (arm.getShoulderAngle()<-20)),
-        new InstantCommand(() -> arm.actuateSuperstructure(PnuematicPositions.RETRACTED)), 
-        arm.WaitUntilArmInPosition());
+        new InstantCommand(() -> arm.setPosition(ArmPositions.STOW.getShoulderAngle() + 2.5), arm),
+        new WaitUntilCommand(() -> (arm.getShoulderAngle() < -20)),
+        new InstantCommand(() -> arm.actuateSuperstructure(PnuematicPositions.RETRACTED)),
+        arm.WaitUntilArmInPosition(), new WaitCommand(.2),
+        new InstantCommand(() -> arm.setPosition(ArmPositions.STOW.getShoulderAngle()), arm));
   }
 }
