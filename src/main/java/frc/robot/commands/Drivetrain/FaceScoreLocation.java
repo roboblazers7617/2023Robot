@@ -4,6 +4,10 @@
 
 package frc.robot.commands.Drivetrain;
 
+import java.lang.constant.DirectMethodHandleDesc;
+
+import com.revrobotics.CANSparkMax.IdleMode;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
@@ -42,6 +46,7 @@ public class FaceScoreLocation extends CommandBase {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED);
     if (manuelAngle == false){
       if (color == Alliance.Blue)
       {
@@ -61,8 +66,11 @@ public class FaceScoreLocation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    System.out.println("Gyro is " + drivetrain.getRotation2d().getDegrees());
+
     double output = turnController.calculate(drivetrain.getRotation2d().getDegrees());
     double simpleFF = Math.copySign(DrivetrainConstants.SIMPLE_FF_ANGULAR, output);
+    System.out.println("Speed is " + output);
     drivetrain.arcadeDrive(0.0,MathUtil.clamp(output+ simpleFF, -DrivetrainConstants.MAX_ANGULAR_VELOCITY, DrivetrainConstants.MAX_ANGULAR_VELOCITY));
     //System.out.println("**** Executing Turn: output is " + output + "    target angle is " + targetAngle + "  current angle is " + drivetrain.getRotation2d().getDegrees());
     //System.out.println("Simple FF is " + simpleFF); 
@@ -73,20 +81,23 @@ public class FaceScoreLocation extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     drivetrain.arcadeDrive(0.0, 0.0);
+    drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED);
+    System.out.println ("I DID SOMETHING Gyro angle is " + drivetrain.getRotation2d().getDegrees());
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
     
-    boolean isDone = false;
-    double angle = Math.abs(drivetrain.getRotation2d().getDegrees());
-    if ((angle >= (targetAngle - angleTolerance)) 
-              &&  (angle <= (targetAngle + angleTolerance)))
-    {
-      isDone = true;
-    }
+    // boolean isDone = false;
+    // double angle = Math.abs(drivetrain.getRotation2d().getDegrees());
+    // if ((angle >= (targetAngle - angleTolerance)) 
+    //           &&  (angle <= (targetAngle + angleTolerance)))
+    // {
+    //   isDone = true;
+    // }
 
-    return isDone;
+    // return isDone;
+    return turnController.atSetpoint();
   }
 }

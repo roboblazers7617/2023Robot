@@ -26,7 +26,7 @@ public class Leds extends SubsystemBase {
   private final int NUMBER_OF_LEDS = 80;
   private final int EDGE_GAP = 0;// DO NOT DISPLAY THE SPEED
   /** the number of leds including the lit led */
-  private final int MOVING_LED_GAP = 5;
+  private final int MOVING_LED_GAP = 10;
   private boolean goingUp = false;
   private Color centerColor;
   private double centerMultiplier = 1.0;

@@ -211,7 +211,6 @@ public class Arm extends SubsystemBase {
   }
 
   public boolean atSetpoint() {
-    System.out.println("Arm is " + getShoulderAngle());
     return (Math.abs(getShoulderAngle() - (setpoint)) < (ArmConstants.POSITION_TOLERANCE));
   }
 

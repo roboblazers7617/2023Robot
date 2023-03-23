@@ -16,6 +16,7 @@ import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 import frc.robot.Constants.WristConstants.WristPosition;
+import frc.robot.commands.ArmStuff.AutonMoveToScore;
 import frc.robot.commands.ArmStuff.IntakePiece;
 import frc.robot.commands.ArmStuff.OutakePiece;
 import frc.robot.commands.ArmStuff.SimpleMoveToPickup;
@@ -23,6 +24,7 @@ import frc.robot.commands.ArmStuff.SimpleMoveToScore;
 import frc.robot.commands.ArmStuff.SimplePickup;
 import frc.robot.commands.ArmStuff.SimpleScore;
 import frc.robot.commands.ArmStuff.Stow;
+import frc.robot.commands.ArmStuff.StowAuton;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.commands.Drivetrain.AlignToDouble;
 import frc.robot.commands.Drivetrain.AutoBalance;
@@ -61,6 +63,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -270,8 +273,8 @@ public class RobotContainer {
 
         public Command getPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pathname(),
-                                new PathConstraints(2,
-                                                1.5),
+                                new PathConstraints(2.5,
+                                                2),
                                 driverStationTab.getAutoPath().isReverse());
 
                 drivetrain.resetOdometry(path.getInitialPose());
@@ -301,10 +304,31 @@ public class RobotContainer {
         public Command getReturnPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().returnpathname(),
                                 new PathConstraints(2,
-                                                1.5),
-                                driverStationTab.getAutoPath().isReverse());
+                                                2),
+                                false);
 
-                drivetrain.resetOdometry(path.getInitialPose());
+                return new PPRamseteCommand(path,
+                                drivetrain::getPose2d,
+                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
+                                new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
+                                                DrivetrainConstants.KA),
+                                drivetrain.getKinematics(),
+                                drivetrain::getWheelSpeeds,
+                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                                DrivetrainConstants.KD_LIN),
+                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                                DrivetrainConstants.KD_LIN),
+                                drivetrain::tankDriveVolts,
+                                false,
+                                drivetrain);
+        }
+        
+        public Command getPickupPathPlannerCommand() {
+                PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pickuppathname(),
+                                new PathConstraints(2,
+                                                1.5),
+                                false);
+
                 return new PPRamseteCommand(path,
                                 drivetrain::getPose2d,
                                 new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
@@ -325,38 +349,30 @@ public class RobotContainer {
     public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
         SequentialCommandGroup auto = new SequentialCommandGroup();
         if (driverStationTab.getAutoPath().scoring()){
-                auto.addCommands(new SimpleScore(arm, wrist, intake,
-                                () -> driverStationTab.getAutoPath().selectedPiece(),
-                                () -> driverStationTab.getAutoPath().scoreLevelFirst()),
-                                new Stow(arm, wrist, intake));
+                auto.addCommands(new SimpleMoveToScore(arm, wrist, ()-> driverStationTab.getAutoPath().scoreLevelFirst(), ()-> driverStationTab.getAutoPath().selectedPiece()), new OutakePiece(intake, ()-> driverStationTab.getAutoPath().selectedPiece()));
                 }
-                auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                getPathPlannerCommand(),
-                                new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+        auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                        (new ParallelCommandGroup(getPathPlannerCommand(), new StowAuton(arm, wrist, intake))),
+                        new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
         if (driverStationTab.getAutoPath().autoBalance()) {
                 auto.addCommands(new AutoBalance(drivetrain));
                 } 
-        else if (driverStationTab.getAutoPath().Pickup()) {
-                auto.addCommands(new FaceScoreLocation(drivetrain, 0.0));
-                auto.addCommands(new SimplePickup(arm, wrist, intake,
-                                        () -> driverStationTab.getAutoPath().selectedPiece2nd(),
-                                        () -> driverStationTab.getAutoPath().pickupLocation()));
-                auto.addCommands(new Stow(arm, wrist, intake));
-                auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                        getReturnPathPlannerCommand(),
-                                        new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
-                                        new SimpleScore(arm, wrist, intake,
-                                                        () -> driverStationTab.getAutoPath().selectedPiece2nd(),
-                                                        () -> driverStationTab.getAutoPath().scoreLevelSecond()));
-                }
         else if (driverStationTab.getAutoPath().Pickup()){
                 auto.addCommands(new FaceScoreLocation(drivetrain, turningAuto()));
-                auto.addCommands(new SimplePickup(arm, wrist, intake, () -> driverStationTab.getAutoPath().selectedPiece2nd(), ()-> driverStationTab.getAutoPath().pickupLocation()));
+                auto.addCommands(new SimplePickup(arm, wrist, intake, 
+                                        () -> driverStationTab.getAutoPath().selectedPiece2nd(), 
+                                        ()-> driverStationTab.getAutoPath().pickupLocation()));
+                                        // auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                                        // getPickupPathPlannerCommand(),
+                                        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+                
                 auto.addCommands(new FaceScoreLocation(drivetrain, (turningAuto()-180)));
                 auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                                 getReturnPathPlannerCommand(),
                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
-                                new SimpleScore(arm, wrist, intake, ()-> driverStationTab.getAutoPath().selectedPiece2nd(), ()-> driverStationTab.getAutoPath().scoreLevelSecond()));
+                                new SimpleScore(arm, wrist, intake, 
+                                                        ()-> driverStationTab.getAutoPath().selectedPiece2nd(), 
+                                                        ()-> driverStationTab.getAutoPath().scoreLevelSecond()));
                 }
         return auto;
     }
@@ -402,6 +418,7 @@ public class RobotContainer {
          */
 
         public Command getAutonomousCommand() {
+                drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED);
                 drivetrain.setBrakeMode(IdleMode.kCoast);
                 return SimpleAuto(driverStationTab.getAutoPath())
                                 .andThen(() -> drivetrain.setBrakeMode(IdleMode.kBrake));
