@@ -23,7 +23,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -36,18 +35,18 @@ public class Drivetrain extends SubsystemBase {
   private final CANSparkMax leftFrontMotor = new CANSparkMax(DrivetrainConstants.LEFT_WHEEL_PORT, MotorType.kBrushless);
   private final CANSparkMax rightFrontMotor = new CANSparkMax(DrivetrainConstants.RIGHT_WHEEL_PORT,
       MotorType.kBrushless);
-  private final CANSparkMax leftFollowerMotor = new CANSparkMax(DrivetrainConstants.LEFT_FOLLOWER_WHEEL_PORT,
-      MotorType.kBrushless);
-  private final CANSparkMax rightFollowerMotor = new CANSparkMax(DrivetrainConstants.RIGHT_FOLLOWER_WHEEL_PORT,
-      MotorType.kBrushless);
+  // private final CANSparkMax leftFollowerMotor = new CANSparkMax(DrivetrainConstants.LEFT_FOLLOWER_WHEEL_PORT,
+  //     MotorType.kBrushless);
+  // private final CANSparkMax rightFollowerMotor = new CANSparkMax(DrivetrainConstants.RIGHT_FOLLOWER_WHEEL_PORT,
+      // MotorType.kBrushless);
 
-  private final MotorControllerGroup leftMotorGroup = new MotorControllerGroup(leftFrontMotor, leftFollowerMotor);
-  private final MotorControllerGroup rightMotorGroup = new MotorControllerGroup(rightFrontMotor, rightFollowerMotor);
+  // private final MotorControllerGroup leftMotorGroup = new MotorControllerGroup(leftFrontMotor, leftFollowerMotor);
+  // private final MotorControllerGroup rightMotorGroup = new MotorControllerGroup(rightFrontMotor, rightFollowerMotor);
 
   private final RelativeEncoder leftFrontEncoder = leftFrontMotor.getEncoder();
   private final RelativeEncoder rightFrontEncoder = rightFrontMotor.getEncoder();
-  private final RelativeEncoder leftFollowerEncoder = leftFollowerMotor.getEncoder();
-  private final RelativeEncoder rightFollowerEncoder = rightFollowerMotor.getEncoder();
+  // private final RelativeEncoder leftFollowerEncoder = leftFollowerMotor.getEncoder();
+  // private final RelativeEncoder rightFollowerEncoder = rightFollowerMotor.getEncoder();
 
   private final WPI_Pigeon2 mGyro = new WPI_Pigeon2(DrivetrainConstants.GYRO_ID);  
   private final DifferentialDrivePoseEstimator mOdometry;
@@ -69,27 +68,27 @@ public class Drivetrain extends SubsystemBase {
   private FieldLocation targetNode;
 
   public Drivetrain(Vision vision) {
-    drivetrain = new DifferentialDrive(leftMotorGroup, rightMotorGroup);
+    drivetrain = new DifferentialDrive(leftFrontMotor, rightFrontMotor);
     drivetrain.setMaxOutput(DrivetrainConstants.REG_SPEED);
     mode = DrivetrainConstants.DrivetrainMode.tankDrive;
 
     leftFrontMotor.restoreFactoryDefaults();
     rightFrontMotor.restoreFactoryDefaults();
-    leftFollowerMotor.restoreFactoryDefaults();
-    rightFollowerMotor.restoreFactoryDefaults();
+    // leftFollowerMotor.restoreFactoryDefaults();
+    // rightFollowerMotor.restoreFactoryDefaults();
 
     configureEncoder(leftFrontEncoder);
     configureEncoder(rightFrontEncoder);
-    configureEncoder(leftFollowerEncoder);
-    configureEncoder(rightFollowerEncoder);
+    // configureEncoder(leftFollowerEncoder);
+    // configureEncoder(rightFollowerEncoder);
 
     configureMotor(leftFrontMotor);
     configureMotor(rightFrontMotor);
-    configureMotor(leftFollowerMotor);
-    configureMotor(rightFollowerMotor);
+    // configureMotor(leftFollowerMotor);
+    // configureMotor(rightFollowerMotor);
 
     rightFrontMotor.setInverted(true);
-    rightFollowerMotor.setInverted(true);
+    // rightFollowerMotor.setInverted(true);
     drivetrain.setDeadband(.1);
 
     mVision = vision;
@@ -148,6 +147,7 @@ public class Drivetrain extends SubsystemBase {
 
     motorController.setIdleMode(IdleMode.kBrake);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
+    motorController.setOpenLoopRampRate(0.3);
   }
 
   private void configureEncoder(RelativeEncoder motorEncoder) {
@@ -217,8 +217,8 @@ public class Drivetrain extends SubsystemBase {
   {
     leftFrontMotor.setIdleMode(mode);
     rightFrontMotor.setIdleMode(mode);
-    leftFollowerMotor.setIdleMode(mode);
-    rightFollowerMotor.setIdleMode(mode);
+    // leftFollowerMotor.setIdleMode(mode);
+    // rightFollowerMotor.setIdleMode(mode);
 
   }
   public void resetEncoders(){
