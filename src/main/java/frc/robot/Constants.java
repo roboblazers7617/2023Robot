@@ -144,7 +144,7 @@ public final class Constants {
         public enum AutoPath {
             leftBlueSimple("left blue simple","left blue simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true,false),
             midBlueSimple("mid blue simple","null","null",                            true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
-            rightBlueSimple("right blue simple","right blue simple return","null",    true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
+            rightBlueSimple("right blue simple","right blue simple return","null",    true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, true),
             leftRedSimple("right blue simple","right blue simple return","null",          true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
             midRedSimple("mid red simple","null","null",                              true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
             rightRedSimple("left blue simple","left blue simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
