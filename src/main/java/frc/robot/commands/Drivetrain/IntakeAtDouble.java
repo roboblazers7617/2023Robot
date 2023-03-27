@@ -29,9 +29,6 @@ public class IntakeAtDouble extends ParallelCommandGroup {
       DoubleSupplier leftY, DoubleSupplier rightY, DoubleSupplier rightX, Supplier<Boolean> isQuickTurn) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new AlignToDouble(vision, drivetrain, leftY, rightY, rightX, isQuickTurn),
-        new SequentialCommandGroup(Commands.waitUntil(vision::inRangeOfDoubleStationDeploy),
-            new SimpleMoveToPickup(arm, wrist, piece, () -> PickupLocation.DOUBLE),
-            intake.SpinIntakeCommand(piece, true)));
+    addCommands(new AlignToDouble(vision, drivetrain, leftY, rightY, rightX, isQuickTurn));
   }
 }

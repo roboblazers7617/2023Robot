@@ -26,6 +26,6 @@ public class SimplePickup extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new SimpleMoveToPickup(arm, wrist, piece, location),
         new InstantCommand(() -> intake.setIntakeSpeed(piece, true), intake),
-        Commands.waitSeconds(1), new Stow(arm, wrist, intake)); //1.5
+        Commands.waitSeconds(.8), new Stow(arm, wrist, intake)); //1.5
   }
 }

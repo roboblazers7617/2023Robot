@@ -166,7 +166,7 @@ public void drive(DoubleSupplier leftY, DoubleSupplier rightX, DoubleSupplier ri
 
     motorController.setIdleMode(IdleMode.kCoast);
     motorController.setSmartCurrentLimit(DrivetrainConstants.CURRENT_LIMIT);
-    motorController.setOpenLoopRampRate(0.3);
+    //motorController.setOpenLoopRampRate(0.025);
   }
 
   private void configureEncoder(RelativeEncoder motorEncoder) {

@@ -53,14 +53,21 @@ public class AlignToDouble extends CommandBase {
   @Override
   public void initialize() {
     mDrivetrain.setDrivetrainSpeed(DrivetrainConstants.SLOW_SPEED);
+    mDrivetrain.turnOnBrakes(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(!mVision.inRangeOfDoubleStationStop() && mVision.inRangeOfDoubleStation()){
-      mDrivetrain.drive(mLeftY, mRightX, mRightY, mIsQuickTurn);
+    if(mVision.inRangeOfDoubleStationStop() && mVision.inRangeOfDoubleStation()){
+      mDrivetrain.drive(0, 0, 0, mIsQuickTurn);
     }
+    else
+    {
+      mDrivetrain.drive(mLeftY, mRightX, mRightY, mIsQuickTurn);      
+    }
+  
+
   }
 
   // Called once the command ends or is interrupted.
@@ -68,6 +75,7 @@ public class AlignToDouble extends CommandBase {
   public void end(boolean interrupted) {
     mDrivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED);
     mDrivetrain.driveWithVelocity(0, 0);
+    mDrivetrain.turnOnBrakes(false);
   }
 
   // Returns true when the command should end.

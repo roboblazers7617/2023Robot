@@ -230,7 +230,7 @@ public class Arm extends SubsystemBase {
     return new SequentialCommandGroup(new InstantCommand(() -> setPosition(evalScorePosition(level, piece)), this),
         new ParallelRaceGroup(
             Commands.waitUntil(
-                () -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS),
+                () -> (getShoulderAngle()) > ArmConstants.MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS_FOR_SCORING),
             Commands.waitUntil(
                 () -> getSuperstructureState() == evalScorePosition(level, piece).getPistonPosition().getValue())),
         new InstantCommand(() -> actuateSuperstructure(evalScorePosition(level, piece).getPistonPosition())));

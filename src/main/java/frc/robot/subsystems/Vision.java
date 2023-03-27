@@ -95,7 +95,7 @@ public class Vision extends SubsystemBase {
   }
 
   public boolean inRangeOfDoubleStationStop() {
-    return (getBestTagDistance() > VisionConstants.STOP_AT_DOUBLE_STATION)
+    return (getBestTagDistance() <= VisionConstants.STOP_AT_DOUBLE_STATION)
         && ((getBestTagId() == VisionConstants.RED_PICKUP_STATION_TAG)
             || getBestTagId() == VisionConstants.BLUE_PICKUP_STATION_TAG);
   }

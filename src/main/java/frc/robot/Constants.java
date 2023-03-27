@@ -145,16 +145,16 @@ public final class Constants {
             leftBlueSimple("left blue simple","left blue simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true,false),
             midBlueSimple("mid blue simple","null","null",                            true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
             rightBlueSimple("right blue simple","right blue simple return","null",    true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
-            leftRedSimple("left red simple","left red simple return","null",          true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
+            leftRedSimple("right blue simple","right blue simple return","null",          true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
             midRedSimple("mid red simple","null","null",                              true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
-            rightRedSimple("right red simple","right red simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
+            rightRedSimple("left blue simple","left blue simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
             
             midleftBlueSimple("left blue simple","left blue simple return","left blue pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, true),
             midmidBlueSimple("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
             midrightBlueSimple("right blue simple","right blue simple return","right blue simple return", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, true),
-            midleftRedSimple("left red simple","left red simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true,false),
+            midleftRedSimple("right blue simple","right blue simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true,false),
             midmidRedSimple("mid red simple","null","null",                           true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
-            midrightRedSimple("right red simple","right red simple return","null",    true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, false),
+            midrightRedSimple("left blue simple","left blue simple return","null",    true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, false),
 
             testpath("simple", "null","null",                                         false, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, false, false, false);
       
@@ -249,7 +249,7 @@ public final class Constants {
         public static final double IN_RANGE_OF_TAG = 3;// meters
         public static final int RED_PICKUP_STATION_TAG = 5;
         public static final int BLUE_PICKUP_STATION_TAG = 4;
-        public static final double STOP_AT_DOUBLE_STATION = .5;// meters
+        public static final double STOP_AT_DOUBLE_STATION = 1.01;// meters
         public static final double DEPLOY_ARM_AT_DOUBLE_STATION = 2.7;
     }
 
@@ -299,11 +299,12 @@ public final class Constants {
         public static final double MINIMUM_SHOULDER_ANGLE = -51;
         public static final double MAX_SHOULDER_ANGLE = 50;
         public static final double MAX_MANNUAL_ARM_SPEED = 50.0;
-        public static final double MAX_SPEED_DOWNWARD = -0.5;
-        public static final double MAX_SPEED_UPWARD = 0.3;
+        public static final double MAX_SPEED_DOWNWARD = -0.7;
+        public static final double MAX_SPEED_UPWARD = 0.633;
         public static final double PISTON_BACK = -90 - MINIMUM_SHOULDER_ANGLE;
         public static final double PISTON_FORWARD = 0;
         public static final double MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS = MINIMUM_SHOULDER_ANGLE+5;
+        public static final double MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS_FOR_SCORING= MINIMUM_SHOULDER_ANGLE+50;
         public static final double MAX_ACCEL =10;//degrees per sec squared?
         public static final double MAX_VEL = 30;//degrees per sec?
 
@@ -313,13 +314,13 @@ public final class Constants {
             LEVEL_2_CONE(4, PnuematicPositions.RETRACTED),
             LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
             LEVEL_3_CUBE(37, PnuematicPositions.EXTENDED), // TODO
-            LEVEL_2_CUBE(-27, PnuematicPositions.RETRACTED), // TODO
+            LEVEL_2_CUBE(-20.11, PnuematicPositions.RETRACTED), // TODO
             LEVEL_1_CUBE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED), // TODO
             STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
             FLOOR_PICKUP_CONE(-42, PnuematicPositions.EXTENDED),
             FLOOR_PICKUP_CUBE(-39, PnuematicPositions.EXTENDED),
-            STATION_PICKUP_CONE(17.0, PnuematicPositions.RETRACTED),
-            STATION_PICKUP_CUBE(10.5, PnuematicPositions.RETRACTED);
+            STATION_PICKUP_CONE(21.3, PnuematicPositions.RETRACTED),
+            STATION_PICKUP_CUBE(13.1, PnuematicPositions.RETRACTED);
 
             private final double shoulderAngle;
             private final PnuematicPositions pistonPosition;
@@ -371,14 +372,14 @@ public final class Constants {
             STOW(WristConstants.MAX_WRIST_ANGLE),
             FLOOR_CUBE_PICKUP(33), //36
             FLOOR_CONE_PICKUP(39),
-            DOUBLE_PICKUP_CONE(-15),
-            DOUBLE_PICKUP_CUBE(-3.5),
+            DOUBLE_PICKUP_CONE(-16),
+            DOUBLE_PICKUP_CUBE(-4.7),
             LEVEL_3_CONE(-9),
             LEVEL_2_CONE(-8),
             LEVEL_1_CONE(41),
             LEVEL_3_CUBE(21), // TODO
-            LEVEL_2_CUBE(64), // TODO
-            LEVEL_1_CUBE(WristConstants.MAX_WRIST_ANGLE);// TODO
+            LEVEL_2_CUBE(72.5), // TODO
+            LEVEL_1_CUBE(41);// TODO
 
             private final double angle;
 
@@ -407,7 +408,7 @@ public final class Constants {
 
             public static final double MAX_PID_SPEED = 0.50;
 
-            public static final double INTAKE_SPEED_DEADBAND = 0.01;
+            public static final double INTAKE_SPEED_DEADBAND = 5;
 
             public enum IntakeDirection {
                 STOP(0.0),

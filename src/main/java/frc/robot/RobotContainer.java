@@ -188,13 +188,16 @@ public class RobotContainer {
                 // drivetrain.resetOdometry(new Pose2d())));
                 m_driverController.a().whileTrue(new AutoBalance(drivetrain));
                 m_driverController.x().onTrue(new InstantCommand(() -> drivetrain.toggleBrakeMode()));
-                Trigger doubleSubstationAlign = new Trigger(vision::inRangeOfDoubleStation);
-                doubleSubstationAlign.and(m_driverController.b().negate())
-                                .onTrue(new IntakeAtDouble(vision, drivetrain, arm, wrist, intake,
+                /*Trigger doubleSubstationAlign = new Trigger(vision::inRangeOfDoubleStation);
+                m_driverController.leftTrigger()
+                                .whileTrue(new IntakeAtDouble(vision, drivetrain, arm, wrist, intake,
                                                 () -> getSelectedPiece(), () -> m_driverController.getLeftY(),
                                                 () -> m_driverController.getRightY(),
-                                                () -> m_driverController.getLeftY(), () -> isRightTriggerPressed()));
-        }
+                                                () -> m_driverController.getRightX(), () -> isRightTriggerPressed()))
+                                .onFalse(new InstantCommand(
+                                                () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
+*/
+                                        }
 
         private void configureOperatorBindings() {
                 m_operatorController.leftBumper()
@@ -274,7 +277,7 @@ public class RobotContainer {
         public Command getPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pathname(),
                                 new PathConstraints(2.5,
-                                                2),
+                                                2.5),
                                 driverStationTab.getAutoPath().isReverse());
 
                 drivetrain.resetOdometry(path.getInitialPose());
@@ -293,17 +296,40 @@ public class RobotContainer {
                                 false,
                                 drivetrain);
         }
-    private double turningAuto() {
-        if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-            return 0.0;
-        } else {
-            return 180.0;
+
+        private double turningAuto() {
+                if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+                        return 0.0;
+                } else {
+                        return 180.0;
+                }
         }
-    }
 
         public Command getReturnPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().returnpathname(),
-                                new PathConstraints(2,
+                                new PathConstraints(2.5,
+                                                2.5),
+                                false);
+
+                return new PPRamseteCommand(path,
+                                drivetrain::getPose2d,
+                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
+                                new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
+                                                DrivetrainConstants.KA),
+                                drivetrain.getKinematics(),
+                                drivetrain::getWheelSpeeds,
+                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                                DrivetrainConstants.KD_LIN),
+                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                                DrivetrainConstants.KD_LIN),
+                                drivetrain::tankDriveVolts,
+                                false,
+                                drivetrain);
+        }
+
+        public Command getPickupPathPlannerCommand() {
+                PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pickuppathname(),
+                                new PathConstraints(2.5,
                                                 2),
                                 false);
 
@@ -322,61 +348,39 @@ public class RobotContainer {
                                 false,
                                 drivetrain);
         }
-        
-        public Command getPickupPathPlannerCommand() {
-                PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pickuppathname(),
-                                new PathConstraints(2,
-                                                1.5),
-                                false);
 
-                return new PPRamseteCommand(path,
-                                drivetrain::getPose2d,
-                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
-                                new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
-                                                DrivetrainConstants.KA),
-                                drivetrain.getKinematics(),
-                                drivetrain::getWheelSpeeds,
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                drivetrain::tankDriveVolts,
-                                false,
-                                drivetrain);
+        public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
+                SequentialCommandGroup auto = new SequentialCommandGroup();
+                if (driverStationTab.getAutoPath().scoring()) {
+                        auto.addCommands(
+                                        new SimpleMoveToScore(arm, wrist,
+                                                        () -> driverStationTab.getAutoPath().scoreLevelFirst(),
+                                                        () -> driverStationTab.getAutoPath().selectedPiece()),
+                                        new OutakePiece(intake, () -> driverStationTab.getAutoPath().selectedPiece()));
+                }
+                auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                                (new ParallelCommandGroup(getPathPlannerCommand(), new StowAuton(arm, wrist, intake))),
+                                new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+                if (driverStationTab.getAutoPath().autoBalance()) {
+                        auto.addCommands(new AutoBalance(drivetrain));
+                } else if (driverStationTab.getAutoPath().Pickup()) {
+                        auto.addCommands(new FaceScoreLocation(drivetrain, turningAuto()));
+                        auto.addCommands(new SimplePickup(arm, wrist, intake,
+                                        () -> driverStationTab.getAutoPath().selectedPiece2nd(),
+                                        () -> driverStationTab.getAutoPath().pickupLocation()));
+                        // auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                        // getPickupPathPlannerCommand(),
+                        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+                        if (driverStationTab.getAutoPath().Return()) {
+                                auto.addCommands(new FaceScoreLocation(drivetrain, (turningAuto() - 180)));
+                                auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                                                getReturnPathPlannerCommand(),
+                                                new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
+                                                new OutakePiece(intake, () -> driverStationTab.getAutoPath().selectedPiece2nd()));
+                        }
+                }
+                return auto;
         }
-
-
-    public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
-        SequentialCommandGroup auto = new SequentialCommandGroup();
-        if (driverStationTab.getAutoPath().scoring()){
-                auto.addCommands(new SimpleMoveToScore(arm, wrist, ()-> driverStationTab.getAutoPath().scoreLevelFirst(), ()-> driverStationTab.getAutoPath().selectedPiece()), new OutakePiece(intake, ()-> driverStationTab.getAutoPath().selectedPiece()));
-                }
-        auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                        (new ParallelCommandGroup(getPathPlannerCommand(), new StowAuton(arm, wrist, intake))),
-                        new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
-        if (driverStationTab.getAutoPath().autoBalance()) {
-                auto.addCommands(new AutoBalance(drivetrain));
-                } 
-        else if (driverStationTab.getAutoPath().Pickup()){
-                auto.addCommands(new FaceScoreLocation(drivetrain, turningAuto()));
-                auto.addCommands(new SimplePickup(arm, wrist, intake, 
-                                        () -> driverStationTab.getAutoPath().selectedPiece2nd(), 
-                                        ()-> driverStationTab.getAutoPath().pickupLocation()));
-                                        // auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                        // getPickupPathPlannerCommand(),
-                                        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
-                if (driverStationTab.getAutoPath().Return()){
-                        auto.addCommands(new FaceScoreLocation(drivetrain, (turningAuto()-180)));
-                        auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                        getReturnPathPlannerCommand(),
-                                        new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
-                                        new SimpleScore(arm, wrist, intake, 
-                                                                ()-> driverStationTab.getAutoPath().selectedPiece2nd(), 
-                                                                ()-> driverStationTab.getAutoPath().scoreLevelSecond()));
-                }
-                }
-        return auto;
-    }
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());
         // if (driverStationTab.getAutoPath().scoring()) {
