@@ -30,7 +30,9 @@ public class Leds extends SubsystemBase {
   private boolean goingUp = false;
   private Color centerColor;
   private double centerMultiplier = 1.0;
-  private ArrayList<Integer> movingLights = new ArrayList<Integer>();
+  private ArrayList<Integer> movingLightsUp = new ArrayList<Integer>();
+  private ArrayList<Integer> movingLightsDown = new ArrayList<Integer>();
+
   private int timer = 0;
   // private Color mode;
 
@@ -59,7 +61,10 @@ public class Leds extends SubsystemBase {
     this.drivetrain = drivetrain;
 
     for (int i = 0; i < m_ledBuffer.getLength() / MOVING_LED_GAP; i++) {
-      movingLights.add(i * MOVING_LED_GAP);
+      movingLightsUp.add(i * MOVING_LED_GAP);
+    }
+    for (int i = 0; i < m_ledBuffer.getLength() / MOVING_LED_GAP; i++) {
+      movingLightsDown.add(i * MOVING_LED_GAP);
     }
 
   }
@@ -67,50 +72,55 @@ public class Leds extends SubsystemBase {
   @Override
   public void periodic() {
     NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    if (DriverStation.isEnabled() && DriverStation.isTeleop() && inst.isConnected()) {
-      // Set the LEDs
-      if (!(intake.getIntakeSpeed() >= -IntakeConstants.INTAKE_SPEED_DEADBAND
-          && intake.getIntakeSpeed() <= IntakeConstants.INTAKE_SPEED_DEADBAND)) {
-        if (goingUp && centerMultiplier >= 1.0) {
+    if (!DriverStation.isEStopped()) {
+      if (DriverStation.isEnabled() && DriverStation.isTeleop() && inst.isConnected()) {
+        // Set the LEDs
+        if (!(intake.getIntakeSpeed() >= -IntakeConstants.INTAKE_SPEED_DEADBAND
+            && intake.getIntakeSpeed() <= IntakeConstants.INTAKE_SPEED_DEADBAND)) {
+          if (goingUp && centerMultiplier >= 1.0) {
+            goingUp = false;
+          }
+          if (!goingUp && centerMultiplier <= 0.1) {
+            goingUp = true;
+          }
+
+          if (goingUp) {
+            centerMultiplier += 0.05;
+          } else {
+            centerMultiplier -= 0.05;
+          }
+
+        } else {
+          centerMultiplier = 1.0;
           goingUp = false;
         }
-        if (!goingUp && centerMultiplier <= 0.1) {
-          goingUp = true;
+        Color centerColorWithMultiplier = new Color(centerColor.red * centerMultiplier,
+            centerColor.green * centerMultiplier, centerColor.blue * centerMultiplier);
+        for (var i = EDGE_GAP; i < m_ledBuffer.getLength() - EDGE_GAP; i++) {
+          m_ledBuffer.setLED(i, centerColorWithMultiplier);
         }
 
-        if (goingUp) {
-          centerMultiplier += 0.05;
-        } else {
-          centerMultiplier -= 0.05;
+        setSpeed(drivetrain.getMaxDrivetrainSpeed());
+      } else if (inst.isConnected()) {
+        if (timer % 5 == 0) {
+          autoColor();
         }
-
+        timer++;
       } else {
-        centerMultiplier = 1.0;
-        goingUp = false;
+        centerColor = new Color(0, 255, 0);
+        for (var i = 0; i < m_ledBuffer.getLength(); i++) {
+          m_ledBuffer.setLED(i, centerColor);
+        }
       }
-      Color centerColorWithMultiplier = new Color(centerColor.red * centerMultiplier,
-          centerColor.green * centerMultiplier, centerColor.blue * centerMultiplier);
-      for (var i = EDGE_GAP; i < m_ledBuffer.getLength() - EDGE_GAP; i++) {
-        m_ledBuffer.setLED(i, centerColorWithMultiplier);
-      }
-
-      setSpeed(drivetrain.getMaxDrivetrainSpeed());
-    } else if (inst.isConnected()){
-      if (timer % 5 == 0) {
-        autoColor();
-      }
-      timer++;
     }
     else{
-      centerColor = new Color(0, 255, 0);
       for (var i = 0; i < m_ledBuffer.getLength(); i++) {
-        m_ledBuffer.setLED(i, centerColor);
+        m_ledBuffer.setLED(i, new Color(255, 0, 0));
       }
     }
     m_led.setData(m_ledBuffer);
 
   }
-
 
   public void orange() {
     centerColor = new Color(255, 100, 0);
@@ -151,17 +161,17 @@ public class Leds extends SubsystemBase {
   private void autoColor() {
 
     // increase them all by one
-    for (int i = 0; i < movingLights.size(); i++) {
-      movingLights.set(i, movingLights.get(i) + 1);
+    for (int i = 0; i < movingLightsUp.size(); i++) {
+      movingLightsUp.set(i, movingLightsUp.get(i) + 1);
     }
     // if the last one is over, subtract the number of leds
-    if (movingLights.get(movingLights.size() - 1) >= m_ledBuffer.getLength()) {
-      movingLights.set(movingLights.size() - 1, movingLights.get(movingLights.size() - 1) - m_ledBuffer.getLength());
-      movingLights.sort(null);
+    if (movingLightsUp.get(movingLightsUp.size() - 1) >= m_ledBuffer.getLength()) {
+      movingLightsUp.set(movingLightsUp.size() - 1, movingLightsUp.get(movingLightsUp.size() - 1) - m_ledBuffer.getLength());
+      movingLightsUp.sort(null);
     }
 
     for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-      if (movingLights.contains(i)) {
+      if (movingLightsUp.contains(i)) {
         m_ledBuffer.setLED(i, new Color(255, 255, 255));
       } else {
         if (DriverStation.getAlliance() == Alliance.Blue) {
@@ -173,6 +183,31 @@ public class Leds extends SubsystemBase {
 
       }
     }
+
+    //START NEW STUFF
+    for (int i = 0; i < movingLightsDown.size(); i++) {
+      movingLightsDown.set(i, movingLightsDown.get(i) -1);
+    }
+    // if the last one is less them one, add the number of leds
+    if (movingLightsDown.get(0) < 0) {
+      movingLightsDown.set(0, m_ledBuffer.getLength() -1);
+      movingLightsDown.sort(null);
+    }
+
+    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+      if (movingLightsDown.contains(i)) {
+        m_ledBuffer.setLED(i, new Color(255, 255, 255));
+      } else {
+        if (DriverStation.getAlliance() == Alliance.Blue) {
+          m_ledBuffer.setLED(i, new Color(0, 0, 255));
+        } else {
+          m_ledBuffer.setLED(i, new Color(255, 0, 0));
+
+        }
+
+      }
+    }
+    //END NEW STUFF
 
   }
 }
