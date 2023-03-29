@@ -201,6 +201,11 @@ public class Arm extends SubsystemBase {
     return isArmStowed.get();
   }
 
+  public void resetEncoders(){
+    shoulderEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
+    shoulderFollowerEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
+  }
+
   public double getShoulderAngle() {
     return shoulderEncoder.getPosition();
   }

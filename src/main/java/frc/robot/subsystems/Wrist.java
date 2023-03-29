@@ -119,6 +119,10 @@ public class Wrist extends SubsystemBase {
   public double getWristMotorTemp() {
     return wristMotor.getMotorTemperature();
   }
+  
+  public void resetEncoder(){
+    wristEncoder.setPosition(WristConstants.MAX_WRIST_ANGLE);
+  }
 
   public boolean atSetpoint() {
     return (Math.abs(getWristPosition() - (setpoint)) < (WristConstants.WRIST_ANGLE_TOLERANCE));
