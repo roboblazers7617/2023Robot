@@ -63,18 +63,17 @@ public class DriverStationTab extends ShuffleboardTabBase {
         // autoPath.addOption("Red Mid Node", DrivetrainConstants.AutoPath.redNodeSix);
         // autoPath.addOption("Red Right Node", DrivetrainConstants.AutoPath.redNodeNine);
         autoPath.setDefaultOption("high cone score left blue simple", DrivetrainConstants.AutoPath.leftBlueSimple);
-        autoPath.addOption("high cone score mid blue simple", DrivetrainConstants.AutoPath.midBlueSimple);
-        autoPath.addOption("high cone score right blue simple", DrivetrainConstants.AutoPath.rightBlueSimple);
-        autoPath.addOption("high cone scoreleft red simple", DrivetrainConstants.AutoPath.leftRedSimple);
-        autoPath.addOption("high cone score mid red simple", DrivetrainConstants.AutoPath.midRedSimple);
-        autoPath.addOption("high cone score right red simple", DrivetrainConstants.AutoPath.rightRedSimple);
+        // autoPath.addOption("high cone score mid blue simple", DrivetrainConstants.AutoPath.midBlueSimple);
+        // autoPath.addOption("high cone score right blue simple", DrivetrainConstants.AutoPath.rightBlueSimple);
+        // autoPath.addOption("high cone scoreleft red simple", DrivetrainConstants.AutoPath.leftRedSimple);
+        // autoPath.addOption("high cone score mid red simple", DrivetrainConstants.AutoPath.midRedSimple);
+        // autoPath.addOption("high cone score right red simple", DrivetrainConstants.AutoPath.rightRedSimple);
         // autoPath.addOption("TEST TEST TEST", DrivetrainConstants.AutoPath.testpath);
-        autoPath.setDefaultOption("mid cone score left blue simple", DrivetrainConstants.AutoPath.midleftBlueSimple);
-        autoPath.addOption("mid cone score mid blue simple", DrivetrainConstants.AutoPath.midmidBlueSimple);
-        autoPath.addOption("mid cone score right blue simple", DrivetrainConstants.AutoPath.midrightBlueSimple);
-        autoPath.addOption("mid cone score left red simple", DrivetrainConstants.AutoPath.midleftRedSimple);
-        autoPath.addOption("mid cone score mid red simple", DrivetrainConstants.AutoPath.midmidRedSimple);
-        autoPath.addOption("mid cone score right red simple", DrivetrainConstants.AutoPath.midrightRedSimple);
+        autoPath.setDefaultOption("left 1", DrivetrainConstants.AutoPath.leftOne);
+        autoPath.addOption("left 2", DrivetrainConstants.AutoPath.leftTwo);
+        autoPath.addOption("mid", DrivetrainConstants.AutoPath.midOne);
+        autoPath.addOption("right 1", DrivetrainConstants.AutoPath.rightOne);
+        autoPath.addOption("right 2", DrivetrainConstants.AutoPath.rightTwo);
         tab.add("Auto Path", autoPath).withPosition(1, 0);
 
         //debug mode
