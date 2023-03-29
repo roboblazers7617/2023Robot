@@ -188,16 +188,17 @@ public class RobotContainer {
                 // drivetrain.resetOdometry(new Pose2d())));
                 m_driverController.a().whileTrue(new AutoBalance(drivetrain));
                 m_driverController.x().onTrue(new InstantCommand(() -> drivetrain.toggleBrakeMode()));
-                /*Trigger doubleSubstationAlign = new Trigger(vision::inRangeOfDoubleStation);
-                m_driverController.leftTrigger()
-                                .whileTrue(new IntakeAtDouble(vision, drivetrain, arm, wrist, intake,
-                                                () -> getSelectedPiece(), () -> m_driverController.getLeftY(),
-                                                () -> m_driverController.getRightY(),
-                                                () -> m_driverController.getRightX(), () -> isRightTriggerPressed()))
-                                .onFalse(new InstantCommand(
-                                                () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
-*/
-                                        }
+                /*
+                 * Trigger doubleSubstationAlign = new Trigger(vision::inRangeOfDoubleStation);
+                 * m_driverController.leftTrigger()
+                 * .whileTrue(new IntakeAtDouble(vision, drivetrain, arm, wrist, intake,
+                 * () -> getSelectedPiece(), () -> m_driverController.getLeftY(),
+                 * () -> m_driverController.getRightY(),
+                 * () -> m_driverController.getRightX(), () -> isRightTriggerPressed()))
+                 * .onFalse(new InstantCommand(
+                 * () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
+                 */
+        }
 
         private void configureOperatorBindings() {
                 m_operatorController.leftBumper()
@@ -221,6 +222,10 @@ public class RobotContainer {
                                 .whileTrue(new OutakePiece(intake, () -> getSelectedPiece()));
 
                 m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
+
+                m_operatorController.leftStick().and(() -> (m_operatorController.leftStick().getAsBoolean()))
+                                .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.resetEncoders()),
+                                                new InstantCommand(() -> wrist.resetEncoder())));
 
                 m_operatorController.povDown().onTrue(
                                 new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
@@ -376,7 +381,8 @@ public class RobotContainer {
                                 auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                                                 getReturnPathPlannerCommand(),
                                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
-                                                new OutakePiece(intake, () -> driverStationTab.getAutoPath().selectedPiece2nd()));
+                                                new OutakePiece(intake, () -> driverStationTab.getAutoPath()
+                                                                .selectedPiece2nd()));
                         }
                 }
                 return auto;
