@@ -66,6 +66,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
 
@@ -281,12 +282,14 @@ public class RobotContainer {
 
         public Command getPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pathname(),
-                                new PathConstraints(2.5,
-                                                2.5),
+                                new PathConstraints(setAutoBalanceVelocity(),
+                                                setAutoBalanceAcceleration()),
                                 driverStationTab.getAutoPath().isReverse());
 
-                drivetrain.resetOdometry(path.getInitialPose());
-                return new PPRamseteCommand(path,
+                
+                
+                PPRamseteCommand commandToRun = 
+                new PPRamseteCommand(path,
                                 drivetrain::getPose2d,
                                 new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
                                 new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
@@ -300,6 +303,7 @@ public class RobotContainer {
                                 drivetrain::tankDriveVolts,
                                 false,
                                 drivetrain);
+                return new InstantCommand(()-> drivetrain.resetOdometry(path.getInitialPose())).andThen(commandToRun);
         }
 
         private double turningAuto() {
@@ -309,11 +313,27 @@ public class RobotContainer {
                         return 180.0;
                 }
         }
+        private double setAutoBalanceAcceleration() {
+                if (driverStationTab.getAutoPath().autoBalance() == true){
+                        return 1.5;
+                }
+                else {
+                        return 2.5;
+                }
+        }
+        private double setAutoBalanceVelocity() {
+                if (driverStationTab.getAutoPath().autoBalance() == true){
+                        return 2;
+                }
+                else {
+                        return 2.5;
+                }
+        }
 
         public Command getReturnPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().returnpathname(),
-                                new PathConstraints(2.5,
-                                                2.5),
+                                new PathConstraints(setAutoBalanceVelocity(),
+                                                setAutoBalanceAcceleration()),
                                 false);
 
                 return new PPRamseteCommand(path,
@@ -368,7 +388,8 @@ public class RobotContainer {
                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                 if (driverStationTab.getAutoPath().autoBalance()) {
                         auto.addCommands(new AutoBalance(drivetrain));
-                } else if (driverStationTab.getAutoPath().Pickup()) {
+                } 
+                else if (driverStationTab.getAutoPath().Pickup()) {
                         auto.addCommands(new FaceScoreLocation(drivetrain, turningAuto()));
                         auto.addCommands(new SimplePickup(arm, wrist, intake,
                                         () -> driverStationTab.getAutoPath().selectedPiece2nd(),
@@ -378,11 +399,10 @@ public class RobotContainer {
                         // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                         if (driverStationTab.getAutoPath().Return()) {
                                 auto.addCommands(new FaceScoreLocation(drivetrain, (turningAuto() - 180)));
-                                auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                                auto.addCommands(new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                                                 getReturnPathPlannerCommand(),
-                                                new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
-                                                new OutakePiece(intake, () -> driverStationTab.getAutoPath()
-                                                                .selectedPiece2nd()));
+                                                new InstantCommand(() -> turnOnBrakesDrivetrain(true))),
+                                                (new SequentialCommandGroup(new WaitCommand(2.0), new SimpleScore(arm, wrist, intake, ()->PieceType.CUBE, ()->ScoreLevel.LEVEL_2)))));
                         }
                 }
                 return auto;
