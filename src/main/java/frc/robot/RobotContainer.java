@@ -10,6 +10,7 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
+import frc.robot.Constants.StartLocation;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.ArmConstants.ArmPositions;
@@ -34,6 +35,7 @@ import frc.robot.shuffleboard.ArmTab;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
 import frc.robot.shuffleboard.IntakeTab;
+import frc.robot.shuffleboard.PathPlanning;
 import frc.robot.shuffleboard.ShuffleboardInfo;
 import frc.robot.shuffleboard.ShuffleboardTabBase;
 import frc.robot.shuffleboard.VisionTab;
@@ -101,6 +103,7 @@ public class RobotContainer {
         private PieceType selectedPiece;
 
         private final DriverStationTab driverStationTab;
+        private final PathPlanning pathPlanningTab;
 
         /**
          * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -139,6 +142,8 @@ public class RobotContainer {
                 // tabs.add(new ColorSensorTab(new ColorSensor()));
                 tabs.add(new IntakeTab(intake, wrist));
                 tabs.add(new ArmTab(arm));
+                pathPlanningTab = new PathPlanning(drivetrain);
+                tabs.add(pathPlanningTab);
                 // STOP HERE OR DIE
 
                 ShuffleboardInfo shuffleboardInfo = ShuffleboardInfo.getInstance();
@@ -326,7 +331,7 @@ public class RobotContainer {
                                 false,
                                 drivetrain);
         }
-
+        //TODO NOT USED
         public Command getPickupPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pickuppathname(),
                                 new PathConstraints(2.5,
@@ -354,24 +359,24 @@ public class RobotContainer {
                 if (driverStationTab.getAutoPath().scoring()) {
                         auto.addCommands(
                                         new SimpleMoveToScore(arm, wrist,
-                                                        () -> driverStationTab.getAutoPath().scoreLevelFirst(),
-                                                        () -> driverStationTab.getAutoPath().selectedPiece()),
-                                        new OutakePiece(intake, () -> driverStationTab.getAutoPath().selectedPiece()));
+                                                        () -> pathPlanningTab.getScoreLevel(),
+                                                        () -> pathPlanningTab.getPieceType()),
+                                        new OutakePiece(intake, () -> pathPlanningTab.getPieceType()));
                 }
                 auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                                 (new ParallelCommandGroup(getPathPlannerCommand(), new StowAuton(arm, wrist, intake))),
                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
-                if (driverStationTab.getAutoPath().autoBalance()) {
+                if (pathPlanningTab.getStartingLocation().equals(StartLocation.MIDDLE)) {
                         auto.addCommands(new AutoBalance(drivetrain));
-                } else if (driverStationTab.getAutoPath().Pickup()) {
+                } else if (!pathPlanningTab.getStartingLocation().equals(StartLocation.MIDDLE)) {
                         auto.addCommands(new FaceScoreLocation(drivetrain, turningAuto()));
                         auto.addCommands(new SimplePickup(arm, wrist, intake,
-                                        () -> driverStationTab.getAutoPath().selectedPiece2nd(),
-                                        () -> driverStationTab.getAutoPath().pickupLocation()));
+                                        () -> PieceType.CUBE,
+                                        () -> PickupLocation.FLOOR));
                         // auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                         // getPickupPathPlannerCommand(),
                         // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
-                        if (driverStationTab.getAutoPath().Return()) {
+                        if (true) {
                                 auto.addCommands(new FaceScoreLocation(drivetrain, (turningAuto() - 180)));
                                 auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                                                 getReturnPathPlannerCommand(),

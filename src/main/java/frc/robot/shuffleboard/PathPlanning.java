@@ -16,16 +16,16 @@ public class PathPlanning extends ShuffleboardTabBase{
     private final Drivetrain drivetrain;
     // private final SendableChooser<Alliance> allianceColor;
     private final SendableChooser<ScoreLevel> height;
-    // private final SendableChooser<PieceType> pieceType;
+    private final SendableChooser<PieceType> pieceType;
     private final SendableChooser<Constants.StartLocation> startingLocation;
 
 
 
     public PathPlanning(Drivetrain drivetrain){
-        ShuffleboardTab tab = Shuffleboard.getTab("Driver Station");
+        ShuffleboardTab tab = Shuffleboard.getTab("Auto Path");
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         this.drivetrain = drivetrain;
-        NetworkTable networkTable = inst.getTable("Shuffleboard/Driver Station");
+        NetworkTable networkTable = inst.getTable("Shuffleboard/Auto Path");
 
         // allianceColor = new SendableChooser<>();
         // allianceColor.addOption("Red", Alliance.Red);
@@ -38,10 +38,10 @@ public class PathPlanning extends ShuffleboardTabBase{
         height.addOption("Medium", ScoreLevel.LEVEL_2);
         height.addOption("High", ScoreLevel.LEVEL_3);
 
-        //what were picking up
-        // pieceType = new SendableChooser<>();
-        // pieceType.addOption("Cone", PieceType.CONE);
-        // pieceType.addOption("Cube", PieceType.CUBE);
+        // what were picking up
+        pieceType = new SendableChooser<>();
+        pieceType.setDefaultOption("Cone", PieceType.CONE);
+        pieceType.addOption("Cube", PieceType.CUBE);
 
         //starting position
         startingLocation = new SendableChooser<>();
@@ -49,12 +49,20 @@ public class PathPlanning extends ShuffleboardTabBase{
         startingLocation.addOption("middle", StartLocation.MIDDLE);
         startingLocation.addOption("right", StartLocation.RIGHT);
 
-
-
-
         
 
         
+    }
+    public ScoreLevel getScoreLevel(){
+        return height.getSelected();
+    }
+
+    public PieceType getPieceType(){
+        return pieceType.getSelected();
+    }
+
+    public StartLocation getStartingLocation(){
+        return startingLocation.getSelected();
     }
 
     public void update(){
