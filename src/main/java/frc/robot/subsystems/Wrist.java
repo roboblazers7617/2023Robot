@@ -122,6 +122,7 @@ public class Wrist extends SubsystemBase {
   
   public void resetEncoder(){
     wristEncoder.setPosition(WristConstants.MAX_WRIST_ANGLE);
+    setPosition(WristConstants.MAX_WRIST_ANGLE, () -> ArmConstants.MINIMUM_SHOULDER_ANGLE);
   }
 
   public boolean atSetpoint() {

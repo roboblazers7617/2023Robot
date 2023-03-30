@@ -224,7 +224,7 @@ public class RobotContainer {
 
                 m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
 
-                m_operatorController.leftStick().and(() -> (m_operatorController.leftStick().getAsBoolean()))
+                m_operatorController.leftStick()//.and(() -> (m_operatorController.leftStick().getAsBoolean()))
                                 .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.resetEncoders()),
                                                 new InstantCommand(() -> wrist.resetEncoder())));
 

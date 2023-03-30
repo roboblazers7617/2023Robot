@@ -204,6 +204,7 @@ public class Arm extends SubsystemBase {
   public void resetEncoders(){
     shoulderEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
     shoulderFollowerEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
+    setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
   }
 
   public double getShoulderAngle() {
