@@ -119,13 +119,13 @@ public class RobotContainer {
 
                 arm.setDefaultCommand(new RunCommand(
                                 () -> arm.setVelocity(
-                                                (Math.abs(m_operatorController.getLeftY()) > OperatorConstants.DEADZONE
-                                                                ? -m_operatorController.getLeftY()
+                                                (Math.abs(m_operatorController.getRightY()) > OperatorConstants.DEADZONE
+                                                                ? -m_operatorController.getRightY()
                                                                 : 0) * ArmConstants.MAX_MANNUAL_ARM_SPEED),
                                 arm));
                 wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(
-                                (Math.abs(m_operatorController.getRightY()) > OperatorConstants.DEADZONE
-                                                ? -m_operatorController.getRightY()
+                                (Math.abs(m_operatorController.getLeftY()) > OperatorConstants.DEADZONE
+                                                ? -m_operatorController.getLeftY()
                                                 : 0) * WristConstants.MAX_MANNUAL_WRIST_SPEED,
                                 arm::getArmAngle), wrist));
 
@@ -177,7 +177,7 @@ public class RobotContainer {
                 m_driverController.rightBumper()
                                 .onFalse(new InstantCommand(
                                                 () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
-
+// 
                 m_driverController.leftBumper()
                                 .onTrue(new InstantCommand(
                                                 () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED)));
@@ -224,9 +224,9 @@ public class RobotContainer {
 
                 m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
 
-                m_operatorController.leftStick()//.and(() -> (m_operatorController.leftStick().getAsBoolean()))
-                                .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.resetEncoders()),
-                                                new InstantCommand(() -> wrist.resetEncoder())));
+              //  m_operatorController.leftStick()//.and(() -> (m_operatorController.leftStick().getAsBoolean()))
+                 //               .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.resetEncoders()),
+                   //                             new InstantCommand(() -> wrist.resetEncoder())));
 
                 m_operatorController.povDown().onTrue(
                                 new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
@@ -323,7 +323,7 @@ public class RobotContainer {
         }
         private double setAutoBalanceVelocity() {
                 if (driverStationTab.getAutoPath().autoBalance() == true){
-                        return 2;
+                        return 1.5;
                 }
                 else {
                         return 2.5;

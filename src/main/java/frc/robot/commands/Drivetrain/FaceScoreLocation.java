@@ -66,11 +66,11 @@ public class FaceScoreLocation extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Gyro is " + drivetrain.getRotation2d().getDegrees());
+    // System.out.println("Gyro is " + drivetrain.getRotation2d().getDegrees());
 
     double output = turnController.calculate(drivetrain.getRotation2d().getDegrees());
     double simpleFF = Math.copySign(0.35, output);
-    System.out.println("Speed is " + output);
+    // System.out.println("Speed is " + output);
     drivetrain.arcadeDrive(0.0,MathUtil.clamp(output+ simpleFF, -DrivetrainConstants.MAX_ANGULAR_VELOCITY, DrivetrainConstants.MAX_ANGULAR_VELOCITY));
     //System.out.println("**** Executing Turn: output is " + output + "    target angle is " + targetAngle + "  current angle is " + drivetrain.getRotation2d().getDegrees());
     //System.out.println("Simple FF is " + simpleFF); 

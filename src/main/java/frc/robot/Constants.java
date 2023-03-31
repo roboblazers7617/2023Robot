@@ -125,7 +125,7 @@ public final class Constants {
         public static final double KP_BALANCE = 2;
         public static final double KI_BALANCE = 0;
         public static final double KD_BALANCE = 0.5;
-        public static final double BALANCING_TOLERANCE = 13.75;
+        public static final double BALANCING_TOLERANCE = 15;
         // TODO: Lukas. (High) Decide this value
         public static final double MAX_BALANCE_SPEED = 0.550;
 
@@ -314,7 +314,7 @@ public final class Constants {
 
         // TODO: Lukas. (High) Set the angles
         public enum ArmPositions {
-            LEVEL_3_CONE(40, PnuematicPositions.EXTENDED),
+            LEVEL_3_CONE(45, PnuematicPositions.EXTENDED),
             LEVEL_2_CONE(4, PnuematicPositions.RETRACTED),
             LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
             LEVEL_3_CUBE(37, PnuematicPositions.EXTENDED), // TODO
@@ -323,8 +323,8 @@ public final class Constants {
             STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
             FLOOR_PICKUP_CONE(-42, PnuematicPositions.EXTENDED),
             FLOOR_PICKUP_CUBE(-39, PnuematicPositions.EXTENDED),
-            STATION_PICKUP_CONE(21.3, PnuematicPositions.RETRACTED),
-            STATION_PICKUP_CUBE(13.1, PnuematicPositions.RETRACTED);
+            STATION_PICKUP_CONE(15, PnuematicPositions.RETRACTED),
+            STATION_PICKUP_CUBE(10, PnuematicPositions.RETRACTED);
 
             private final double shoulderAngle;
             private final PnuematicPositions pistonPosition;
@@ -374,10 +374,10 @@ public final class Constants {
 
         public enum WristPosition {
             STOW(WristConstants.MAX_WRIST_ANGLE),
-            FLOOR_CUBE_PICKUP(33), //36
+            FLOOR_CUBE_PICKUP(26),//28
             FLOOR_CONE_PICKUP(39),
-            DOUBLE_PICKUP_CONE(-16),
-            DOUBLE_PICKUP_CUBE(-4.7),
+            DOUBLE_PICKUP_CONE(-12.3922853469),
+            DOUBLE_PICKUP_CUBE(-5),
             LEVEL_3_CONE(-9),
             LEVEL_2_CONE(-8),
             LEVEL_1_CONE(41),

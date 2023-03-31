@@ -62,7 +62,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
         // autoPath.addOption("Red Left Node", DrivetrainConstants.AutoPath.redNodeOne);
         // autoPath.addOption("Red Mid Node", DrivetrainConstants.AutoPath.redNodeSix);
         // autoPath.addOption("Red Right Node", DrivetrainConstants.AutoPath.redNodeNine);
-        autoPath.setDefaultOption("high cone score left blue simple", DrivetrainConstants.AutoPath.leftBlueSimple);
+        // autoPath.setDefaultOption("high cone score left blue simple", DrivetrainConstants.AutoPath.leftBlueSimple);
         // autoPath.addOption("high cone score mid blue simple", DrivetrainConstants.AutoPath.midBlueSimple);
         // autoPath.addOption("high cone score right blue simple", DrivetrainConstants.AutoPath.rightBlueSimple);
         // autoPath.addOption("high cone scoreleft red simple", DrivetrainConstants.AutoPath.leftRedSimple);
