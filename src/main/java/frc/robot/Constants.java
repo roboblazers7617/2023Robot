@@ -122,12 +122,12 @@ public final class Constants {
         public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(38.5);
         public static final double X_OFFSET_FROM_SCORE_LOCATION = LENGTH_OF_ROBOT / 2.0 + Units.inchesToMeters(14.0);
 
-        public static final double KP_BALANCE = 2;
+        public static final double KP_BALANCE = 1.85;//2
         public static final double KI_BALANCE = 0;
         public static final double KD_BALANCE = 0.5;
-        public static final double BALANCING_TOLERANCE = 15;
+        public static final double BALANCING_TOLERANCE = 14.5;//15
         // TODO: Lukas. (High) Decide this value
-        public static final double MAX_BALANCE_SPEED = 0.550;
+        public static final double MAX_BALANCE_SPEED = 0.52;//.55
 
         public static final int BALANCE_SPEED_BOOST_TOLERANCE = 15;
 
@@ -301,7 +301,7 @@ public final class Constants {
         public static final double SHOULDER_GEAR_RATIO = 1.0 / 204;
         public static final double POSITION_CONVERSION_FACTOR = SHOULDER_GEAR_RATIO * 360.0;
         public static final double MINIMUM_SHOULDER_ANGLE = -51;
-        public static final double MAX_SHOULDER_ANGLE = 50;
+        public static final double MAX_SHOULDER_ANGLE = 70;
         public static final double MAX_MANNUAL_ARM_SPEED = 50.0;
         public static final double MAX_SPEED_DOWNWARD = -0.7;
         public static final double MAX_SPEED_UPWARD = 0.633;

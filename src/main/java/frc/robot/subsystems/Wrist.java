@@ -47,6 +47,8 @@ public class Wrist extends SubsystemBase {
   private double dt, lastTime;
   private double setpoint = WristPosition.STOW.angle();
 
+  private double maxAngle = WristConstants.MAX_WRIST_ANGLE;
+
   /** Creates a new Wrist. */
   public Wrist() {
     wristMotor.restoreFactoryDefaults();
@@ -97,7 +99,7 @@ public class Wrist extends SubsystemBase {
   }
 
   public void setPosition(double position, Supplier<Double> armAngleSupplier) {
-    setpoint = Math.min(position, WristConstants.MAX_WRIST_ANGLE);
+    setpoint = Math.min(position, maxAngle);
     wristController.setReference(position, CANSparkMax.ControlType.kPosition, 0,
         wristFeedforward.calculate(
             Units.degreesToRadians(setpoint + (armAngleSupplier.get() - ArmConstants.MINIMUM_SHOULDER_ANGLE)), 0));
@@ -109,11 +111,19 @@ public class Wrist extends SubsystemBase {
 
   public void setVelocity(double velocityDegrees, Supplier<Double> armAngleSupplier) {
     setpoint = setpoint + velocityDegrees * dt;
-    setpoint = Math.min(setpoint, WristConstants.MAX_WRIST_ANGLE);
+    setpoint = Math.min(setpoint, maxAngle);
     wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         wristFeedforward.calculate(
             Units.degreesToRadians(setpoint + (armAngleSupplier.get() - ArmConstants.MINIMUM_SHOULDER_ANGLE)),
             Units.degreesToRadians(velocityDegrees)));
+  }
+
+  public void removeBounds(){
+    maxAngle = 200;
+  }
+
+  public void addBounds(){
+    maxAngle = WristConstants.MAX_WRIST_ANGLE;
   }
 
   public double getWristMotorTemp() {

@@ -58,6 +58,9 @@ public class Arm extends SubsystemBase {
 
   private double setpoint = ArmPositions.STOW.getShoulderAngle();
 
+  private double maxAngle = ArmConstants.MAX_SHOULDER_ANGLE;
+  private double minAngle = ArmConstants.MINIMUM_SHOULDER_ANGLE;
+
   public Arm(Pnuematics pnuematics) {
     shoulderMotor.restoreFactoryDefaults();
     shoulderMotorFollower.restoreFactoryDefaults();
@@ -92,7 +95,6 @@ public class Arm extends SubsystemBase {
     controller.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
     controller.setSmartMotionMaxAccel(ArmConstants.MAX_ACCEL, 0);
     controller.setSmartMotionMaxVelocity(ArmConstants.MAX_VEL, 0);
-
     controller.setP(ArmConstants.KP);
 
     this.pneumatics = pnuematics;
@@ -110,7 +112,9 @@ public class Arm extends SubsystemBase {
     // This method will be called once per scheduler run
     dt = time.get() - lastTime;
     lastTime = time.get();
-
+    //  if(isArmStowed()){
+    //    resetEncoders();
+   //  }
   }
 
   public void turnOnBrakes(Boolean isBraked) {
@@ -154,8 +158,8 @@ public class Arm extends SubsystemBase {
   }
 
   public void setPosition(double positionDegrees) {
-    setpoint = Math.min(positionDegrees, ArmConstants.MAX_SHOULDER_ANGLE);
-    setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
+    setpoint = Math.min(positionDegrees, maxAngle);
+    setpoint = Math.max(setpoint, minAngle);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
     controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
@@ -168,12 +172,22 @@ public class Arm extends SubsystemBase {
 
   public void setVelocity(double velocityDegreesPerSec) {
     setpoint = setpoint + velocityDegreesPerSec * dt;
-    setpoint = Math.min(setpoint, ArmConstants.MAX_SHOULDER_ANGLE);
-    setpoint = Math.max(setpoint, ArmConstants.MINIMUM_SHOULDER_ANGLE);
+    setpoint = Math.min(setpoint, maxAngle);
+    setpoint = Math.max(setpoint, minAngle);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
     controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
+  }
+
+  public void removeBounds(){
+    maxAngle = 100;
+    minAngle = -100;
+  }
+
+  public void addBounds(){
+    maxAngle = ArmConstants.MAX_SHOULDER_ANGLE;
+    minAngle = ArmConstants.MINIMUM_SHOULDER_ANGLE;
   }
 
   public Command actuateSuperstructureCommandPickup(Supplier<PickupLocation> location, Supplier<PieceType> piece) {

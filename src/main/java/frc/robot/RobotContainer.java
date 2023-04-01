@@ -177,7 +177,7 @@ public class RobotContainer {
                 m_driverController.rightBumper()
                                 .onFalse(new InstantCommand(
                                                 () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
-// 
+                //
                 m_driverController.leftBumper()
                                 .onTrue(new InstantCommand(
                                                 () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED)));
@@ -224,9 +224,16 @@ public class RobotContainer {
 
                 m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
 
-              //  m_operatorController.leftStick()//.and(() -> (m_operatorController.leftStick().getAsBoolean()))
-                 //               .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.resetEncoders()),
-                   //                             new InstantCommand(() -> wrist.resetEncoder())));
+                m_operatorController.start()
+                                .onTrue(new InstantCommand(() -> arm.removeBounds()))
+                                .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
+                                                new InstantCommand(() -> arm.resetEncoders())));
+
+                // m_operatorController.leftStick()//.and(() ->
+                // (m_operatorController.leftStick().getAsBoolean()))
+                // .onTrue(new ParallelCommandGroup(new InstantCommand(() ->
+                // arm.resetEncoders()),
+                // new InstantCommand(() -> wrist.resetEncoder())));
 
                 m_operatorController.povDown().onTrue(
                                 new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
@@ -286,10 +293,7 @@ public class RobotContainer {
                                                 setAutoBalanceAcceleration()),
                                 driverStationTab.getAutoPath().isReverse());
 
-                
-                
-                PPRamseteCommand commandToRun = 
-                new PPRamseteCommand(path,
+                PPRamseteCommand commandToRun = new PPRamseteCommand(path,
                                 drivetrain::getPose2d,
                                 new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
                                 new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
@@ -303,7 +307,7 @@ public class RobotContainer {
                                 drivetrain::tankDriveVolts,
                                 false,
                                 drivetrain);
-                return new InstantCommand(()-> drivetrain.resetOdometry(path.getInitialPose())).andThen(commandToRun);
+                return new InstantCommand(() -> drivetrain.resetOdometry(path.getInitialPose())).andThen(commandToRun);
         }
 
         private double turningAuto() {
@@ -313,19 +317,19 @@ public class RobotContainer {
                         return 180.0;
                 }
         }
+
         private double setAutoBalanceAcceleration() {
-                if (driverStationTab.getAutoPath().autoBalance() == true){
+                if (driverStationTab.getAutoPath().autoBalance() == true) {
                         return 1.5;
-                }
-                else {
+                } else {
                         return 2.5;
                 }
         }
+
         private double setAutoBalanceVelocity() {
-                if (driverStationTab.getAutoPath().autoBalance() == true){
+                if (driverStationTab.getAutoPath().autoBalance() == true) {
                         return 1.5;
-                }
-                else {
+                } else {
                         return 2.5;
                 }
         }
@@ -388,8 +392,7 @@ public class RobotContainer {
                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                 if (driverStationTab.getAutoPath().autoBalance()) {
                         auto.addCommands(new AutoBalance(drivetrain));
-                } 
-                else if (driverStationTab.getAutoPath().Pickup()) {
+                } else if (driverStationTab.getAutoPath().Pickup()) {
                         auto.addCommands(new FaceScoreLocation(drivetrain, turningAuto()));
                         auto.addCommands(new SimplePickup(arm, wrist, intake,
                                         () -> driverStationTab.getAutoPath().selectedPiece2nd(),
@@ -399,10 +402,15 @@ public class RobotContainer {
                         // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                         if (driverStationTab.getAutoPath().Return()) {
                                 auto.addCommands(new FaceScoreLocation(drivetrain, (turningAuto() - 180)));
-                                auto.addCommands(new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                                getReturnPathPlannerCommand(),
-                                                new InstantCommand(() -> turnOnBrakesDrivetrain(true))),
-                                                (new SequentialCommandGroup(new WaitCommand(2.0), new SimpleScore(arm, wrist, intake, ()->PieceType.CUBE, ()->ScoreLevel.LEVEL_2)))));
+                                auto.addCommands(new ParallelCommandGroup(
+                                                new SequentialCommandGroup(
+                                                                new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                                                                getReturnPathPlannerCommand(),
+                                                                new InstantCommand(() -> turnOnBrakesDrivetrain(true))),
+                                                (new SequentialCommandGroup(new WaitCommand(2.0),
+                                                                new SimpleScore(arm, wrist, intake,
+                                                                                () -> PieceType.CUBE,
+                                                                                () -> ScoreLevel.LEVEL_2)))));
                         }
                 }
                 return auto;
