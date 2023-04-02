@@ -72,6 +72,7 @@ public final class Constants {
 
         public static final double REG_SPEED = 0.5;
         public static final double SLOW_SPEED = 0.25;
+        public static final double REALLY_SLOW_SPEED = 0.15;
         public static final double FAST_SPEED = 1;
         public static final double MAX_ANGULAR_VELOCITY = 0.65;// .5
         public static final double MAX_LINEAR_VELOCITY = 0.7;// .5
@@ -321,9 +322,10 @@ public final class Constants {
             LEVEL_2_CUBE(-20.11, PnuematicPositions.RETRACTED), // TODO
             LEVEL_1_CUBE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED), // TODO
             STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
-            FLOOR_PICKUP_CONE(-42, PnuematicPositions.EXTENDED),
-            FLOOR_PICKUP_CUBE(-39, PnuematicPositions.EXTENDED),
-            STATION_PICKUP_CONE(15, PnuematicPositions.RETRACTED),
+            FLOOR_PICKUP_CONE(-43.5, PnuematicPositions.EXTENDED),
+            FLOOR_PICKUP_CUBE(-43.18, PnuematicPositions.EXTENDED),
+          
+            STATION_PICKUP_CONE(9.713, PnuematicPositions.RETRACTED),
             STATION_PICKUP_CUBE(10, PnuematicPositions.RETRACTED);
 
             private final double shoulderAngle;
@@ -374,9 +376,9 @@ public final class Constants {
 
         public enum WristPosition {
             STOW(WristConstants.MAX_WRIST_ANGLE),
-            FLOOR_CUBE_PICKUP(26),//28
-            FLOOR_CONE_PICKUP(39),
-            DOUBLE_PICKUP_CONE(-12.3922853469),
+            FLOOR_CUBE_PICKUP(45.143),//28 new 31
+            FLOOR_CONE_PICKUP(57.46),
+            DOUBLE_PICKUP_CONE(-0.07),
             DOUBLE_PICKUP_CUBE(-5),
             LEVEL_3_CONE(-9),
             LEVEL_2_CONE(-8),

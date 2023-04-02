@@ -140,6 +140,7 @@ public class Drivetrain extends SubsystemBase {
 
 public void drive(DoubleSupplier leftY, DoubleSupplier rightX, DoubleSupplier rightY, Supplier<Boolean> isQuickTurn) {
  drive(leftY.getAsDouble(), rightX.getAsDouble(), rightY.getAsDouble(), isQuickTurn);
+ drivetrain.feed();
 }
 
   private void tankDrive(double leftSpeed, double rightSpeed) {
@@ -148,6 +149,7 @@ public void drive(DoubleSupplier leftY, DoubleSupplier rightX, DoubleSupplier ri
 
   public void arcadeDrive(double xSpeed, double zRotation) {
     drivetrain.arcadeDrive(xSpeed, zRotation);
+    drivetrain.feed();
   }
 
   private void curvatureDrive(double xSpeed, double zRotation, Supplier<Boolean> isQuickTurn) {
@@ -216,6 +218,7 @@ public void drive(DoubleSupplier leftY, DoubleSupplier rightX, DoubleSupplier ri
   {
     leftMotorGroup.setVoltage(leftVolts);
     rightMotorGroup.setVoltage(rightVolts);
+    drivetrain.feed();
   }
 
   public void driveWithVelocity(double xVelocity, double rotationVelocity){

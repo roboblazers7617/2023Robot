@@ -177,6 +177,13 @@ public class RobotContainer {
                 m_driverController.rightBumper()
                                 .onFalse(new InstantCommand(
                                                 () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
+
+                m_driverController.rightTrigger()
+                                .onTrue(new InstantCommand(
+                                                () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REALLY_SLOW_SPEED)));
+                m_driverController.rightTrigger()
+                                .onFalse(new InstantCommand(
+                                                () -> drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED)));
                 //
                 m_driverController.leftBumper()
                                 .onTrue(new InstantCommand(
@@ -310,13 +317,13 @@ public class RobotContainer {
                 return new InstantCommand(() -> drivetrain.resetOdometry(path.getInitialPose())).andThen(commandToRun);
         }
 
-        private double turningAuto() {
-                if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-                        return 0.0;
-                } else {
-                        return 180.0;
-                }
-        }
+        // private double turningAuto() {
+        //         if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
+        //                 return 0.0;
+        //         } else {
+        //                 return 180.0;
+        //         }
+        // }
 
         private double setAutoBalanceAcceleration() {
                 if (driverStationTab.getAutoPath().autoBalance() == true) {
@@ -393,7 +400,7 @@ public class RobotContainer {
                 if (driverStationTab.getAutoPath().autoBalance()) {
                         auto.addCommands(new AutoBalance(drivetrain));
                 } else if (driverStationTab.getAutoPath().Pickup()) {
-                        auto.addCommands(new FaceScoreLocation(drivetrain, turningAuto()));
+                        auto.addCommands(new FaceScoreLocation(drivetrain, 180.0));
                         auto.addCommands(new SimplePickup(arm, wrist, intake,
                                         () -> driverStationTab.getAutoPath().selectedPiece2nd(),
                                         () -> driverStationTab.getAutoPath().pickupLocation()));
@@ -401,7 +408,7 @@ public class RobotContainer {
                         // getPickupPathPlannerCommand(),
                         // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                         if (driverStationTab.getAutoPath().Return()) {
-                                auto.addCommands(new FaceScoreLocation(drivetrain, (turningAuto() - 180)));
+                                auto.addCommands(new FaceScoreLocation(drivetrain, (180.0)));
                                 auto.addCommands(new ParallelCommandGroup(
                                                 new SequentialCommandGroup(
                                                                 new InstantCommand(() -> turnOnBrakesDrivetrain(false)),

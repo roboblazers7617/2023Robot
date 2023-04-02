@@ -38,7 +38,6 @@ public class AutoBalance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    System.out.println("Pitch is " + mDrivetrain.getPitch());
   /*   if (mDrivetrain.getPitch() <= -DrivetrainConstants.BALANCE_SPEED_BOOST_TOLERANCE) {
       mDrivetrain.arcadeDrive(
           MathUtil.clamp(controller.calculate(mDrivetrain.getPitch() + .2), -DrivetrainConstants.MAX_BALANCE_SPEED,
