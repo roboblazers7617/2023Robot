@@ -34,7 +34,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
     private Intake intake;
     private DoublePublisher maxSpeedPub;
     // private StringPublisher pathPlanningTargetPub;
-    // private BooleanPublisher debugModePub;
+    private BooleanPublisher debugModePub;
     private BooleanPublisher isInBrakeMode;
     // private BooleanPublisher isIntakeSpinning;
 
@@ -81,7 +81,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
         debugMode.addOption("True", true);
         tab.add("Debug Mode", debugMode).withPosition(2, 0);
         NetworkTable debugNetworkTable = NetworkTableInstance.getDefault().getTable("debug mode table");
-        // debugModePub = debugNetworkTable.getBooleanTopic("debug mode").publish();
+        debugModePub = debugNetworkTable.getBooleanTopic("debug mode").publish();
 
         isInBrakeMode = networkTable.getBooleanTopic("Coast mode").publish();
         tab.add("Coast mode", false).withPosition(3, 0);
@@ -127,7 +127,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
         // drivetrain.setTargetNode(targetNode.getSelected());
         // pathPlanningTargetPub.set(drivetrain.getTargetPose());
 
-        // debugModePub.set(debugMode.getSelected());
+        debugModePub.set(debugMode.getSelected());
 
         // isInBrakeMode.set(!drivetrain.isBrakeMode());
 
