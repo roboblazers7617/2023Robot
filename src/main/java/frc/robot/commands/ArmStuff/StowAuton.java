@@ -7,7 +7,7 @@ package frc.robot.commands.ArmStuff;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
-import frc.robot.Constants.ArmConstants.ArmPositions;
+import frc.robot.Constants.ArmConstants.ArmPosition;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 import frc.robot.Constants.WristConstants.WristPosition;
 import frc.robot.Constants.WristConstants.IntakeConstants.IntakeDirection;
@@ -26,7 +26,7 @@ public class StowAuton extends SequentialCommandGroup {
     addCommands(new InstantCommand(() -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake),
         new InstantCommand(() -> wrist.setPosition(WristPosition.STOW, arm::getArmAngle), wrist),
         new InstantCommand(() -> arm.actuateSuperstructure(PnuematicPositions.RETRACTED)), new WaitCommand(.3),
-        new InstantCommand(() -> arm.setPosition(ArmPositions.STOW), arm),
+        new InstantCommand(() -> arm.setPosition(ArmPosition.STOW), arm),
        arm.WaitUntilArmInPosition());
   }
 }

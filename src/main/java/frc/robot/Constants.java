@@ -10,7 +10,9 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import frc.robot.Constants.ArmConstants.ArmPosition;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
+import frc.robot.Constants.WristConstants.WristPosition;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -313,7 +315,7 @@ public final class Constants {
         public static final double MAX_VEL = 30;//degrees per sec?
 
         // TODO: Lukas. (High) Set the angles
-        public enum ArmPositions {
+        public enum ArmPosition {
             LEVEL_3_CONE(40, PnuematicPositions.EXTENDED),
             LEVEL_2_CONE(4, PnuematicPositions.RETRACTED),
             LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
@@ -324,12 +326,14 @@ public final class Constants {
             FLOOR_PICKUP_CONE(-42, PnuematicPositions.EXTENDED),
             FLOOR_PICKUP_CUBE(-39, PnuematicPositions.EXTENDED),
             STATION_PICKUP_CONE(21.3, PnuematicPositions.RETRACTED),
-            STATION_PICKUP_CUBE(13.1, PnuematicPositions.RETRACTED);
+            STATION_PICKUP_CUBE(13.1, PnuematicPositions.RETRACTED),
+            LOW_TRANSITION(-46, PnuematicPositions.RETRACTED), 
+            HIGH_TRANSITION(-1, PnuematicPositions.RETRACTED);
 
             private final double shoulderAngle;
             private final PnuematicPositions pistonPosition;
 
-            ArmPositions(double shoulderAngle, PnuematicPositions pistonPosition) {
+            ArmPosition(double shoulderAngle, PnuematicPositions pistonPosition) {
                 this.shoulderAngle = shoulderAngle;
                 this.pistonPosition = pistonPosition;
             }
@@ -383,7 +387,8 @@ public final class Constants {
             LEVEL_1_CONE(41),
             LEVEL_3_CUBE(21), // TODO
             LEVEL_2_CUBE(72.5), // TODO
-            LEVEL_1_CUBE(41);// TODO
+            LEVEL_1_CUBE(41), 
+            HIGH_TRANSITION(21);// TODO
 
             private final double angle;
 
@@ -433,6 +438,33 @@ public final class Constants {
             }
 
         }
+    }
+
+    public static class StateConstants{
+        public enum State{
+            Stow(ArmPosition.STOW, WristPosition.STOW),
+            ConeFloorPickup(ArmPosition.FLOOR_PICKUP_CONE, WristPosition.FLOOR_CONE_PICKUP),
+            CubeFloorPickup(ArmPosition.FLOOR_PICKUP_CUBE, WristPosition.FLOOR_CUBE_PICKUP),
+            ConeDoublePickup(ArmPosition.STATION_PICKUP_CONE, WristPosition.DOUBLE_PICKUP_CONE),
+            CubeDoublePickup(ArmPosition.STATION_PICKUP_CUBE, WristPosition.DOUBLE_PICKUP_CUBE),
+            ConeLevel1(ArmPosition.LEVEL_1_CONE, WristPosition.LEVEL_1_CONE),
+            CubeLevel1(ArmPosition.LEVEL_1_CUBE, WristPosition.LEVEL_1_CUBE),
+            ConeLevel2(ArmPosition.LEVEL_2_CONE, WristPosition.LEVEL_2_CONE),
+            CubeLevel2(ArmPosition.LEVEL_2_CUBE, WristPosition.LEVEL_2_CUBE),
+            ConeLevel3(ArmPosition.LEVEL_3_CONE, WristPosition.LEVEL_3_CONE),
+            CubeLevel3(ArmPosition.LEVEL_3_CUBE, WristPosition.LEVEL_3_CUBE),
+            LowTransition(ArmPosition.LOW_TRANSITION, WristPosition.STOW),
+            HighTransition(ArmPosition.HIGH_TRANSITION, WristPosition.HIGH_TRANSITION);
+
+            private final ArmPosition armPosition;
+            private final WristPosition wristPosition;
+
+            State(ArmPosition armPosition, WristPosition wristPosition){
+                this.armPosition = armPosition;
+                this.wristPosition = wristPosition;
+            } 
+        }
+
     }
 
 }

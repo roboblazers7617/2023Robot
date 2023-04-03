@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.ArmConstants.ArmPositions;
+import frc.robot.Constants.ArmConstants.ArmPosition;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
@@ -56,7 +56,7 @@ public class Arm extends SubsystemBase {
 
   private double dt, lastTime;
 
-  private double setpoint = ArmPositions.STOW.getShoulderAngle();
+  private double setpoint = ArmPosition.STOW.getShoulderAngle();
 
   public Arm(Pnuematics pnuematics) {
     shoulderMotor.restoreFactoryDefaults();
@@ -123,34 +123,34 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public ArmPositions evalPickupPosition(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
+  public ArmPosition evalPickupPosition(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
     if (location.get().equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CONE))
-      return ArmPositions.FLOOR_PICKUP_CONE;
+      return ArmPosition.FLOOR_PICKUP_CONE;
     else if (location.get().equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CUBE))
-      return ArmPositions.FLOOR_PICKUP_CUBE;
+      return ArmPosition.FLOOR_PICKUP_CUBE;
     else if (location.get().equals(PickupLocation.DOUBLE) && piece.get().equals(PieceType.CONE))
-      return ArmPositions.STATION_PICKUP_CONE;
+      return ArmPosition.STATION_PICKUP_CONE;
     else if (location.get().equals(PickupLocation.DOUBLE) && piece.get().equals(PieceType.CUBE))
-      return ArmPositions.STATION_PICKUP_CUBE;
+      return ArmPosition.STATION_PICKUP_CUBE;
     else
-      return ArmPositions.STOW;
+      return ArmPosition.STOW;
   }
 
-  public ArmPositions evalScorePosition(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
+  public ArmPosition evalScorePosition(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
     if (level.get().equals(ScoreLevel.LEVEL_1) && piece.get().equals(PieceType.CONE))
-      return ArmPositions.LEVEL_1_CONE;
+      return ArmPosition.LEVEL_1_CONE;
     else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CONE))
-      return ArmPositions.LEVEL_2_CONE;
+      return ArmPosition.LEVEL_2_CONE;
     else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CONE))
-      return ArmPositions.LEVEL_3_CONE;
+      return ArmPosition.LEVEL_3_CONE;
     if (level.get().equals(ScoreLevel.LEVEL_1) && piece.get().equals(PieceType.CUBE))
-      return ArmPositions.LEVEL_1_CUBE;
+      return ArmPosition.LEVEL_1_CUBE;
     else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CUBE))
-      return ArmPositions.LEVEL_2_CUBE;
+      return ArmPosition.LEVEL_2_CUBE;
     else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CUBE))
-      return ArmPositions.LEVEL_3_CUBE;
+      return ArmPosition.LEVEL_3_CUBE;
     else
-      return ArmPositions.STOW;
+      return ArmPosition.STOW;
   }
 
   public void setPosition(double positionDegrees) {
@@ -162,7 +162,7 @@ public class Arm extends SubsystemBase {
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
   }
 
-  public void setPosition(ArmPositions position) {
+  public void setPosition(ArmPosition position) {
     setPosition(position.getShoulderAngle());
   }
 
@@ -253,7 +253,7 @@ public class Arm extends SubsystemBase {
     return shoulderMotor.getMotorTemperature();
   }
 
-  public ArmPositions evalScoreLevel(ScoreLevel level) {
+  public ArmPosition evalScoreLevel(ScoreLevel level) {
     return null;
   }
 }

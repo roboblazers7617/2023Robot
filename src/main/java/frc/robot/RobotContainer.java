@@ -12,7 +12,7 @@ import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.WristConstants;
-import frc.robot.Constants.ArmConstants.ArmPositions;
+import frc.robot.Constants.ArmConstants.ArmPosition;
 import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 import frc.robot.Constants.WristConstants.WristPosition;
@@ -241,7 +241,7 @@ public class RobotContainer {
         // }
 
         public void stow() {
-                arm.setPosition(ArmPositions.STOW);
+                arm.setPosition(ArmPosition.STOW);
                 wrist.setPosition(WristPosition.STOW, () -> arm.getArmAngle());
                 arm.actuateSuperstructure(PnuematicPositions.RETRACTED);
         }
