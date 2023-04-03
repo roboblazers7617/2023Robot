@@ -23,15 +23,18 @@ public class Leds extends SubsystemBase {
   private final Drivetrain drivetrain;
   private AddressableLED m_led;
   private AddressableLEDBuffer m_ledBuffer;
-  private final int NUMBER_OF_LEDS = 80;
+  private final int NUMBER_OF_LEDS = 75;
   private final int EDGE_GAP = 0;// DO NOT DISPLAY THE SPEED
   /** the number of leds including the lit led */
-  private final int MOVING_LED_GAP = 10;
+  private final int MOVING_LED_GAP = 20;
   private boolean goingUp = false;
   private Color centerColor;
   private double centerMultiplier = 1.0;
   private ArrayList<Integer> movingLightsUp = new ArrayList<Integer>();
   private ArrayList<Integer> movingLightsDown = new ArrayList<Integer>();
+  private int bouncePosition = 0;
+  private boolean bounceGoingUp = true;
+  private final int BOUNCE_LENGTH = 5;
 
   private int timer = 0;
   // private Color mode;
@@ -102,9 +105,10 @@ public class Leds extends SubsystemBase {
 
         setSpeed(drivetrain.getMaxDrivetrainSpeed());
       } else if (inst.isConnected()) {
-        if (timer % 5 == 0) {
-          autoColor();
-        }
+        // if (timer % 5 == 0) {
+        //   autoColorMove();
+        // }
+        autoColorBounce();
         timer++;
       } else {
         centerColor = new Color(0, 255, 0);
@@ -158,8 +162,17 @@ public class Leds extends SubsystemBase {
 
   }
 
-  private void autoColor() {
+  private void autoColorMove() {
 
+    //set everything to the alliance color first
+    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+      if (DriverStation.getAlliance() == Alliance.Blue) {
+        m_ledBuffer.setLED(i, new Color(0, 0, 255));
+      } else {
+        m_ledBuffer.setLED(i, new Color(205, 0, 0));
+
+      }
+    }
     // increase them all by one
     for (int i = 0; i < movingLightsUp.size(); i++) {
       movingLightsUp.set(i, movingLightsUp.get(i) + 1);
@@ -170,18 +183,10 @@ public class Leds extends SubsystemBase {
       movingLightsUp.sort(null);
     }
 
-    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-      if (movingLightsUp.contains(i)) {
-        m_ledBuffer.setLED(i, new Color(255, 255, 255));
-      } else {
-        if (DriverStation.getAlliance() == Alliance.Blue) {
-          m_ledBuffer.setLED(i, new Color(0, 0, 255));
-        } else {
-          m_ledBuffer.setLED(i, new Color(255, 0, 0));
-
-        }
-
-      }
+    for (int i = 0; i < movingLightsUp.size(); i++) {
+      
+        m_ledBuffer.setLED(movingLightsUp.get(i), new Color(255, 255, 255));
+      
     }
 
     //START NEW STUFF
@@ -194,20 +199,38 @@ public class Leds extends SubsystemBase {
       movingLightsDown.sort(null);
     }
 
-    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
-      if (movingLightsDown.contains(i)) {
-        m_ledBuffer.setLED(i, new Color(255, 255, 255));
-      } else {
-        if (DriverStation.getAlliance() == Alliance.Blue) {
-          m_ledBuffer.setLED(i, new Color(0, 0, 255));
-        } else {
-          m_ledBuffer.setLED(i, new Color(255, 0, 0));
+    for (int i = 0; i < movingLightsDown.size(); i++) {
+      
+      m_ledBuffer.setLED(movingLightsDown.get(i), new Color(255, 255, 255));
+    
+  }
+    //END NEW STUFF
 
-        }
+  }
+  private void autoColorBounce(){
+    for (int i = 0; i < m_ledBuffer.getLength(); i++) {
+      if (DriverStation.getAlliance() == Alliance.Blue) {
+        m_ledBuffer.setLED(i, new Color(0, 0, 255));
+      } else {
+        m_ledBuffer.setLED(i, new Color(205, 0, 0));
 
       }
     }
-    //END NEW STUFF
+    if(bounceGoingUp && bouncePosition >= m_ledBuffer.getLength() - BOUNCE_LENGTH){
+      bounceGoingUp = false;
+    }
+    else if(!bounceGoingUp && bouncePosition == 0){
+      bounceGoingUp = true;
+    }
+    if(bounceGoingUp){
+      bouncePosition++;
+    }
+    else{
+      bouncePosition--;
+    }
+    for (int i = bouncePosition; i < BOUNCE_LENGTH + bouncePosition; i++){
+      m_ledBuffer.setLED(i, new Color(255, 255, 255));
 
+    }
   }
 }
