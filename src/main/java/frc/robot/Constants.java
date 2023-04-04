@@ -152,12 +152,12 @@ public final class Constants {
            
             
 //          THE IMPORTANT ONES \/ \/ \/
-            leftTwo("left blue simple","left blue simple return","left blue pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, true),
+            leftTwo("left blue simple","left blue simple return","left blue simple pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, true),
             midTwo("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
             rightTwo("right blue simple","right blue simple return","right blue simple return", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, true),
-            leftOne("left blue simple","left blue simple return","left blue pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
+            leftOne("left blue simple","left blue simple return","left blue simple pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
             midOne("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
-            rightOne("right blue simple","right blue simple return","right blue simple return", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
+            rightOne("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
 
 
 

@@ -401,9 +401,11 @@ public class RobotContainer {
                         auto.addCommands(new AutoBalance(drivetrain));
                 } else if (driverStationTab.getAutoPath().Pickup()) {
                         auto.addCommands(new FaceScoreLocation(drivetrain, 180.0));
-                        auto.addCommands(new SimplePickup(arm, wrist, intake,
-                                        () -> driverStationTab.getAutoPath().selectedPiece2nd(),
-                                        () -> driverStationTab.getAutoPath().pickupLocation()));
+                        auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                        (new ParallelCommandGroup(getPathPlannerCommand(), new SimpleMoveToPickup(arm, wrist, () -> driverStationTab.getAutoPath().selectedPiece2nd(), () -> driverStationTab.getAutoPath().pickupLocation()), new IntakePiece(intake, ()-> driverStationTab.getAutoPath().selectedPiece2nd()))),
+                        new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+                        
+                        auto.addCommands(new ParallelCommandGroup((new FaceScoreLocation(drivetrain, 0.0)), new Stow(arm, wrist, intake)));
                         // auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                         // getPickupPathPlannerCommand(),
                         // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
