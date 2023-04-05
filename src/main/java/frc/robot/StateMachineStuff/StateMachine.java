@@ -5,6 +5,8 @@
 package frc.robot.StateMachineStuff;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.StateConstants.State;
@@ -13,6 +15,8 @@ import frc.robot.Constants.StateConstants.State;
 public class StateMachine extends SubsystemBase {
     private State currentState = State.Stow;
     private State targetState = State.Stow;
+    private BooleanSupplier isArmAtSetpoint;
+    private BooleanSupplier isWristAtSetpoint;
     private State[][] stateDiagramList = {
     {null,                   State.Stow,           State.ConeFloorPickup, State.CubeFloorPickup, State.ConeDoublePickup, State.CubeDoublePickup, State.ConeLevel1,     State.CubeLevel1,     State.ConeLevel2, State.CubeLevel2, State.ConeLevel3,     State.CubeLevel3},
 
@@ -30,9 +34,14 @@ public class StateMachine extends SubsystemBase {
     {State.ConeLevel3,       State.HighTransition, State.HighTransition, State.HighTransition,   State.ConeDoublePickup, State.HighTransition,   State.HighTransition, State.HighTransition, State.HighTransition, State.HighTransition, State.ConeLevel3,     State.CubeLevel3},
     {State.CubeLevel3,       State.HighTransition, State.HighTransition, State.HighTransition,   State.ConeDoublePickup, State.HighTransition,   State.HighTransition, State.HighTransition, State.HighTransition, State.HighTransition, State.ConeLevel3,     State.CubeLevel3}};
 
+    public StateMachine(BooleanSupplier isArmAtSetpoint, BooleanSupplier isWristAtSetpoint){
+        this.isArmAtSetpoint = isArmAtSetpoint;
+        this.isWristAtSetpoint = isWristAtSetpoint;
+    }
+   
     @Override
     public void periodic(){
-        if (currentState != targetState){
+        if ((currentState != targetState) && isArmAtSetpoint.getAsBoolean() && isWristAtSetpoint.getAsBoolean()){
             int targetIndex = 0;
             int currentIndex = 0;
             for(int i = 1; i<stateDiagramList[0].length; i++){
@@ -53,6 +62,10 @@ public class StateMachine extends SubsystemBase {
     }
     public State getState(){
         return currentState;
+    }
+
+    public boolean isAtState(){
+        return ((currentState == targetState) && isArmAtSetpoint.getAsBoolean() && isWristAtSetpoint.getAsBoolean());
     }
 
 
