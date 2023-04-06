@@ -64,6 +64,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -236,12 +238,6 @@ public class RobotContainer {
                                 .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
                                                 new InstantCommand(() -> arm.resetEncoders())));
 
-                // m_operatorController.leftStick()//.and(() ->
-                // (m_operatorController.leftStick().getAsBoolean()))
-                // .onTrue(new ParallelCommandGroup(new InstantCommand(() ->
-                // arm.resetEncoders()),
-                // new InstantCommand(() -> wrist.resetEncoder())));
-
                 m_operatorController.povDown().onTrue(
                                 new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
                 m_operatorController.povRight().onTrue(
@@ -258,6 +254,7 @@ public class RobotContainer {
                 arm.setPosition(ArmPositions.STOW);
                 wrist.setPosition(WristPosition.STOW, () -> arm.getArmAngle());
                 arm.actuateSuperstructure(PnuematicPositions.RETRACTED);
+                intake.setIntakeSpeed(0);
         }
 
         public void setTargetPose(Pose2d targetPose) {
@@ -365,10 +362,10 @@ public class RobotContainer {
 
         public Command getPickupPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pickuppathname(),
-                                new PathConstraints(2.5,
-                                                2),
+                                new PathConstraints(1,
+                                                1),
                                 false);
-
+//6 for simple, 6.3 I think for far
                 return new PPRamseteCommand(path,
                                 drivetrain::getPose2d,
                                 new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
@@ -399,24 +396,27 @@ public class RobotContainer {
                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                 if (driverStationTab.getAutoPath().autoBalance()) {
                         auto.addCommands(new AutoBalance(drivetrain));
-                } else if (driverStationTab.getAutoPath().Pickup()) {
-                        auto.addCommands(new FaceScoreLocation(drivetrain, 180.0));
+                } 
+                else if (driverStationTab.getAutoPath().Pickup()) {
+                        auto.addCommands(new FaceScoreLocation(drivetrain, 6),
+                        new SimpleMoveToPickup(arm, wrist, () -> driverStationTab.getAutoPath().selectedPiece2nd(), () -> driverStationTab.getAutoPath().pickupLocation()));
+                                
                         auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                        (new ParallelCommandGroup(getPathPlannerCommand(), new SimpleMoveToPickup(arm, wrist, () -> driverStationTab.getAutoPath().selectedPiece2nd(), () -> driverStationTab.getAutoPath().pickupLocation()), new IntakePiece(intake, ()-> driverStationTab.getAutoPath().selectedPiece2nd()))),
-                        new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+                                new ParallelDeadlineGroup(getPickupPathPlannerCommand(),  intake.SpinIntakeCommand(()-> driverStationTab.getAutoPath().selectedPiece2nd(),true)));
+                                        new InstantCommand(() -> turnOnBrakesDrivetrain(true));
                         
-                        auto.addCommands(new ParallelCommandGroup((new FaceScoreLocation(drivetrain, 0.0)), new Stow(arm, wrist, intake)));
+                        auto.addCommands(new Stow(arm, wrist, intake));
                         // auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                         // getPickupPathPlannerCommand(),
                         // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                         if (driverStationTab.getAutoPath().Return()) {
-                                auto.addCommands(new FaceScoreLocation(drivetrain, (180.0)));
+                                auto.addCommands(new FaceScoreLocation(drivetrain, (180)));
                                 auto.addCommands(new ParallelCommandGroup(
                                                 new SequentialCommandGroup(
                                                                 new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                                                                 getReturnPathPlannerCommand(),
                                                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true))),
-                                                (new SequentialCommandGroup(new WaitCommand(2.0),
+                                                (new SequentialCommandGroup(new WaitCommand(2.5),
                                                                 new SimpleScore(arm, wrist, intake,
                                                                                 () -> PieceType.CUBE,
                                                                                 () -> ScoreLevel.LEVEL_2)))));

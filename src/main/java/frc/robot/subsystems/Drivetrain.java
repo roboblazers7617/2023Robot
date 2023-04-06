@@ -207,6 +207,7 @@ public void drive(DoubleSupplier leftY, DoubleSupplier rightX, DoubleSupplier ri
 
   public DifferentialDriveKinematics getKinematics(){
     return mKinematics;
+    
   }
 
   public void resetOdometry(Pose2d pose){
@@ -224,6 +225,7 @@ public void drive(DoubleSupplier leftY, DoubleSupplier rightX, DoubleSupplier ri
   public void driveWithVelocity(double xVelocity, double rotationVelocity){
     var wheelSpeeds = mKinematics.toWheelSpeeds(new ChassisSpeeds(xVelocity, 0.0, rotationVelocity));
     setSpeeds(wheelSpeeds);
+    drivetrain.feed();
 
   }
 
