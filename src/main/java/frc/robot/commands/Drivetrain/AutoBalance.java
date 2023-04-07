@@ -12,10 +12,11 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 
-public class AutoBalance extends CommandBase {
+public class AutoBalance extends
+ CommandBase {
   /** Creates a new AutoBalance. */
   Drivetrain mDrivetrain;
-  PIDController controller = new PIDController(3, DrivetrainConstants.KI_BALANCE,
+  PIDController controller = new PIDController(DrivetrainConstants.KP_BALANCE, DrivetrainConstants.KI_BALANCE,
       DrivetrainConstants.KD_BALANCE);
 
   public AutoBalance(Drivetrain drivetrain) {

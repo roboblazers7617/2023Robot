@@ -25,6 +25,7 @@ import frc.robot.commands.ArmStuff.SimplePickup;
 import frc.robot.commands.ArmStuff.SimpleScore;
 import frc.robot.commands.ArmStuff.Stow;
 import frc.robot.commands.ArmStuff.StowAuton;
+import frc.robot.commands.ArmStuff.TiltWristDownAndStow;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.commands.Drivetrain.AlignToDouble;
 import frc.robot.commands.Drivetrain.AutoBalance;
@@ -405,7 +406,7 @@ public class RobotContainer {
                                 new ParallelDeadlineGroup(getPickupPathPlannerCommand(),  intake.SpinIntakeCommand(()-> driverStationTab.getAutoPath().selectedPiece2nd(),true)));
                                         new InstantCommand(() -> turnOnBrakesDrivetrain(true));
                         
-                        auto.addCommands(new Stow(arm, wrist, intake));
+                        auto.addCommands(new TiltWristDownAndStow(arm, wrist, intake));
                         // auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                         // getPickupPathPlannerCommand(),
                         // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));

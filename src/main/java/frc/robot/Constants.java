@@ -71,8 +71,8 @@ public final class Constants {
         public static final int CURRENT_LIMIT = 40;
 
         public static final double REG_SPEED = 0.5;
-        public static final double SLOW_SPEED = 0.25;
-        public static final double REALLY_SLOW_SPEED = 0.15;
+        public static final double SLOW_SPEED = 0.2;//was .25
+        public static final double REALLY_SLOW_SPEED = 0.15;//they want this removed
         public static final double FAST_SPEED = 1;
         public static final double MAX_ANGULAR_VELOCITY = 0.75;// .65
         public static final double MAX_LINEAR_VELOCITY = 0.7;// .5
@@ -123,10 +123,10 @@ public final class Constants {
         public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(38.5);
         public static final double X_OFFSET_FROM_SCORE_LOCATION = LENGTH_OF_ROBOT / 2.0 + Units.inchesToMeters(14.0);
 
-        public static final double KP_BALANCE = 1.85;//2
+        public static final double KP_BALANCE = 2.8;//2
         public static final double KI_BALANCE = 0;
         public static final double KD_BALANCE = 0.5;
-        public static final double BALANCING_TOLERANCE = 14.5;//15
+        public static final double BALANCING_TOLERANCE = 13.75;//15
         // TODO: Lukas. (High) Decide this value
         public static final double MAX_BALANCE_SPEED = 0.52;//.55
 
@@ -315,7 +315,7 @@ public final class Constants {
 
         // TODO: Lukas. (High) Set the angles
         public enum ArmPositions {
-            LEVEL_3_CONE(45, PnuematicPositions.EXTENDED),
+            LEVEL_3_CONE(40.46, PnuematicPositions.EXTENDED),
             LEVEL_2_CONE(4, PnuematicPositions.RETRACTED),
             LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
             LEVEL_3_CUBE(37, PnuematicPositions.EXTENDED), // TODO
@@ -326,7 +326,7 @@ public final class Constants {
             FLOOR_PICKUP_CUBE(-42.47, PnuematicPositions.EXTENDED),
           
             STATION_PICKUP_CONE(13.874, PnuematicPositions.RETRACTED),
-            STATION_PICKUP_CUBE(10, PnuematicPositions.RETRACTED);
+            STATION_PICKUP_CUBE(8.5, PnuematicPositions.RETRACTED);
 
             private final double shoulderAngle;
             private final PnuematicPositions pistonPosition;
@@ -376,11 +376,11 @@ public final class Constants {
 
         public enum WristPosition {
             STOW(WristConstants.MAX_WRIST_ANGLE),
-            FLOOR_CUBE_PICKUP(39.893),//  //28 new 31
-            FLOOR_CONE_PICKUP(52.75),
+            FLOOR_CUBE_PICKUP(33.85),
+            FLOOR_CONE_PICKUP(48),
             DOUBLE_PICKUP_CONE(-18.82),
-            DOUBLE_PICKUP_CUBE(-5),
-            LEVEL_3_CONE(-9),
+            DOUBLE_PICKUP_CUBE(-5.75),
+            LEVEL_3_CONE(-14.5),
             LEVEL_2_CONE(-8),
             LEVEL_1_CONE(41),
             LEVEL_3_CUBE(21), // TODO
