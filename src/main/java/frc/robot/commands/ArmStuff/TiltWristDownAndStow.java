@@ -7,6 +7,7 @@ package frc.robot.commands.ArmStuff;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.PieceType;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Wrist;
@@ -19,6 +20,9 @@ public class TiltWristDownAndStow extends SequentialCommandGroup {
   public TiltWristDownAndStow(Arm arm, Wrist wrist, Intake intake) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new InstantCommand(() -> wrist.setPosition(wrist.getWristPosition()-2, () -> arm.getArmAngle())), wrist.WaitUntilWristInPosition(), new Stow(arm, wrist, intake));
+    addCommands(//intake.SpinIntakeCommand(() -> PieceType.CUBE, true),
+          new InstantCommand(() -> wrist.setPosition(wrist.getWristPosition()-14, () -> arm.getArmAngle())), 
+          wrist.WaitUntilWristInPosition(), 
+          new Stow(arm, wrist, intake));
   }
 }

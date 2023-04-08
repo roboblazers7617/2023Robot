@@ -155,9 +155,9 @@ public final class Constants {
             leftTwo("left blue simple","left blue simple return","left blue simple pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, true),
             midTwo("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
             rightTwo("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, true),
-            leftOne("left blue simple","left blue simple return","left blue simple pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, false),
+            leftOne("left blue simple","left blue simple return","left blue simple pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
             midOne("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
-            rightOne("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, false),
+            rightOne("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
 
 
 
@@ -315,17 +315,17 @@ public final class Constants {
 
         // TODO: Lukas. (High) Set the angles
         public enum ArmPositions {
-            LEVEL_3_CONE(40.46, PnuematicPositions.EXTENDED),
-            LEVEL_2_CONE(4, PnuematicPositions.RETRACTED),
+            LEVEL_3_CONE(42.44, PnuematicPositions.EXTENDED),
+            LEVEL_2_CONE(-1, PnuematicPositions.RETRACTED),
             LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
             LEVEL_3_CUBE(37, PnuematicPositions.EXTENDED), // TODO
             LEVEL_2_CUBE(-19.11, PnuematicPositions.RETRACTED), // TODO
             LEVEL_1_CUBE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED), // TODO
             STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
-            FLOOR_PICKUP_CONE(-43.5, PnuematicPositions.EXTENDED),
+            FLOOR_PICKUP_CONE(-41.13, PnuematicPositions.EXTENDED),
             FLOOR_PICKUP_CUBE(-42.47, PnuematicPositions.EXTENDED),
           
-            STATION_PICKUP_CONE(13.874, PnuematicPositions.RETRACTED),
+            STATION_PICKUP_CONE(16.876, PnuematicPositions.RETRACTED),
             STATION_PICKUP_CUBE(8.5, PnuematicPositions.RETRACTED);
 
             private final double shoulderAngle;
@@ -353,7 +353,7 @@ public final class Constants {
 
         public static final int CURRENT_LIMIT = 20;
 
-        public static final double WRIST_ANGLE_TOLERANCE = 5;
+        public static final double WRIST_ANGLE_TOLERANCE = 2;
         public static final double MAX_WRIST_ANGLE = 103;
         public static final double MAX_UPWARD_WRIST_SPEED = 0.33; // TODO: Changed 3/4/23 from 0.25
         public static final double MAX_DOWNWARD_WRIST_SPEED = -0.2;
@@ -376,12 +376,12 @@ public final class Constants {
 
         public enum WristPosition {
             STOW(WristConstants.MAX_WRIST_ANGLE),
-            FLOOR_CUBE_PICKUP(33.85),
-            FLOOR_CONE_PICKUP(48),
-            DOUBLE_PICKUP_CONE(-18.82),
+            FLOOR_CUBE_PICKUP(41.61),
+            FLOOR_CONE_PICKUP(50.29),
+            DOUBLE_PICKUP_CONE(-19.25),
             DOUBLE_PICKUP_CUBE(-5.75),
-            LEVEL_3_CONE(-14.5),
-            LEVEL_2_CONE(-8),
+            LEVEL_3_CONE(-23),
+            LEVEL_2_CONE(-3.39),
             LEVEL_1_CONE(41),
             LEVEL_3_CUBE(21), // TODO
             LEVEL_2_CUBE(72.5), // TODO
