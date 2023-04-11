@@ -7,29 +7,21 @@ package frc.robot;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
-import frc.robot.Constants.ScoreLevel;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.ArmConstants.ArmPosition;
 import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
+import frc.robot.Constants.StateConstants.GenericPosition;
 import frc.robot.Constants.WristConstants.WristPosition;
-import frc.robot.commands.ArmStuff.AutonMoveToScore;
 import frc.robot.commands.ArmStuff.IntakePiece;
 import frc.robot.commands.ArmStuff.OutakePiece;
-import frc.robot.commands.ArmStuff.SimpleMoveToPickup;
-import frc.robot.commands.ArmStuff.SimpleMoveToScore;
 import frc.robot.commands.ArmStuff.SimplePickup;
 import frc.robot.commands.ArmStuff.SimpleScore;
 import frc.robot.commands.ArmStuff.Stow;
-import frc.robot.commands.ArmStuff.StowAuton;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
-import frc.robot.commands.Drivetrain.AlignToDouble;
 import frc.robot.commands.Drivetrain.AutoBalance;
 import frc.robot.commands.Drivetrain.FaceScoreLocation;
-import frc.robot.commands.Drivetrain.IntakeAtDouble;
 import frc.robot.shuffleboard.ArmTab;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
@@ -89,6 +81,8 @@ public class RobotContainer {
         private final Intake intake = new Intake();
         private final Arm arm = new Arm(pnuematics);
         private final Leds leds = new Leds(intake, drivetrain);
+        private final StateMachine machine = new StateMachine(arm, wrist);
+
         private final CommandXboxController m_driverController = new CommandXboxController(
                         OperatorConstants.DRIVER_CONTROLLER_PORT);
 
@@ -128,7 +122,10 @@ public class RobotContainer {
                                                 ? -m_operatorController.getRightY()
                                                 : 0) * WristConstants.MAX_MANNUAL_WRIST_SPEED,
                                 arm::getArmAngle), wrist));
+                wrist.setDefaultCommand(Commands.either(getPathPlannerCommand(), getAutonomousCommand(),
+                                () -> (Math.abs(m_operatorController.getRightY()) > OperatorConstants.DEADZONE)));
 
+                
                 ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
                 // YOUR CODE HERE | | |
                 // \/ \/ \/
@@ -203,11 +200,9 @@ public class RobotContainer {
 
         private void configureOperatorBindings() {
                 m_operatorController.leftBumper()
-                                .onTrue(new SimpleMoveToPickup(arm, wrist, () -> getSelectedPiece(),
-                                                () -> PickupLocation.DOUBLE));
+                                .onTrue(machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.DoublePickup));
                 m_operatorController.leftTrigger()
-                                .onTrue(new SimpleMoveToPickup(arm, wrist, () -> getSelectedPiece(),
-                                                () -> PickupLocation.FLOOR));
+                                .onTrue(machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.FloorPickup));
 
                 m_operatorController.rightBumper()
                                 .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CONE)));
@@ -215,7 +210,7 @@ public class RobotContainer {
                                 .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CUBE)));
 
                 m_operatorController.povLeft()
-                                .onTrue(new Stow(arm, wrist, intake));
+                                .onTrue(machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.Stow));
 
                 m_operatorController.y().whileTrue(new IntakePiece(intake, () -> getSelectedPiece()));
 
@@ -224,16 +219,16 @@ public class RobotContainer {
 
                 m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
 
-                m_operatorController.leftStick()//.and(() -> (m_operatorController.leftStick().getAsBoolean()))
+                m_operatorController.leftStick()// .and(() -> (m_operatorController.leftStick().getAsBoolean()))
                                 .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.resetEncoders()),
                                                 new InstantCommand(() -> wrist.resetEncoder())));
 
                 m_operatorController.povDown().onTrue(
-                                new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
+                        machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.Level1));
                 m_operatorController.povRight().onTrue(
-                                new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_2, () -> getSelectedPiece()));
+                        machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.Level2));
                 m_operatorController.povUp().onTrue(
-                                new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_3, () -> getSelectedPiece()));
+                        machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.Level3));
         }
 
         // private void setScoreLevel(ScoreLevel scoreLevel) {
@@ -286,10 +281,7 @@ public class RobotContainer {
                                                 setAutoBalanceAcceleration()),
                                 driverStationTab.getAutoPath().isReverse());
 
-                
-                
-                PPRamseteCommand commandToRun = 
-                new PPRamseteCommand(path,
+                PPRamseteCommand commandToRun = new PPRamseteCommand(path,
                                 drivetrain::getPose2d,
                                 new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
                                 new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
@@ -303,7 +295,7 @@ public class RobotContainer {
                                 drivetrain::tankDriveVolts,
                                 false,
                                 drivetrain);
-                return new InstantCommand(()-> drivetrain.resetOdometry(path.getInitialPose())).andThen(commandToRun);
+                return new InstantCommand(() -> drivetrain.resetOdometry(path.getInitialPose())).andThen(commandToRun);
         }
 
         private double turningAuto() {
@@ -313,19 +305,19 @@ public class RobotContainer {
                         return 180.0;
                 }
         }
+
         private double setAutoBalanceAcceleration() {
-                if (driverStationTab.getAutoPath().autoBalance() == true){
+                if (driverStationTab.getAutoPath().autoBalance() == true) {
                         return 1.5;
-                }
-                else {
+                } else {
                         return 2.5;
                 }
         }
+
         private double setAutoBalanceVelocity() {
-                if (driverStationTab.getAutoPath().autoBalance() == true){
+                if (driverStationTab.getAutoPath().autoBalance() == true) {
                         return 2;
-                }
-                else {
+                } else {
                         return 2.5;
                 }
         }
@@ -377,32 +369,27 @@ public class RobotContainer {
         public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
                 SequentialCommandGroup auto = new SequentialCommandGroup();
                 if (driverStationTab.getAutoPath().scoring()) {
-                        auto.addCommands(
-                                        new SimpleMoveToScore(arm, wrist,
-                                                        () -> driverStationTab.getAutoPath().scoreLevelFirst(),
-                                                        () -> driverStationTab.getAutoPath().selectedPiece()),
-                                        new OutakePiece(intake, () -> driverStationTab.getAutoPath().selectedPiece()));
+                        auto.addCommands(new SimpleScore(machine, intake, () -> AutoPath.selectedPiece(), null, false));
                 }
                 auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                (new ParallelCommandGroup(getPathPlannerCommand(), new StowAuton(arm, wrist, intake))),
+                                (new ParallelCommandGroup(getPathPlannerCommand(), new Stow(machine, intake, false))),
                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                 if (driverStationTab.getAutoPath().autoBalance()) {
                         auto.addCommands(new AutoBalance(drivetrain));
-                } 
-                else if (driverStationTab.getAutoPath().Pickup()) {
+                } else if (driverStationTab.getAutoPath().Pickup()) {
                         auto.addCommands(new FaceScoreLocation(drivetrain, turningAuto()));
-                        auto.addCommands(new SimplePickup(arm, wrist, intake,
-                                        () -> driverStationTab.getAutoPath().selectedPiece2nd(),
-                                        () -> driverStationTab.getAutoPath().pickupLocation()));
-                        // auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                        // getPickupPathPlannerCommand(),
-                        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+                        auto.addCommands(new SimplePickup(machine, intake, () -> AutoPath.selectedPiece2nd(), () -> AutoPath.pickupLocation()));
                         if (driverStationTab.getAutoPath().Return()) {
                                 auto.addCommands(new FaceScoreLocation(drivetrain, (turningAuto() - 180)));
-                                auto.addCommands(new ParallelCommandGroup(new SequentialCommandGroup(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                                getReturnPathPlannerCommand(),
-                                                new InstantCommand(() -> turnOnBrakesDrivetrain(true))),
-                                                (new SequentialCommandGroup(new WaitCommand(2.0), new SimpleScore(arm, wrist, intake, ()->PieceType.CUBE, ()->ScoreLevel.LEVEL_2)))));
+                                auto.addCommands(new ParallelCommandGroup(
+                                                new SequentialCommandGroup(
+                                                                new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                                                                getReturnPathPlannerCommand(),
+                                                                new InstantCommand(() -> turnOnBrakesDrivetrain(true))),
+                                                (new SequentialCommandGroup(new WaitCommand(2.0),
+                                                                new SimpleScore(machine, intake,
+                                                                                () -> PieceType.CUBE,
+                                                                                () -> GenericPosition.Level2, true)))));
                         }
                 }
                 return auto;

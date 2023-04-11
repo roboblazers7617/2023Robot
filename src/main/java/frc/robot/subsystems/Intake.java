@@ -38,19 +38,6 @@ public class Intake extends SubsystemBase {
     // This method will be called once per scheduler run
   }
 
-// Current NON FUNCTIONAL!! Do not use
- /*  public boolean isHoldingGamePiece() {
-  
-        if ((intakeMotor.getOutputCurrent() >= IntakeConstants.CONE_CURRENT_LIMIT ) || (cubeSensor.getProximity() >= IntakeConstants.CUBE_SENSOR_LIMIT) ){
-      return true;
-    }
-    else {
-      return false;
-    }
-
-  }
-  */
-
   public void setIntakeSpeed(double speed) {
     intakeMotor.set(speed);
   }
@@ -64,6 +51,10 @@ public class Intake extends SubsystemBase {
     return Commands.startEnd((() -> this.setIntakeSpeed(evalPieceIntake(piece.get(), isIntaking).speed())),
         (() -> this.setIntakeSpeed(IntakeDirection.STOP.speed())), this);
     
+  }
+
+  public Command StopIntake(){
+    return Commands.runOnce(() -> setIntakeSpeed(IntakeDirection.STOP.speed()), this);
   }
 
 

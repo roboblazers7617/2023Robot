@@ -5,7 +5,6 @@
 package frc.robot.shuffleboard;
 
 
-import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -26,7 +25,6 @@ public class ArmTab extends ShuffleboardTabBase {
     DoublePublisher anglePub;
     DoublePublisher motorTempPub;
     StringPublisher pistonPub;
-    BooleanPublisher stowPub;
     Arm mArm;
 
     // use IntegerSubscriber to get integers from shuffleboard
@@ -50,14 +48,12 @@ public class ArmTab extends ShuffleboardTabBase {
         // create a publisher in the network table
         anglePub = networkTable.getDoubleTopic("Angle (Degrees)").publish();
         pistonPub = networkTable.getStringTopic("Piston state").publish();
-        stowPub = networkTable.getBooleanTopic("Stow Limit Switch").publish();
         motorTempPub = networkTable.getDoubleTopic("Motor Temp").publish();
 
         // add the network table to shuffleboard, the name must be the same, the default
         // value does not matter.
         widget.add("Angle (Degrees)", 0);
         widget.add("Piston State", "ERROR 404: Position does not exist.");
-        widget.add("Stow Limit Switch", false);
 
         shuffleboardTabTesting.add("Disable Compressor", new InstantCommand(() ->mArm.enableCompressor(false)));
         shuffleboardTabTesting.add("Enable Compressor", new InstantCommand(() ->mArm.enableCompressor(true)));
@@ -67,7 +63,6 @@ public class ArmTab extends ShuffleboardTabBase {
         // publish the values using the publisher
         anglePub.set(mArm.getShoulderAngle());
         pistonPub.set(mArm.getSuperstructureState().toString());
-        stowPub.set(mArm.isArmStowed());
         motorTempPub.set((mArm.getShoulderMotorTemp()*(9.0/5.0)+32.0));
 
     }

@@ -23,7 +23,6 @@ public class centerAndDistanceAlign extends CommandBase {
   PIDController distanceController = new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN, DrivetrainConstants.KD_LIN);
   public centerAndDistanceAlign(Vision vision, Drivetrain drivetrain, double distance) {
     // Use addRequirements() here to declare subsystem dependencies.
-    //TODO: Lukas. (High) Does this need to require Vision?
     addRequirements(drivetrain);
     mDrivetrain = drivetrain;
     mVision = vision;

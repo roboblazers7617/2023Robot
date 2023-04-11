@@ -14,15 +14,11 @@ import com.revrobotics.CANSparkMax.IdleMode;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.AnalogPotentiometer;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.Constants.PickupLocation;
-import frc.robot.Constants.PieceType;
-import frc.robot.Constants.ScoreLevel;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.WristConstants.WristPosition;
 
@@ -35,12 +31,6 @@ public class Wrist extends SubsystemBase {
   private final SparkMaxPIDController wristController = wristMotor.getPIDController();
 
   private final RelativeEncoder wristEncoder = wristMotor.getEncoder();
-
-  private final AnalogPotentiometer wristPotentiometer = new AnalogPotentiometer(WristConstants.POT_CHANEL,
-      WristConstants.WRIST_POT_SCALE, WristConstants.WRIST_POT_OFFSET);
-
-  // TODO: private final DigitalInput isStowed = new
-  // DigitalInput(IntakeConstants.WRIST_LIMIT_SWITCH_CHANEL);
 
   private Timer time = new Timer();
 
@@ -133,33 +123,4 @@ public class Wrist extends SubsystemBase {
     return Commands.waitUntil(() -> atSetpoint());
   }
 
-  public WristPosition evalPickupLocation(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
-    if (location.get().equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CONE))
-      return WristPosition.FLOOR_CONE_PICKUP;
-    else if (location.get().equals(PickupLocation.FLOOR) && piece.get().equals(PieceType.CUBE))
-      return WristPosition.FLOOR_CUBE_PICKUP;
-    else if (location.get().equals(PickupLocation.DOUBLE) && piece.get().equals(PieceType.CONE))
-      return WristPosition.DOUBLE_PICKUP_CONE;
-    else if (location.get().equals(PickupLocation.DOUBLE) && piece.get().equals(PieceType.CUBE))
-      return WristPosition.DOUBLE_PICKUP_CUBE;
-    else
-      return WristPosition.STOW;
-  }
-
-  public WristPosition evalScorePosition(Supplier<ScoreLevel> level, Supplier<PieceType> piece) {
-    if (level.get().equals(ScoreLevel.LEVEL_1 )&& piece.get().equals(PieceType.CONE))
-      return WristPosition.LEVEL_1_CONE;
-    else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CONE))
-      return WristPosition.LEVEL_2_CONE;
-    else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CONE))
-      return WristPosition.LEVEL_2_CONE;
-    else if (level.get().equals(ScoreLevel.LEVEL_1 )&& piece.get().equals(PieceType.CUBE))
-      return WristPosition.LEVEL_1_CUBE;
-    else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CUBE))
-      return WristPosition.LEVEL_2_CUBE;
-    else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CUBE))
-      return WristPosition.LEVEL_3_CUBE;
-    else
-      return WristPosition.STOW;
-  }
 }

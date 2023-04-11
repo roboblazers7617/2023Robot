@@ -17,7 +17,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.ctre.phoenix.sensors.WPI_Pigeon2;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
-import edu.wpi.first.math.filter.SlewRateLimiter;
+//import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -63,13 +63,12 @@ public class Drivetrain extends SubsystemBase {
 
   private final DifferentialDrive drivetrain;
   private double maxDrivetrainspeed = DrivetrainConstants.REG_SPEED;
-  private double prevMaxDrivetrainspeed = DrivetrainConstants.REG_SPEED;
 
   private DrivetrainMode mode;
 
 
-  private SlewRateLimiter slewRateFilterLeft = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
-  private SlewRateLimiter slewRateFilterRight = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
+//  private SlewRateLimiter slewRateFilterLeft = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
+ // private SlewRateLimiter slewRateFilterRight = new SlewRateLimiter(1.0/ DrivetrainConstants.RAMP_TIME_SECONDS);
   private FieldLocation targetNode;
 
   public Drivetrain(Vision vision) {
@@ -125,7 +124,6 @@ public class Drivetrain extends SubsystemBase {
 
 
   
-//TODO: do the sin thing, for better control and maybe less jerkiness
   public void drive(double leftY, double rightX, double rightY, Supplier<Boolean> isQuickTurn) {
     double lForward = leftY; //slewRateFilterLeft.calculate(leftY);
     double rForward = rightY; //slewRateFilterRight.calculate(rightY);

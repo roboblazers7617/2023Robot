@@ -7,22 +7,15 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PnuematicsConstants;
 
-// TODO: Lukas. Does this need to be a Subsystem, or just a java class. Does not have periodic functionality
-public class Pnuematics extends SubsystemBase {
+public class Pnuematics{
   private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);
   private DoubleSolenoid leftArmPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, PnuematicsConstants.LEFT_ARM_PISTON_EXTEND_PORT, PnuematicsConstants.LEFT_ARM_PISTON_RETRACT_PORT);
   private DoubleSolenoid rightArmPiston = new DoubleSolenoid(PneumaticsModuleType.REVPH, PnuematicsConstants.RIGHT_ARM_PISTON_EXTEND_PORT, PnuematicsConstants.RIGHT_ARM_PISTON_RETRACT_PORT);
   /** Creates a new Pnuematics. */
   public Pnuematics() {
 
-  }
-
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
   }
 
   public void enable(){

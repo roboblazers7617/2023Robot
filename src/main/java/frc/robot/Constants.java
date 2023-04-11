@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import frc.robot.Constants.ArmConstants.ArmPosition;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
+import frc.robot.Constants.StateConstants.GenericPosition;
 import frc.robot.Constants.WristConstants.WristPosition;
 
 /**
@@ -28,20 +29,10 @@ import frc.robot.Constants.WristConstants.WristPosition;
  */
 public final class Constants {
 
-    public enum ScoreLevel {
-        LEVEL_1,
-        LEVEL_2,
-        LEVEL_3;
-    }
-
-    public enum PickupLocation {
-        FLOOR,
-        DOUBLE;
-    }
-
     public enum PieceType {
         CONE,
-        CUBE;
+        CUBE,
+        NULL;
     }
 
     public static class OperatorConstants {
@@ -128,7 +119,6 @@ public final class Constants {
         public static final double KI_BALANCE = 0;
         public static final double KD_BALANCE = 0.5;
         public static final double BALANCING_TOLERANCE = 13.75;
-        // TODO: Lukas. (High) Decide this value
         public static final double MAX_BALANCE_SPEED = 0.550;
 
         public static final int BALANCE_SPEED_BOOST_TOLERANCE = 15;
@@ -144,25 +134,25 @@ public final class Constants {
         }
 
         public enum AutoPath {
-            leftBlueSimple("left blue simple","left blue simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true,false),
-            midBlueSimple("mid blue simple","null","null",                            true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
-            rightBlueSimple("right blue simple","right blue simple return","null",    true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, true),
-            leftRedSimple("right blue simple","right blue simple return","null",          true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
-            midRedSimple("mid red simple","null","null",                              true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
-            rightRedSimple("right red simple","right red simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
+            leftBlueSimple("left blue simple","left blue simple return","null",       true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true,false),
+            midBlueSimple("mid blue simple","null","null",                            true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, true, true,false, false),
+            rightBlueSimple("right blue simple","right blue simple return","null",    true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true, true),
+            leftRedSimple("right blue simple","right blue simple return","null",          true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true, false),
+            midRedSimple("mid red simple","null","null",                              true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, true, true,false, false),
+            rightRedSimple("right red simple","right red simple return","null",       true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true, false),
            
             
 //          THE IMPORTANT ONES \/ \/ \/
-            leftTwo("left blue simple","left blue simple return","left blue pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, true),
-            midTwo("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
-            rightTwo("right blue simple","right blue simple return","right blue simple return", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, true),
-            leftOne("left blue simple","left blue simple return","left blue pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
-            midOne("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
-            rightOne("right blue simple","right blue simple return","right blue simple return", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
+            leftTwo("left blue simple","left blue simple return","left blue pickup",true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, true, true),
+            midTwo("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, true, true,false, false),
+            rightTwo("right blue simple","right blue simple return","right blue simple return", true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, true, true),
+            leftOne("left blue simple","left blue simple return","left blue pickup",true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, false, false),
+            midOne("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, true, true,false, false),
+            rightOne("right blue simple","right blue simple return","right blue simple return", true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, false, false),
 
 
 
-            testpath("simple", "null","null",                                         false, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, false, false, false);
+            testpath("simple", "null","null", false, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, false, false, false);
       
             private final String pathname;
             private final String returnpathname;
@@ -170,16 +160,16 @@ public final class Constants {
             private final boolean isReverse;
             private final PieceType selectedPiece;
             private final PieceType selectedPiece2nd;
-            private final ScoreLevel ScoreLevelFirst;
-            private final ScoreLevel ScoreLevelSecond;
-            private final PickupLocation pickupLocation;
+            private final GenericPosition ScoreLevelFirst;
+            private final GenericPosition ScoreLevelSecond;
+            private final GenericPosition pickupLocation;
             private final boolean autoBalance;
             private final boolean scoring;
             private final boolean Pickup;
             private final boolean Return;
 
-            AutoPath(String pathname, String returnpathname, String pickuppathname, boolean isReverse, PieceType selectedPiece, PieceType slectedPiece2nd, ScoreLevel ScoreLevelFirst,
-                    ScoreLevel ScoreLevelSecond, PickupLocation pickupLocation, boolean autoBalance, boolean scoring, boolean Pickup, boolean Return) {
+            AutoPath(String pathname, String returnpathname, String pickuppathname, boolean isReverse, PieceType selectedPiece, PieceType slectedPiece2nd, GenericPosition ScoreLevelFirst,
+                    GenericPosition ScoreLevelSecond, GenericPosition pickupLocation, boolean autoBalance, boolean scoring, boolean Pickup, boolean Return) {
                 this.pathname = pathname;
                 this.returnpathname = returnpathname;
                 this.pickuppathname = pickuppathname;
@@ -216,15 +206,15 @@ public final class Constants {
                 return selectedPiece2nd;
             }
 
-            public ScoreLevel scoreLevelFirst() {
+            public GenericPosition scoreLevelFirst() {
                 return ScoreLevelFirst;
             }
 
-            public ScoreLevel scoreLevelSecond() {
+            public GenericPosition scoreLevelSecond() {
                 return ScoreLevelSecond;
             }
 
-            public PickupLocation pickupLocation() {
+            public GenericPosition pickupLocation() {
                 return pickupLocation;
             }
 
@@ -245,7 +235,6 @@ public final class Constants {
     }
 
     public static class VisionConstants {
-        // TODO: Lukas. (High) Confirm these location constants for camera
         public static final double CAMERA_PITCH = 0;
         public static final Transform3d CAMERA_POSITION = new Transform3d(
                 new Translation3d(Units.inchesToMeters(-8.25),
@@ -295,7 +284,6 @@ public final class Constants {
         public static final double KG = 0.01;
         public static final double KV = 0;
 
-        // TODO: Lukas. (High) Set a position tolerance
         public static final double POSITION_TOLERANCE = 0.5;
         public static final double SHOULDER_POTENTIOMETER_RANGE = 340;
         public static final double SHOULDER_POTENTIOMETER_OFFSET = -222;
@@ -314,14 +302,13 @@ public final class Constants {
         public static final double MAX_ACCEL =10;//degrees per sec squared?
         public static final double MAX_VEL = 30;//degrees per sec?
 
-        // TODO: Lukas. (High) Set the angles
         public enum ArmPosition {
             LEVEL_3_CONE(40, PnuematicPositions.EXTENDED),
             LEVEL_2_CONE(4, PnuematicPositions.RETRACTED),
             LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
-            LEVEL_3_CUBE(37, PnuematicPositions.EXTENDED), // TODO
-            LEVEL_2_CUBE(-20.11, PnuematicPositions.RETRACTED), // TODO
-            LEVEL_1_CUBE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED), // TODO
+            LEVEL_3_CUBE(37, PnuematicPositions.EXTENDED), 
+            LEVEL_2_CUBE(-20.11, PnuematicPositions.RETRACTED), 
+            LEVEL_1_CUBE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED), 
             STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
             FLOOR_PICKUP_CONE(-42, PnuematicPositions.EXTENDED),
             FLOOR_PICKUP_CUBE(-39, PnuematicPositions.EXTENDED),
@@ -357,7 +344,7 @@ public final class Constants {
 
         public static final double WRIST_ANGLE_TOLERANCE = 5;
         public static final double MAX_WRIST_ANGLE = 103;
-        public static final double MAX_UPWARD_WRIST_SPEED = 0.33; // TODO: Changed 3/4/23 from 0.25
+        public static final double MAX_UPWARD_WRIST_SPEED = 0.33;
         public static final double MAX_DOWNWARD_WRIST_SPEED = -0.2;
         public static final double MAX_WRIST_ACCEL = 0.12;
         public static final double WRIST_KS = 0.5;
@@ -385,10 +372,10 @@ public final class Constants {
             LEVEL_3_CONE(-9),
             LEVEL_2_CONE(-8),
             LEVEL_1_CONE(41),
-            LEVEL_3_CUBE(21), // TODO
-            LEVEL_2_CUBE(72.5), // TODO
+            LEVEL_3_CUBE(21), 
+            LEVEL_2_CUBE(72.5),
             LEVEL_1_CUBE(41), 
-            HIGH_TRANSITION(21);// TODO
+            HIGH_TRANSITION(21);
 
             private final double angle;
 
@@ -442,27 +429,53 @@ public final class Constants {
 
     public static class StateConstants{
         public enum State{
-            Stow(ArmPosition.STOW, WristPosition.STOW),
-            ConeFloorPickup(ArmPosition.FLOOR_PICKUP_CONE, WristPosition.FLOOR_CONE_PICKUP),
-            CubeFloorPickup(ArmPosition.FLOOR_PICKUP_CUBE, WristPosition.FLOOR_CUBE_PICKUP),
-            ConeDoublePickup(ArmPosition.STATION_PICKUP_CONE, WristPosition.DOUBLE_PICKUP_CONE),
-            CubeDoublePickup(ArmPosition.STATION_PICKUP_CUBE, WristPosition.DOUBLE_PICKUP_CUBE),
-            ConeLevel1(ArmPosition.LEVEL_1_CONE, WristPosition.LEVEL_1_CONE),
-            CubeLevel1(ArmPosition.LEVEL_1_CUBE, WristPosition.LEVEL_1_CUBE),
-            ConeLevel2(ArmPosition.LEVEL_2_CONE, WristPosition.LEVEL_2_CONE),
-            CubeLevel2(ArmPosition.LEVEL_2_CUBE, WristPosition.LEVEL_2_CUBE),
-            ConeLevel3(ArmPosition.LEVEL_3_CONE, WristPosition.LEVEL_3_CONE),
-            CubeLevel3(ArmPosition.LEVEL_3_CUBE, WristPosition.LEVEL_3_CUBE),
-            LowTransition(ArmPosition.LOW_TRANSITION, WristPosition.STOW),
-            HighTransition(ArmPosition.HIGH_TRANSITION, WristPosition.HIGH_TRANSITION);
+            Stow(ArmPosition.STOW, WristPosition.STOW, PieceType.NULL, GenericPosition.Stow),
+            ConeFloorPickup(ArmPosition.FLOOR_PICKUP_CONE, WristPosition.FLOOR_CONE_PICKUP, PieceType.CONE, GenericPosition.FloorPickup),
+            CubeFloorPickup(ArmPosition.FLOOR_PICKUP_CUBE, WristPosition.FLOOR_CUBE_PICKUP, PieceType.CUBE, GenericPosition.FloorPickup),
+            ConeDoublePickup(ArmPosition.STATION_PICKUP_CONE, WristPosition.DOUBLE_PICKUP_CONE, PieceType.CONE, GenericPosition.DoublePickup),
+            CubeDoublePickup(ArmPosition.STATION_PICKUP_CUBE, WristPosition.DOUBLE_PICKUP_CUBE, PieceType.CUBE, GenericPosition.DoublePickup),
+            ConeLevel1(ArmPosition.LEVEL_1_CONE, WristPosition.LEVEL_1_CONE, PieceType.CONE, GenericPosition.Level1),
+            CubeLevel1(ArmPosition.LEVEL_1_CUBE, WristPosition.LEVEL_1_CUBE, PieceType.CUBE, GenericPosition.Level1),
+            ConeLevel2(ArmPosition.LEVEL_2_CONE, WristPosition.LEVEL_2_CONE, PieceType.CONE, GenericPosition.Level2),
+            CubeLevel2(ArmPosition.LEVEL_2_CUBE, WristPosition.LEVEL_2_CUBE, PieceType.CUBE, GenericPosition.Level2),
+            ConeLevel3(ArmPosition.LEVEL_3_CONE, WristPosition.LEVEL_3_CONE, PieceType.CONE, GenericPosition.Level3),
+            CubeLevel3(ArmPosition.LEVEL_3_CUBE, WristPosition.LEVEL_3_CUBE, PieceType.CUBE, GenericPosition.Level3),
+            LowTransition(ArmPosition.LOW_TRANSITION, WristPosition.STOW, PieceType.NULL, GenericPosition.NULL),
+            HighTransition(ArmPosition.HIGH_TRANSITION, WristPosition.HIGH_TRANSITION, PieceType.NULL, GenericPosition.NULL);
 
             private final ArmPosition armPosition;
             private final WristPosition wristPosition;
+            private final PieceType piece;
+            private final GenericPosition position;
 
-            State(ArmPosition armPosition, WristPosition wristPosition){
+            State(ArmPosition armPosition, WristPosition wristPosition, PieceType piece, GenericPosition genericPosition){
                 this.armPosition = armPosition;
                 this.wristPosition = wristPosition;
+                this.piece = piece;
+                position = genericPosition;
+            }
+            public ArmPosition getArmPosition() {
+                return armPosition;
+            }
+            public WristPosition getWristPosition() {
+                return wristPosition;
             } 
+            public PieceType getPiece() {
+                return piece;
+            }
+            public GenericPosition getPosition() {
+                return position;
+            }
+        }
+
+        public enum GenericPosition{
+            FloorPickup,
+            DoublePickup,
+            Level1,
+            Level2,
+            Level3,
+            Stow,
+            NULL;
         }
 
     }
