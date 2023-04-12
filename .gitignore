@@ -168,3 +168,7 @@ simgui.json
 simgui-ds.json
 .vscode/settings.json
 *.wpilog
+
+# Do not ignore external libraries(thanks maverick and Dannie)
+
+!libs/*.jar
