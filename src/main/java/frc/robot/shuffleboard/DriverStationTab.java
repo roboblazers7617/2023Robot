@@ -33,10 +33,10 @@ public class DriverStationTab extends ShuffleboardTabBase {
     private Drivetrain drivetrain;
     private Intake intake;
     private DoublePublisher maxSpeedPub;
-    private StringPublisher pathPlanningTargetPub;
+    // private StringPublisher pathPlanningTargetPub;
     private BooleanPublisher debugModePub;
     private BooleanPublisher isInBrakeMode;
-    private BooleanPublisher isIntakeSpinning;
+    // private BooleanPublisher isIntakeSpinning;
 
 
     private UsbCamera camera;
@@ -62,7 +62,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
         // autoPath.addOption("Red Left Node", DrivetrainConstants.AutoPath.redNodeOne);
         // autoPath.addOption("Red Mid Node", DrivetrainConstants.AutoPath.redNodeSix);
         // autoPath.addOption("Red Right Node", DrivetrainConstants.AutoPath.redNodeNine);
-        autoPath.setDefaultOption("high cone score left blue simple", DrivetrainConstants.AutoPath.leftBlueSimple);
+        // autoPath.setDefaultOption("high cone score left blue simple", DrivetrainConstants.AutoPath.leftBlueSimple);
         // autoPath.addOption("high cone score mid blue simple", DrivetrainConstants.AutoPath.midBlueSimple);
         // autoPath.addOption("high cone score right blue simple", DrivetrainConstants.AutoPath.rightBlueSimple);
         // autoPath.addOption("high cone scoreleft red simple", DrivetrainConstants.AutoPath.leftRedSimple);
@@ -85,8 +85,9 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
         isInBrakeMode = networkTable.getBooleanTopic("Coast mode").publish();
         tab.add("Coast mode", false).withPosition(3, 0);
-        isIntakeSpinning = networkTable.getBooleanTopic("Is Intake Spinning").publish();
-        tab.add("Is Intake Spinning", false).withPosition(4, 0);
+
+        // isIntakeSpinning = networkTable.getBooleanTopic("Is Intake Spinning").publish();
+        // tab.add("Is Intake Spinning", false).withPosition(4, 0);
         //path planning target use button box now
         // targetNode.setDefaultOption("Node 1", FieldLocation.NODE1);
         // targetNode.addOption("Node 2", FieldLocation.NODE2);
@@ -106,8 +107,8 @@ public class DriverStationTab extends ShuffleboardTabBase {
         tab.add("max SPEED", 20.0).withPosition(0, 1);
 
         // //path planning target
-         pathPlanningTargetPub = networkTable.getStringTopic("target position for path planning").publish();
-         tab.add("target position for path planning", "NA").withPosition(1, 2);
+        //  pathPlanningTargetPub = networkTable.getStringTopic("target position for path planning").publish();
+        //  tab.add("target position for path planning", "NA").withPosition(1, 2);
 
         camera = CameraServer.startAutomaticCapture();
         if (camera.isConnected()) {
@@ -124,15 +125,17 @@ public class DriverStationTab extends ShuffleboardTabBase {
         drivetrain.setDriveTrainMode(DrivetrainMode.valueOf(drivetrainMode.getSelected()));
         maxSpeedPub.set(drivetrain.getMaxDrivetrainSpeed());
         // drivetrain.setTargetNode(targetNode.getSelected());
-        pathPlanningTargetPub.set(drivetrain.getTargetPose());
+        // pathPlanningTargetPub.set(drivetrain.getTargetPose());
 
         debugModePub.set(debugMode.getSelected());
 
-        isInBrakeMode.set(!drivetrain.isBrakeMode());
+        // isInBrakeMode.set(!drivetrain.isBrakeMode());
 
         //if intake speed is not equal to zero set isIntakeSpinning to true
-        isIntakeSpinning.set(intake.getIntakeSpeed() != 0 ? true: false);
+        // isIntakeSpinning.set(intake.getIntakeSpeed() != 0 ? true: false);
+        // if(intake.getIntakeSpeed())
         
 
     }
+    // public void update(){}
 }

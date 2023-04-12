@@ -4,16 +4,19 @@
 
 package frc.robot.commands.Drivetrain;
 
+import javax.lang.model.util.ElementScanner14;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.subsystems.Drivetrain;
 
-public class AutoBalance extends CommandBase {
+public class AutoBalance extends
+ CommandBase {
   /** Creates a new AutoBalance. */
   Drivetrain mDrivetrain;
-  PIDController controller = new PIDController(3, DrivetrainConstants.KI_BALANCE,
+  PIDController controller = new PIDController(DrivetrainConstants.KP_BALANCE, DrivetrainConstants.KI_BALANCE,
       DrivetrainConstants.KD_BALANCE);
 
   public AutoBalance(Drivetrain drivetrain) {
@@ -35,21 +38,31 @@ public class AutoBalance extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (mDrivetrain.getPitch() < -DrivetrainConstants.BALANCE_SPEED_BOOST_TOLERANCE) {
+  /*   if (mDrivetrain.getPitch() <= -DrivetrainConstants.BALANCE_SPEED_BOOST_TOLERANCE) {
       mDrivetrain.arcadeDrive(
           MathUtil.clamp(controller.calculate(mDrivetrain.getPitch() + .2), -DrivetrainConstants.MAX_BALANCE_SPEED,
               DrivetrainConstants.MAX_BALANCE_SPEED),
           0);
-    } else if (mDrivetrain.getPitch() > DrivetrainConstants.BALANCE_SPEED_BOOST_TOLERANCE) {
+    } else if (mDrivetrain.getPitch() >= DrivetrainConstants.BALANCE_SPEED_BOOST_TOLERANCE) {
       mDrivetrain.arcadeDrive(
-          MathUtil.clamp(controller.calculate(mDrivetrain.getPitch() - DrivetrainConstants.BALANCE_OFFEST), -DrivetrainConstants.MAX_BALANCE_SPEED,
+          MathUtil.clamp(controller.calculate(mDrivetrain.getPitch() ), -DrivetrainConstants.MAX_BALANCE_SPEED,
               DrivetrainConstants.MAX_BALANCE_SPEED),
-          0);
-    } else {
+    0);
+    }*/
+     if(Math.abs(mDrivetrain.getPitch()) > DrivetrainConstants.BALANCING_TOLERANCE) {
       mDrivetrain.arcadeDrive(
         MathUtil.clamp(controller.calculate(mDrivetrain.getPitch()), -DrivetrainConstants.MAX_BALANCE_SPEED,
             DrivetrainConstants.MAX_BALANCE_SPEED),
         0);
+    }
+    else if(mDrivetrain.getPitch() > 2){
+      mDrivetrain.arcadeDrive(-0.2, 0);
+    }
+    else if(mDrivetrain.getPitch() < -2){
+      mDrivetrain.arcadeDrive(0.2, 0);
+    }
+    else {
+      mDrivetrain.arcadeDrive(0, 0);
     }
   }
 
@@ -63,6 +76,6 @@ public class AutoBalance extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return controller.atSetpoint();
+    return false;
   }
 }

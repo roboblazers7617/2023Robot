@@ -63,7 +63,8 @@ public final class Constants {
         public static final int CURRENT_LIMIT = 40;
 
         public static final double REG_SPEED = 0.5;
-        public static final double SLOW_SPEED = 0.25;
+        public static final double SLOW_SPEED = 0.2;
+        public static final double REALLY_SLOW_SPEED = 15;
         public static final double FAST_SPEED = 1;
         public static final double MAX_ANGULAR_VELOCITY = 0.65;// .5
         public static final double MAX_LINEAR_VELOCITY = 0.7;// .5
@@ -73,7 +74,7 @@ public final class Constants {
         public static final double KD_LIN = 0.0;
         public static final double KS_LIN = .12529;
 
-        public static final double KP_ROT_POS = 0.015;// 0.015
+        public static final double KP_ROT_POS = 0.02;
         public static final double KI_ROT_POS = 0.0;
         public static final double KD_ROT_POS = 0.0;
         public static final double KS_ROT = 0.48693;
@@ -98,8 +99,8 @@ public final class Constants {
         // public static final double LINEAR_ERROR_TARGET_DRIVER =
         // Units.inchesToMeters(3);
 
-        public static final double MAX_AUTO_ACCELERATION = 1;//2;
-        public static final double MAX_AUTO_VELOCITY = 1.5; //3;
+        public static final double MAX_AUTO_ACCELERATION = 3;//2;
+        public static final double MAX_AUTO_VELOCITY = 3.5; //3;
 
         public static final double RAMSETEb = 2.0;
         public static final double RAMSETEzeta = 0.7;
@@ -118,7 +119,7 @@ public final class Constants {
         public static final double KI_BALANCE = 0;
         public static final double KD_BALANCE = 0.5;
         public static final double BALANCING_TOLERANCE = 13.75;
-        public static final double MAX_BALANCE_SPEED = 0.550;
+        public static final double MAX_BALANCE_SPEED = 0.520;
 
         public static final int BALANCE_SPEED_BOOST_TOLERANCE = 15;
 
@@ -133,25 +134,25 @@ public final class Constants {
         }
 
         public enum AutoPath {
-            leftBlueSimple("left blue simple","left blue simple return","null",       true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true,false),
-            midBlueSimple("mid blue simple","null","null",                            true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, true, true,false, false),
-            rightBlueSimple("right blue simple","right blue simple return","null",    true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true, true),
-            leftRedSimple("right blue simple","right blue simple return","null",          true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true, false),
-            midRedSimple("mid red simple","null","null",                              true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, true, true,false, false),
-            rightRedSimple("right red simple","right red simple return","null",       true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true, false),
+            leftBlueSimple("left blue simple","left blue simple return","null",       true, PieceType.Cone, PieceType.Cube, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true,false),
+            midBlueSimple("mid blue simple","null","null",                            true, PieceType.Cone, PieceType.Cube, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, true, true,false, false),
+            rightBlueSimple("right blue simple","right blue simple return","null",    true, PieceType.Cone, PieceType.Cube, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true, true),
+            leftRedSimple("right blue simple","right blue simple return","null",          true, PieceType.Cone, PieceType.Cube, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true, false),
+            midRedSimple("mid red simple","null","null",                              true, PieceType.Cone, PieceType.Cube, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, true, true,false, false),
+            rightRedSimple("right red simple","right red simple return","null",       true, PieceType.Cone, PieceType.Cube, GenericPosition.Level3, GenericPosition.Level2, GenericPosition.FloorPickup, false, true, true, false),
            
             
 //          THE IMPORTANT ONES \/ \/ \/
-            leftTwo("left blue simple","left blue simple return","left blue pickup",true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, true, true),
-            midTwo("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, true, true,false, false),
-            rightTwo("right blue simple","right blue simple return","right blue simple return", true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, true, true),
-            leftOne("left blue simple","left blue simple return","left blue pickup",true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, false, false),
-            midOne("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, true, true,false, false),
-            rightOne("right blue simple","right blue simple return","right blue simple return", true, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, false, false),
+            leftTwo("left blue simple","left blue simple return","left blue pickup",true, PieceType.Cone, PieceType.Cube, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, true, true),
+            midTwo("mid blue simple","null","null",                         true, PieceType.Cone, PieceType.Cube, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, true, true,false, false),
+            rightTwo("right blue simple","right blue simple return","right blue simple return", true, PieceType.Cone, PieceType.Cube, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, true, true),
+            leftOne("left blue simple","left blue simple return","left blue pickup",true, PieceType.Cone, PieceType.Cube, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, false, false),
+            midOne("mid blue simple","null","null",                         true, PieceType.Cone, PieceType.Cube, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, true, true,false, false),
+            rightOne("right blue simple","right blue simple return","right blue simple return", true, PieceType.Cone, PieceType.Cube, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, true, false, false),
 
 
 
-            testpath("simple", "null","null", false, PieceType.Cone, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, false, false, false);
+            testpath("simple", "null","null", false, PieceType.Cone, PieceType.Cube, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, false, false, false);
       
             private final String pathname;
             private final String returnpathname;
@@ -291,7 +292,7 @@ public final class Constants {
         public static final double SHOULDER_GEAR_RATIO = 1.0 / 204;
         public static final double POSITION_CONVERSION_FACTOR = SHOULDER_GEAR_RATIO * 360.0;
         public static final double MINIMUM_SHOULDER_ANGLE = -51;
-        public static final double MAX_SHOULDER_ANGLE = 50;
+        public static final double MAX_SHOULDER_ANGLE = 70;
         public static final double MAX_MANNUAL_ARM_SPEED = 50.0;
         public static final double MAX_SPEED_DOWNWARD = -0.7;
         public static final double MAX_SPEED_UPWARD = 0.633;
@@ -402,7 +403,7 @@ public final class Constants {
             CubeLevel2(ArmPosition.LEVEL_2_CUBE, WristPosition.LEVEL_2_CUBE),
             ConeLevel3(ArmPosition.LEVEL_3_CONE, WristPosition.LEVEL_3_CONE),
             CubeLevel3(ArmPosition.LEVEL_3_CUBE, WristPosition.LEVEL_3_CUBE),
-            LowTransition(ArmPosition.LOW_TRANSITION, WristPosition.STOW,),
+            LowTransition(ArmPosition.LOW_TRANSITION, WristPosition.STOW),
             HighTransition(ArmPosition.HIGH_TRANSITION, WristPosition.HIGH_TRANSITION);
 
             private final ArmPosition armPosition;

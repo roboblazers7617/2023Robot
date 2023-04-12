@@ -12,6 +12,7 @@ import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.IntakeConstants;
@@ -48,9 +49,7 @@ public class Intake extends SubsystemBase {
   }
 
   public Command SpinIntakeCommand(Supplier<PieceType> piece, boolean isIntaking) {
-    return Commands.startEnd((() -> this.setIntakeSpeed(evalPieceIntake(piece.get(), isIntaking).speed())),
-        (() -> this.setIntakeSpeed(IntakeDirection.STOP.speed())), this);
-    
+    return new InstantCommand(() -> setIntakeSpeed(piece, isIntaking));
   }
 
   public Command StopIntake(){
