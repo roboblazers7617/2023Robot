@@ -7,7 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
-import frc.robot.Constants.PnuematicsConstants;
+import frc.robot.Constants.ArmConstants.PnuematicsConstants;
 
 public class Pnuematics{
   private Compressor compressor = new Compressor(PneumaticsModuleType.REVPH);

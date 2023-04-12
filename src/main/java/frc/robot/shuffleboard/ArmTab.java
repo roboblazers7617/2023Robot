@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardLayout;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Arm.Arm;
 
 /**
  * This is the arm shuffleboard tab class for a subsystem.
@@ -22,8 +22,7 @@ import frc.robot.subsystems.Arm;
  * when creating the subsystem tab make sure you extend ShuffleboardTabBase
  */
 public class ArmTab extends ShuffleboardTabBase {
-    DoublePublisher anglePub;
-    DoublePublisher motorTempPub;
+    DoublePublisher shoulderAnglePub, shoulderTempPub, wristAnglePub, wristTempPub, wristSpeedPub;
     StringPublisher pistonPub;
     Arm mArm;
 
@@ -46,9 +45,12 @@ public class ArmTab extends ShuffleboardTabBase {
         mArm = arm;
 
         // create a publisher in the network table
-        anglePub = networkTable.getDoubleTopic("Angle (Degrees)").publish();
+        shoulderAnglePub = networkTable.getDoubleTopic("Angle (Degrees)").publish();
         pistonPub = networkTable.getStringTopic("Piston state").publish();
-        motorTempPub = networkTable.getDoubleTopic("Motor Temp").publish();
+        shoulderTempPub = networkTable.getDoubleTopic("Motor Temp").publish();
+        wristAnglePub = networkTable.getDoubleTopic("Wrist Angle").publish();
+        wristTempPub = networkTable.getDoubleTopic("Wrist Temp").publish();
+        wristSpeedPub = networkTable.getDoubleTopic("Wrist Speed").publish();
 
         // add the network table to shuffleboard, the name must be the same, the default
         // value does not matter.
@@ -61,9 +63,12 @@ public class ArmTab extends ShuffleboardTabBase {
 
     public void update() {
         // publish the values using the publisher
-        anglePub.set(mArm.getShoulderAngle());
+        shoulderAnglePub.set(mArm.getShoulderAngle());
         pistonPub.set(mArm.getSuperstructureState().toString());
-        motorTempPub.set((mArm.getShoulderMotorTemp()*(9.0/5.0)+32.0));
+        shoulderTempPub.set((mArm.getShoulderMotorTemp()*(9.0/5.0)+32.0));
+        wristTempPub.set((mArm.getWristMotorTemp()*(9.0/5.0)+32.0));
+        wristAnglePub.set(mArm.getWristAngle());
+        wristSpeedPub.set(mArm.getWristVelocity());
 
     }
 }

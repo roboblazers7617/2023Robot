@@ -10,10 +10,10 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
-import frc.robot.Constants.ArmConstants.ArmPosition;
-import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
-import frc.robot.Constants.StateConstants.GenericPosition;
-import frc.robot.Constants.WristConstants.WristPosition;
+import frc.robot.Constants.ArmConstants.ShoulderConstants.ArmPosition;
+import frc.robot.Constants.ArmConstants.PnuematicsConstants.PnuematicPositions;
+import frc.robot.Constants.ArmConstants.StateConstants.GenericPosition;
+import frc.robot.Constants.ArmConstants.WristConstants.WristPosition;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -30,9 +30,8 @@ import frc.robot.Constants.WristConstants.WristPosition;
 public final class Constants {
 
     public enum PieceType {
-        CONE,
-        CUBE,
-        NULL;
+        Cone,
+        Cube;
     }
 
     public static class OperatorConstants {
@@ -152,7 +151,7 @@ public final class Constants {
 
 
 
-            testpath("simple", "null","null", false, PieceType.CONE, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, false, false, false);
+            testpath("simple", "null","null", false, PieceType.Cone, PieceType.CUBE, GenericPosition.Level2, GenericPosition.Level1, GenericPosition.FloorPickup, false, false, false, false);
       
             private final String pathname;
             private final String returnpathname;
@@ -248,31 +247,32 @@ public final class Constants {
         public static final double DEPLOY_ARM_AT_DOUBLE_STATION = 2.7;
     }
 
-    public static class PnuematicsConstants {
+    public static class ArmConstants {
 
-        public static final int LEFT_ARM_PISTON_EXTEND_PORT = 11;
-        public static final int LEFT_ARM_PISTON_RETRACT_PORT = 10;
-        public static final int RIGHT_ARM_PISTON_EXTEND_PORT = 8;
-        public static final int RIGHT_ARM_PISTON_RETRACT_PORT = 9;
+        public static class PnuematicsConstants {
 
-        public enum PnuematicPositions {
-            RETRACTED(Value.kReverse),
-            EXTENDED(Value.kForward);
-
-            Value mValue;
-
-            PnuematicPositions(Value value) {
-                mValue = value;
-            }
-
-            public Value getValue() {
-                return mValue;
+            public static final int LEFT_ARM_PISTON_EXTEND_PORT = 11;
+            public static final int LEFT_ARM_PISTON_RETRACT_PORT = 10;
+            public static final int RIGHT_ARM_PISTON_EXTEND_PORT = 8;
+            public static final int RIGHT_ARM_PISTON_RETRACT_PORT = 9;
+    
+            public enum PnuematicPositions {
+                RETRACTED(Value.kReverse),
+                EXTENDED(Value.kForward);
+    
+                Value mValue;
+    
+                PnuematicPositions(Value value) {
+                    mValue = value;
+                }
+    
+                public Value getValue() {
+                    return mValue;
+                }
             }
         }
-    }
-
-    public static class ArmConstants {
-        public static final int LIMIT_SWITCH_PORT = 0;
+        public static class ShoulderConstants{
+            public static final int LIMIT_SWITCH_PORT = 0;
         public static final int SHOULDER_MOTOR_ID = 31;
         public static final int SHOULDER_FOLLOWER_MOTOR_ID = 32;
         public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
@@ -333,60 +333,104 @@ public final class Constants {
                 return pistonPosition;
             }
         }
+        }
+
+        public static class WristConstants {
+            public static final int WRIST_CAN_ID = 6;
+            public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
+            public static final int POT_CHANEL = 1;
+    
+            public static final int CURRENT_LIMIT = 20;
+    
+            public static final double WRIST_ANGLE_TOLERANCE = 5;
+            public static final double MAX_WRIST_ANGLE = 103;
+            public static final double MAX_UPWARD_WRIST_SPEED = 0.33;
+            public static final double MAX_DOWNWARD_WRIST_SPEED = -0.2;
+            public static final double MAX_WRIST_ACCEL = 0.12;
+            public static final double WRIST_KS = 0.5;
+            public static final double WRIST_KG = 0.35;
+            public static final double WRIST_KV = 0;
+            public static final double WRIST_KP = 0.011;
+            public static final double WRIST_KI = 0.0;
+            public static final double WRIST_KD = 0.0;
+            public static final double WRIST_POT_OFFSET = -199;// so stowed is 120
+            public static final double WRIST_GEAR_RATIO = 1.0 / 80.0;
+            public static final double WRIST_ENCODER_CONVERSION_FACTOR = 360.0 * WRIST_GEAR_RATIO;
+            public static final double MIN_WRIST_ANGLE = -42;
+            public static final int WRIST_POT_SCALE = 340;
+    
+            public static final double MAX_MANNUAL_WRIST_SPEED = 65;
+            public static final double MAX_ACCEL = 10;//degrees per sec squared?
+            public static final double MAX_VEL = 30;//degrees per sec?
+    
+            public enum WristPosition {
+                STOW(WristConstants.MAX_WRIST_ANGLE),
+                FLOOR_CUBE_PICKUP(33), //36
+                FLOOR_CONE_PICKUP(39),
+                DOUBLE_PICKUP_CONE(-16),
+                DOUBLE_PICKUP_CUBE(-4.7),
+                LEVEL_3_CONE(-9),
+                LEVEL_2_CONE(-8),
+                LEVEL_1_CONE(41),
+                LEVEL_3_CUBE(21), 
+                LEVEL_2_CUBE(72.5),
+                LEVEL_1_CUBE(41), 
+                HIGH_TRANSITION(21);
+    
+                private final double angle;
+    
+                WristPosition(double angle) {
+                    this.angle = angle;
+                }
+    
+                public double angle() {
+                    return angle;
+                }
+            }
     }
 
-    public static class WristConstants {
-        public static final int WRIST_CAN_ID = 6;
-        public static final int WRIST_LIMIT_SWITCH_CHANEL = 4;
-        public static final int POT_CHANEL = 1;
+    public static class StateConstants{
+        public enum StatePosition{
+            Stow(ArmPosition.STOW, WristPosition.STOW),
+            ConeFloorPickup(ArmPosition.FLOOR_PICKUP_CONE, WristPosition.FLOOR_CONE_PICKUP),
+            CubeFloorPickup(ArmPosition.FLOOR_PICKUP_CUBE, WristPosition.FLOOR_CUBE_PICKUP),
+            ConeDoublePickup(ArmPosition.STATION_PICKUP_CONE, WristPosition.DOUBLE_PICKUP_CONE),
+            CubeDoublePickup(ArmPosition.STATION_PICKUP_CUBE, WristPosition.DOUBLE_PICKUP_CUBE),
+            ConeLevel1(ArmPosition.LEVEL_1_CONE, WristPosition.LEVEL_1_CONE),
+            CubeLevel1(ArmPosition.LEVEL_1_CUBE, WristPosition.LEVEL_1_CUBE),
+            ConeLevel2(ArmPosition.LEVEL_2_CONE, WristPosition.LEVEL_2_CONE),
+            CubeLevel2(ArmPosition.LEVEL_2_CUBE, WristPosition.LEVEL_2_CUBE),
+            ConeLevel3(ArmPosition.LEVEL_3_CONE, WristPosition.LEVEL_3_CONE),
+            CubeLevel3(ArmPosition.LEVEL_3_CUBE, WristPosition.LEVEL_3_CUBE),
+            LowTransition(ArmPosition.LOW_TRANSITION, WristPosition.STOW,),
+            HighTransition(ArmPosition.HIGH_TRANSITION, WristPosition.HIGH_TRANSITION);
 
-        public static final int CURRENT_LIMIT = 20;
+            private final ArmPosition armPosition;
+            private final WristPosition wristPosition;
 
-        public static final double WRIST_ANGLE_TOLERANCE = 5;
-        public static final double MAX_WRIST_ANGLE = 103;
-        public static final double MAX_UPWARD_WRIST_SPEED = 0.33;
-        public static final double MAX_DOWNWARD_WRIST_SPEED = -0.2;
-        public static final double MAX_WRIST_ACCEL = 0.12;
-        public static final double WRIST_KS = 0.5;
-        public static final double WRIST_KG = 0.35;
-        public static final double WRIST_KV = 0;
-        public static final double WRIST_KP = 0.011;
-        public static final double WRIST_KI = 0.0;
-        public static final double WRIST_KD = 0.0;
-        public static final double WRIST_POT_OFFSET = -199;// so stowed is 120
-        public static final double WRIST_GEAR_RATIO = 1.0 / 80.0;
-        public static final double WRIST_ENCODER_CONVERSION_FACTOR = 360.0 * WRIST_GEAR_RATIO;
-        public static final double MIN_WRIST_ANGLE = -42;
-        public static final int WRIST_POT_SCALE = 340;
-
-        public static final double MAX_MANNUAL_WRIST_SPEED = 65;
-        public static final double MAX_ACCEL = 10;//degrees per sec squared?
-        public static final double MAX_VEL = 30;//degrees per sec?
-
-        public enum WristPosition {
-            STOW(WristConstants.MAX_WRIST_ANGLE),
-            FLOOR_CUBE_PICKUP(33), //36
-            FLOOR_CONE_PICKUP(39),
-            DOUBLE_PICKUP_CONE(-16),
-            DOUBLE_PICKUP_CUBE(-4.7),
-            LEVEL_3_CONE(-9),
-            LEVEL_2_CONE(-8),
-            LEVEL_1_CONE(41),
-            LEVEL_3_CUBE(21), 
-            LEVEL_2_CUBE(72.5),
-            LEVEL_1_CUBE(41), 
-            HIGH_TRANSITION(21);
-
-            private final double angle;
-
-            WristPosition(double angle) {
-                this.angle = angle;
+            StatePosition(ArmPosition armPosition, WristPosition wristPosition){
+                this.armPosition = armPosition;
+                this.wristPosition = wristPosition;
             }
-
-            public double angle() {
-                return angle;
+            public ArmPosition getArmPosition() {
+                return armPosition;
             }
+            public WristPosition getWristPosition() {
+                return wristPosition;
+            } 
         }
+
+        public enum GenericPosition{
+            FloorPickup,
+            DoublePickup,
+            Level1,
+            Level2,
+            Level3,
+            Stow;
+        }
+
+    }
+}
 
         public static class IntakeConstants {
             public static final int INTAKE_CAN_ID = 7;
@@ -425,59 +469,5 @@ public final class Constants {
             }
 
         }
-    }
-
-    public static class StateConstants{
-        public enum State{
-            Stow(ArmPosition.STOW, WristPosition.STOW, PieceType.NULL, GenericPosition.Stow),
-            ConeFloorPickup(ArmPosition.FLOOR_PICKUP_CONE, WristPosition.FLOOR_CONE_PICKUP, PieceType.CONE, GenericPosition.FloorPickup),
-            CubeFloorPickup(ArmPosition.FLOOR_PICKUP_CUBE, WristPosition.FLOOR_CUBE_PICKUP, PieceType.CUBE, GenericPosition.FloorPickup),
-            ConeDoublePickup(ArmPosition.STATION_PICKUP_CONE, WristPosition.DOUBLE_PICKUP_CONE, PieceType.CONE, GenericPosition.DoublePickup),
-            CubeDoublePickup(ArmPosition.STATION_PICKUP_CUBE, WristPosition.DOUBLE_PICKUP_CUBE, PieceType.CUBE, GenericPosition.DoublePickup),
-            ConeLevel1(ArmPosition.LEVEL_1_CONE, WristPosition.LEVEL_1_CONE, PieceType.CONE, GenericPosition.Level1),
-            CubeLevel1(ArmPosition.LEVEL_1_CUBE, WristPosition.LEVEL_1_CUBE, PieceType.CUBE, GenericPosition.Level1),
-            ConeLevel2(ArmPosition.LEVEL_2_CONE, WristPosition.LEVEL_2_CONE, PieceType.CONE, GenericPosition.Level2),
-            CubeLevel2(ArmPosition.LEVEL_2_CUBE, WristPosition.LEVEL_2_CUBE, PieceType.CUBE, GenericPosition.Level2),
-            ConeLevel3(ArmPosition.LEVEL_3_CONE, WristPosition.LEVEL_3_CONE, PieceType.CONE, GenericPosition.Level3),
-            CubeLevel3(ArmPosition.LEVEL_3_CUBE, WristPosition.LEVEL_3_CUBE, PieceType.CUBE, GenericPosition.Level3),
-            LowTransition(ArmPosition.LOW_TRANSITION, WristPosition.STOW, PieceType.NULL, GenericPosition.NULL),
-            HighTransition(ArmPosition.HIGH_TRANSITION, WristPosition.HIGH_TRANSITION, PieceType.NULL, GenericPosition.NULL);
-
-            private final ArmPosition armPosition;
-            private final WristPosition wristPosition;
-            private final PieceType piece;
-            private final GenericPosition position;
-
-            State(ArmPosition armPosition, WristPosition wristPosition, PieceType piece, GenericPosition genericPosition){
-                this.armPosition = armPosition;
-                this.wristPosition = wristPosition;
-                this.piece = piece;
-                position = genericPosition;
-            }
-            public ArmPosition getArmPosition() {
-                return armPosition;
-            }
-            public WristPosition getWristPosition() {
-                return wristPosition;
-            } 
-            public PieceType getPiece() {
-                return piece;
-            }
-            public GenericPosition getPosition() {
-                return position;
-            }
-        }
-
-        public enum GenericPosition{
-            FloorPickup,
-            DoublePickup,
-            Level1,
-            Level2,
-            Level3,
-            Stow,
-            NULL;
-        }
-
-    }
 
 }

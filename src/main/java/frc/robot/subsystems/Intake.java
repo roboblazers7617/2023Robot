@@ -14,8 +14,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PieceType;
-import frc.robot.Constants.WristConstants.IntakeConstants;
-import frc.robot.Constants.WristConstants.IntakeConstants.IntakeDirection;
+import frc.robot.Constants.IntakeConstants;
+import frc.robot.Constants.IntakeConstants.IntakeDirection;
 
 public class Intake extends SubsystemBase {
   private final CANSparkMax intakeMotor = new CANSparkMax(IntakeConstants.INTAKE_CAN_ID, MotorType.kBrushless);
@@ -59,13 +59,13 @@ public class Intake extends SubsystemBase {
 
 
   private IntakeDirection evalPieceIntake(PieceType piece, boolean isIntaking) {
-    if (piece.equals(PieceType.CONE) && isIntaking /*&& !isHoldingGamePiece()*/)
+    if (piece.equals(PieceType.Cone) && isIntaking /*&& !isHoldingGamePiece()*/)
       return IntakeDirection.PICK_CONE;
-    else if (piece.equals(PieceType.CUBE) && isIntaking /*&& !isHoldingGamePiece()*/)
+    else if (piece.equals(PieceType.Cube) && isIntaking /*&& !isHoldingGamePiece()*/)
       return IntakeDirection.PICK_CUBE;
-    if (piece.equals(PieceType.CONE) && !isIntaking)
+    if (piece.equals(PieceType.Cone) && !isIntaking)
       return IntakeDirection.PLACE_CONE;
-    else if (piece.equals(PieceType.CUBE) && !isIntaking)
+    else if (piece.equals(PieceType.Cube) && !isIntaking)
       return IntakeDirection.PLACE_CUBE;
     else
       return IntakeDirection.STOP;

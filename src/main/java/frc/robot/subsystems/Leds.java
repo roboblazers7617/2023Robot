@@ -6,7 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.Constants.WristConstants.IntakeConstants;
+import frc.robot.Constants.IntakeConstants;
 
 import java.util.ArrayList;
 

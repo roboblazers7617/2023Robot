@@ -4,38 +4,22 @@
 
 package frc.robot;
 
-import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PieceType;
-import frc.robot.Constants.WristConstants;
-import frc.robot.Constants.ArmConstants.ArmPosition;
 import frc.robot.Constants.DrivetrainConstants.AutoPath;
-import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
-import frc.robot.Constants.StateConstants.GenericPosition;
-import frc.robot.Constants.WristConstants.WristPosition;
+import frc.robot.Constants.ArmConstants.StateConstants.GenericPosition;
+import frc.robot.Constants.ArmConstants.StateConstants.StatePosition;
 import frc.robot.commands.ArmStuff.IntakePiece;
 import frc.robot.commands.ArmStuff.OutakePiece;
 import frc.robot.commands.ArmStuff.SimplePickup;
 import frc.robot.commands.ArmStuff.SimpleScore;
-import frc.robot.commands.ArmStuff.Stow;
-import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.commands.Drivetrain.AutoBalance;
 import frc.robot.commands.Drivetrain.FaceScoreLocation;
-import frc.robot.shuffleboard.ArmTab;
-import frc.robot.shuffleboard.DriveTrainTab;
-import frc.robot.shuffleboard.DriverStationTab;
-import frc.robot.shuffleboard.IntakeTab;
-import frc.robot.shuffleboard.ShuffleboardInfo;
-import frc.robot.shuffleboard.ShuffleboardTabBase;
-import frc.robot.shuffleboard.VisionTab;
-import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Leds;
-import frc.robot.subsystems.Pnuematics;
-import frc.robot.subsystems.Vision;
-import frc.robot.subsystems.Wrist;
+import frc.robot.shuffleboard.*;
+import frc.robot.subsystems.*;
+import frc.robot.subsystems.Arm.Arm;
+import frc.robot.subsystems.Arm.States.*;
 
 import java.util.ArrayList;
 import com.pathplanner.lib.PathConstraints;
@@ -72,7 +56,6 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-        private final Wrist wrist = new Wrist();
         // The robot's subsystems and commands are defined here...
         private final Vision vision = new Vision();
         private final Drivetrain drivetrain = new Drivetrain(vision);
@@ -81,7 +64,6 @@ public class RobotContainer {
         private final Intake intake = new Intake();
         private final Arm arm = new Arm(pnuematics);
         private final Leds leds = new Leds(intake, drivetrain);
-        private final StateMachine machine = new StateMachine(arm, wrist);
 
         private final CommandXboxController m_driverController = new CommandXboxController(
                         OperatorConstants.DRIVER_CONTROLLER_PORT);
@@ -101,29 +83,11 @@ public class RobotContainer {
          * The container for the robot. Contains subsystems, OI devices, and commands.
          */
         public RobotContainer() {
-                setSelectedPiece(PieceType.CONE);
+                setSelectedPiece(PieceType.Cone);
                 // Configure the trigger bindings
                 configureDriverBindings();
                 configureOperatorBindings();
                 // create shuffleboardinfo.java
-                drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
-                                m_driverController.getRightX(), m_driverController.getRightY(),
-                                () -> isRightTriggerPressed()),
-                                drivetrain));
-
-                arm.setDefaultCommand(new RunCommand(
-                                () -> arm.setVelocity(
-                                                (Math.abs(m_operatorController.getLeftY()) > OperatorConstants.DEADZONE
-                                                                ? -m_operatorController.getLeftY()
-                                                                : 0) * ArmConstants.MAX_MANNUAL_ARM_SPEED),
-                                arm));
-                wrist.setDefaultCommand(new RunCommand(() -> wrist.setVelocity(
-                                (Math.abs(m_operatorController.getRightY()) > OperatorConstants.DEADZONE
-                                                ? -m_operatorController.getRightY()
-                                                : 0) * WristConstants.MAX_MANNUAL_WRIST_SPEED,
-                                arm::getArmAngle), wrist));
-                wrist.setDefaultCommand(Commands.either(getPathPlannerCommand(), getAutonomousCommand(),
-                                () -> (Math.abs(m_operatorController.getRightY()) > OperatorConstants.DEADZONE)));
 
                 
                 ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
@@ -135,7 +99,7 @@ public class RobotContainer {
 
                 tabs.add(new DriveTrainTab(drivetrain));
                 // tabs.add(new ColorSensorTab(new ColorSensor()));
-                tabs.add(new IntakeTab(intake, wrist));
+                tabs.add(new IntakeTab(intake));
                 tabs.add(new ArmTab(arm));
                 // STOP HERE OR DIE
 
@@ -162,11 +126,10 @@ public class RobotContainer {
          */
         private void configureDriverBindings() {
 
-                // m_driverController.leftTrigger().whileTrue(new DriveToScoreGrid(drivetrain,
-                // () -> m_driverController.getLeftY(),
-                // () -> m_driverController.getRightY(),
-                // () -> m_driverController.getRightX(),
-                // DriverStation.getAlliance()));
+                drivetrain.setDefaultCommand(new RunCommand(() -> drivetrain.drive(m_driverController.getLeftY(),
+                m_driverController.getRightX(), m_driverController.getRightY(),
+                () -> isRightTriggerPressed()),
+                drivetrain));
 
                 m_driverController.rightBumper()
                                 .onTrue(new InstantCommand(
@@ -199,18 +162,17 @@ public class RobotContainer {
         }
 
         private void configureOperatorBindings() {
+                arm.setDefaultCommand(new SetVelocitiesState(arm, m_operatorController::getRightY, m_operatorController::getLeftY));
+
                 m_operatorController.leftBumper()
-                                .onTrue(machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.DoublePickup));
+                                .onTrue(arm.changeState(() -> getSelectedPiece(), GenericPosition.DoublePickup, true));
                 m_operatorController.leftTrigger()
-                                .onTrue(machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.FloorPickup));
+                                .onTrue(arm.changeState(() -> getSelectedPiece(), GenericPosition.FloorPickup, true));
 
                 m_operatorController.rightBumper()
-                                .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CONE)));
+                                .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.Cone)));
                 m_operatorController.rightTrigger()
-                                .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.CUBE)));
-
-                m_operatorController.povLeft()
-                                .onTrue(machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.Stow));
+                                .onTrue(Commands.runOnce(() -> setSelectedPiece(PieceType.Cone)));
 
                 m_operatorController.y().whileTrue(new IntakePiece(intake, () -> getSelectedPiece()));
 
@@ -219,26 +181,21 @@ public class RobotContainer {
 
                 m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
 
-                m_operatorController.leftStick()// .and(() -> (m_operatorController.leftStick().getAsBoolean()))
-                                .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.resetEncoders()),
-                                                new InstantCommand(() -> wrist.resetEncoder())));
+                m_operatorController.povLeft()
+                .onTrue(arm.changeState(() -> getSelectedPiece(), GenericPosition.Stow, true));
 
                 m_operatorController.povDown().onTrue(
-                        machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.Level1));
+                        arm.changeState(() -> getSelectedPiece(), GenericPosition.Level1, true));
                 m_operatorController.povRight().onTrue(
-                        machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.Level2));
+                        arm.changeState(() -> getSelectedPiece(), GenericPosition.Level2, true));
                 m_operatorController.povUp().onTrue(
-                        machine.changeStateCommand(() -> getSelectedPiece(), GenericPosition.Level3));
+                        arm.changeState(() -> getSelectedPiece(), GenericPosition.Level3, true));
+
+                m_operatorController.start().onTrue(new InstantCommand(arm::removeBounds, arm)).onFalse(new InstantCommand(arm::addBounds, arm)).onFalse(new InstantCommand(arm::resetEncoders, arm));
         }
 
-        // private void setScoreLevel(ScoreLevel scoreLevel) {
-        // this.scoreLevel = scoreLevel;
-        // }
-
         public void stow() {
-                arm.setPosition(ArmPosition.STOW);
-                wrist.setPosition(WristPosition.STOW, () -> arm.getArmAngle());
-                arm.actuateSuperstructure(PnuematicPositions.RETRACTED);
+                arm.setPosition(StatePosition.Stow);
         }
 
         public void setTargetPose(Pose2d targetPose) {
@@ -254,7 +211,7 @@ public class RobotContainer {
         }
 
         public void setSelectedPiece(PieceType piece) {
-                if (piece == PieceType.CONE) {
+                if (piece == PieceType.Cone) {
                         leds.orange();
                 } else {
                         leds.purple();
@@ -263,7 +220,6 @@ public class RobotContainer {
         }
 
         public void turnOnMechanismBrakes(Boolean isBraked) {
-                wrist.turnOnBrakes(isBraked);
                 arm.turnOnBrakes(isBraked);
         }
 
@@ -369,16 +325,16 @@ public class RobotContainer {
         public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
                 SequentialCommandGroup auto = new SequentialCommandGroup();
                 if (driverStationTab.getAutoPath().scoring()) {
-                        auto.addCommands(new SimpleScore(machine, intake, () -> AutoPath.selectedPiece(), null, false));
+                        auto.addCommands(new SimpleScore(arm, intake, () -> AutoPath.selectedPiece(), () -> AutoPath.scoreLevelFirst(), false));
                 }
                 auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                (new ParallelCommandGroup(getPathPlannerCommand(), new Stow(machine, intake, false))),
+                                (new ParallelCommandGroup(getPathPlannerCommand())),
                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                 if (driverStationTab.getAutoPath().autoBalance()) {
                         auto.addCommands(new AutoBalance(drivetrain));
                 } else if (driverStationTab.getAutoPath().Pickup()) {
                         auto.addCommands(new FaceScoreLocation(drivetrain, turningAuto()));
-                        auto.addCommands(new SimplePickup(machine, intake, () -> AutoPath.selectedPiece2nd(), () -> AutoPath.pickupLocation()));
+                        auto.addCommands(new SimplePickup(arm, intake, () -> AutoPath.selectedPiece2nd(), () -> AutoPath.pickupLocation()));
                         if (driverStationTab.getAutoPath().Return()) {
                                 auto.addCommands(new FaceScoreLocation(drivetrain, (turningAuto() - 180)));
                                 auto.addCommands(new ParallelCommandGroup(
@@ -387,8 +343,8 @@ public class RobotContainer {
                                                                 getReturnPathPlannerCommand(),
                                                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true))),
                                                 (new SequentialCommandGroup(new WaitCommand(2.0),
-                                                                new SimpleScore(machine, intake,
-                                                                                () -> PieceType.CUBE,
+                                                                new SimpleScore(arm, intake,
+                                                                                () -> PieceType.Cube,
                                                                                 () -> GenericPosition.Level2, true)))));
                         }
                 }

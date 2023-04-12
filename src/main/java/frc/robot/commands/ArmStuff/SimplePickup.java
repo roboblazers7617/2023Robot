@@ -9,22 +9,22 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.StateMachine;
 import frc.robot.Constants.PieceType;
-import frc.robot.Constants.StateConstants.GenericPosition;
+import frc.robot.Constants.ArmConstants.StateConstants.GenericPosition;
 import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Arm.Arm;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class SimplePickup extends SequentialCommandGroup {
   /** Creates a new SimplePickup. */
-  public SimplePickup(StateMachine machine, Intake intake, Supplier<PieceType> piece,
+  public SimplePickup(Arm arm, Intake intake, Supplier<PieceType> piece,
       Supplier<GenericPosition> position) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands((machine.changeStateCommand(piece, position)),
+    addCommands(arm.changeState(piece, position, true),
         (new InstantCommand(() -> intake.setIntakeSpeed(piece, true), intake)),
-        Commands.waitSeconds(.8), new Stow(machine, intake, false));
+        Commands.waitSeconds(.8), arm.changeState(piece, GenericPosition.Stow, true));
   }
 }
