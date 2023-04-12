@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Drivetrain;
+package frc.robot.subsystems.Drivetrain.States;
 
 import javax.lang.model.util.ElementScanner14;
 
@@ -10,19 +10,18 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Drivetrain.Drivetrain;
+import frc.team4272.globals.State;
 
-public class AutoBalance extends
- CommandBase {
+public class AutoBalanceState extends
+ State<Drivetrain> {
   /** Creates a new AutoBalance. */
-  Drivetrain mDrivetrain;
   PIDController controller = new PIDController(DrivetrainConstants.KP_BALANCE, DrivetrainConstants.KI_BALANCE,
       DrivetrainConstants.KD_BALANCE);
 
-  public AutoBalance(Drivetrain drivetrain) {
+  public AutoBalanceState(Drivetrain drivetrain) {
     // Use addRequirements() here to declare subsystem dependencies.
-    mDrivetrain = drivetrain;
-    addRequirements(drivetrain);
+   super(drivetrain);
     controller.setSetpoint(0);
     controller.setTolerance(DrivetrainConstants.BALANCING_TOLERANCE);
     controller.enableContinuousInput(-180, 180);
@@ -32,7 +31,7 @@ public class AutoBalance extends
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    mDrivetrain.turnOnBrakes(true);
+    requiredSubsystem.turnOnBrakes(true);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -49,27 +48,27 @@ public class AutoBalance extends
               DrivetrainConstants.MAX_BALANCE_SPEED),
     0);
     }*/
-     if(Math.abs(mDrivetrain.getPitch()) > DrivetrainConstants.BALANCING_TOLERANCE) {
-      mDrivetrain.arcadeDrive(
-        MathUtil.clamp(controller.calculate(mDrivetrain.getPitch()), -DrivetrainConstants.MAX_BALANCE_SPEED,
+     if(Math.abs(requiredSubsystem.getPitch()) > DrivetrainConstants.BALANCING_TOLERANCE) {
+      requiredSubsystem.arcadeDrive(
+        MathUtil.clamp(controller.calculate(requiredSubsystem.getPitch()), -DrivetrainConstants.MAX_BALANCE_SPEED,
             DrivetrainConstants.MAX_BALANCE_SPEED),
         0);
     }
-    else if(mDrivetrain.getPitch() > 2){
-      mDrivetrain.arcadeDrive(-0.2, 0);
+    else if(requiredSubsystem.getPitch() > 2){
+      requiredSubsystem.arcadeDrive(-0.2, 0);
     }
-    else if(mDrivetrain.getPitch() < -2){
-      mDrivetrain.arcadeDrive(0.2, 0);
+    else if(requiredSubsystem.getPitch() < -2){
+      requiredSubsystem.arcadeDrive(0.2, 0);
     }
     else {
-      mDrivetrain.arcadeDrive(0, 0);
+      requiredSubsystem.arcadeDrive(0, 0);
     }
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    mDrivetrain.arcadeDrive(0, 0);
+    requiredSubsystem.arcadeDrive(0, 0);
 
   }
 

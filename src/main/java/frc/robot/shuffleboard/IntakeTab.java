@@ -5,7 +5,7 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Intake.Intake;
 
 public class IntakeTab extends ShuffleboardTabBase {
     DoublePublisher wristAnglePublisher;

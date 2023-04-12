@@ -2,47 +2,45 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Drivetrain;
+package frc.robot.subsystems.Drivetrain.States;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants.DrivetrainConstants;
-import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Drivetrain.Drivetrain;
+import frc.team4272.globals.State;
 
-public class FaceScoreLocation extends CommandBase {
+public class FaceScoreLocationState extends State<Drivetrain> {
   /** Creates a new FaceScoreLocation. */
   private PIDController turnController = 
         new PIDController(DrivetrainConstants.KP_ROT_POS, DrivetrainConstants.KI_ROT_POS, DrivetrainConstants.KD_ROT_POS);
-  private Drivetrain drivetrain;
   private Alliance color;
   private double targetAngle;
   private final double angleTolerance = DrivetrainConstants.MAX_ERROR_ROTATION;
   private boolean manuelAngle = false;
 
-  public FaceScoreLocation(Drivetrain drivetrain, Alliance color) {
+  public FaceScoreLocationState(Drivetrain drivetrain, Alliance color) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.drivetrain = drivetrain;
+    super(drivetrain);
     this.color = color;
     turnController.setTolerance(angleTolerance);
     turnController.enableContinuousInput(-180, 180);
-    addRequirements(drivetrain);
 
   }
-  public FaceScoreLocation(Drivetrain drivetrain, double targetAngle) {
+  public FaceScoreLocationState(Drivetrain drivetrain, double targetAngle) {
+    super(drivetrain);
     manuelAngle = true;
-    this.drivetrain = drivetrain;
     this.targetAngle = targetAngle;
     turnController.setTolerance(angleTolerance);
     turnController.enableContinuousInput(-180, 180);
-    addRequirements(drivetrain);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    drivetrain.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED);
+    requiredSubsystem.setDrivetrainSpeed(DrivetrainConstants.REG_SPEED);
     if (manuelAngle == false){
       if (color == Alliance.Blue)
       {
@@ -64,10 +62,10 @@ public class FaceScoreLocation extends CommandBase {
   public void execute() {
     // System.out.println("Gyro is " + drivetrain.getRotation2d().getDegrees());
 
-    double output = turnController.calculate(drivetrain.getRotation2d().getDegrees());
+    double output = turnController.calculate(requiredSubsystem.getRotation2d().getDegrees());
     double simpleFF = Math.copySign(0.4, output);
     // System.out.println("Speed is " + output);
-    drivetrain.arcadeDrive(0.0,MathUtil.clamp(output+ simpleFF, -DrivetrainConstants.MAX_ANGULAR_VELOCITY, DrivetrainConstants.MAX_ANGULAR_VELOCITY));
+    requiredSubsystem.arcadeDrive(0.0,MathUtil.clamp(output+ simpleFF, -DrivetrainConstants.MAX_ANGULAR_VELOCITY, DrivetrainConstants.MAX_ANGULAR_VELOCITY));
     //System.out.println("**** Executing Turn: output is " + output + "    target angle is " + targetAngle + "  current angle is " + drivetrain.getRotation2d().getDegrees());
     //System.out.println("Simple FF is " + simpleFF); 
 
@@ -76,9 +74,9 @@ public class FaceScoreLocation extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    drivetrain.arcadeDrive(0.0, 0.0);
-    drivetrain.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED);
-    System.out.println ("I DID SOMETHING Gyro angle is " + drivetrain.getRotation2d().getDegrees());
+    requiredSubsystem.arcadeDrive(0.0, 0.0);
+    requiredSubsystem.setDrivetrainSpeed(DrivetrainConstants.FAST_SPEED);
+    System.out.println ("I DID SOMETHING Gyro angle is " + requiredSubsystem.getRotation2d().getDegrees());
   }
 
   // Returns true when the command should end.

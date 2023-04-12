@@ -8,8 +8,9 @@ import java.util.function.Supplier;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.ArmConstants.StateConstants.GenericPosition;
 import frc.robot.Constants.PieceType;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.Arm;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.States.OutakePiece;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:

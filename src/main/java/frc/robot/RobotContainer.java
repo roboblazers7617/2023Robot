@@ -10,19 +10,20 @@ import frc.robot.Constants.PieceType;
 import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.Constants.ArmConstants.StateConstants.GenericPosition;
 import frc.robot.Constants.ArmConstants.StateConstants.StatePosition;
-import frc.robot.commands.ArmStuff.SimplePickup;
 import frc.robot.commands.ArmStuff.SimpleScore;
 import frc.robot.commands.ArmStuff.Stow;
-import frc.robot.commands.Drivetrain.AutoBalance;
-import frc.robot.commands.Drivetrain.FaceScoreLocation;
 import frc.robot.shuffleboard.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Arm.Arm;
 import frc.robot.subsystems.Arm.States.*;
+import frc.robot.subsystems.Drivetrain.Drivetrain;
+import frc.robot.subsystems.Drivetrain.States.AutoBalanceState;
+import frc.robot.subsystems.Drivetrain.States.FaceScoreLocationState;
+import frc.robot.subsystems.Drivetrain.States.FollowPathState;
+import frc.robot.subsystems.Drivetrain.States.ResetOdometryState;
 import frc.robot.subsystems.Intake.Intake;
 import frc.robot.subsystems.Intake.States.IntakePiece;
 import frc.robot.subsystems.Intake.States.OutakePiece;
-import frc.robot.subsystems.Intake.States.StopIntake;
 
 import java.util.ArrayList;
 import com.pathplanner.lib.PathConstraints;
@@ -38,13 +39,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -158,7 +157,7 @@ public class RobotContainer {
 
                 // m_driverController.b().onTrue(new InstantCommand(() ->
                 // drivetrain.resetOdometry(new Pose2d())));
-                m_driverController.a().whileTrue(new AutoBalance(drivetrain));
+                m_driverController.a().whileTrue(new AutoBalanceState(drivetrain));
                 m_driverController.x().onTrue(new InstantCommand(() -> drivetrain.toggleBrakeMode()));
                 /*
                  * Trigger doubleSubstationAlign = new Trigger(vision::inRangeOfDoubleStation);
@@ -243,37 +242,6 @@ public class RobotContainer {
                 return m_driverController.getRightTriggerAxis() > 0.5;
         };
 
-        public Command getPathPlannerCommand() {
-                PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pathname(),
-                                new PathConstraints(setAutoBalanceVelocity(),
-                                                setAutoBalanceAcceleration()),
-                                driverStationTab.getAutoPath().isReverse());
-
-                PPRamseteCommand commandToRun = new PPRamseteCommand(path,
-                                drivetrain::getPose2d,
-                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
-                                new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
-                                                DrivetrainConstants.KA),
-                                drivetrain.getKinematics(),
-                                drivetrain::getWheelSpeeds,
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                drivetrain::tankDriveVolts,
-                                false,
-                                drivetrain);
-                return new InstantCommand(() -> drivetrain.resetOdometry(path.getInitialPose())).andThen(commandToRun);
-        }
-
-        // private double turningAuto() {
-        //         if (DriverStation.getAlliance() == DriverStation.Alliance.Blue) {
-        //                 return 0.0;
-        //         } else {
-        //                 return 180.0;
-        //         }
-        // }
-
         private double setAutoBalanceAcceleration() {
                 if (driverStationTab.getAutoPath().autoBalance() == true) {
                         return 1.5;
@@ -290,26 +258,22 @@ public class RobotContainer {
                 }
         }
 
+        public Command getPathPlannerCommand() {
+                PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().pathname(),
+                                new PathConstraints(setAutoBalanceVelocity(),
+                                                setAutoBalanceAcceleration()),
+                                driverStationTab.getAutoPath().isReverse());
+
+                return new ResetOdometryState(drivetrain, path).andThen(new FollowPathState(drivetrain, path));
+        }
+
         public Command getReturnPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().returnpathname(),
                                 new PathConstraints(setAutoBalanceVelocity(),
                                                 setAutoBalanceAcceleration()),
                                 false);
 
-                return new PPRamseteCommand(path,
-                                drivetrain::getPose2d,
-                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
-                                new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
-                                                DrivetrainConstants.KA),
-                                drivetrain.getKinematics(),
-                                drivetrain::getWheelSpeeds,
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                drivetrain::tankDriveVolts,
-                                false,
-                                drivetrain);
+                                return new FollowPathState(drivetrain, path);
         }
 
         public Command getPickupPathPlannerCommand() {
@@ -317,21 +281,7 @@ public class RobotContainer {
                                 new PathConstraints(1,
                                                 1),
                                 false);
-//6 for simple, 6.3 I think for far
-                return new PPRamseteCommand(path,
-                                drivetrain::getPose2d,
-                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
-                                new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
-                                                DrivetrainConstants.KA),
-                                drivetrain.getKinematics(),
-                                drivetrain::getWheelSpeeds,
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                drivetrain::tankDriveVolts,
-                                false,
-                                drivetrain);
+                return new FollowPathState(drivetrain, path);
         }
 
         public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
@@ -343,10 +293,10 @@ public class RobotContainer {
                                 (new ParallelCommandGroup(getPathPlannerCommand())),
                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                 if (driverStationTab.getAutoPath().autoBalance()) {
-                        auto.addCommands(new AutoBalance(drivetrain));
+                        auto.addCommands(new AutoBalanceState(drivetrain));
                 } 
                 else if (driverStationTab.getAutoPath().Pickup()) {
-                        auto.addCommands(new FaceScoreLocation(drivetrain, 6),
+                        auto.addCommands(new FaceScoreLocationState(drivetrain, 6),
                         arm.changeState(AutoPath::selectedPiece2nd, AutoPath::pickupLocation, true));
                                 
                         auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
@@ -355,7 +305,7 @@ public class RobotContainer {
                         
                         auto.addCommands(new Stow(arm, intake, false));
                         if (driverStationTab.getAutoPath().Return()) {
-                                auto.addCommands(new FaceScoreLocation(drivetrain, (180)));
+                                auto.addCommands(new FaceScoreLocationState(drivetrain, (180)));
                                 auto.addCommands(new ParallelCommandGroup(
                                                 new SequentialCommandGroup(
                                                                 new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
@@ -369,40 +319,6 @@ public class RobotContainer {
                 }
                 return auto;
         }
-        // Add your commands in the addCommands() call, e.g.
-        // addCommands(new FooCommand(), new BarCommand());
-        // if (driverStationTab.getAutoPath().scoring()) {
-        // if (driverStationTab.getAutoPath().autoBalance()) {
-        // return new SequentialCommandGroup(
-        // new SimpleScore(arm, wrist, intake,
-        // () -> driverStationTab.getAutoPath().selectedPiece(),
-        // () -> driverStationTab.getAutoPath().scoreLevelFirst()),
-        // new Stow(arm, wrist, intake),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-        // getPathPlannerCommand(),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
-        // new AutoBalance(drivetrain));
-        // } else {
-        // return new SequentialCommandGroup(
-        // new SimpleScore(arm, wrist, intake,
-        // () -> driverStationTab.getAutoPath().selectedPiece(),
-        // () -> driverStationTab.getAutoPath().scoreLevelFirst()),
-        // new Stow(arm, wrist, intake),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-        // getPathPlannerCommand(),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
-        // }
-        // } else if (driverStationTab.getAutoPath().autoBalance()) {
-        // return new SequentialCommandGroup(
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-        // getPathPlannerCommand(),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
-        // new AutoBalance(drivetrain));
-        // } else {
-        // return new SequentialCommandGroup(
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-        // getPathPlannerCommand(),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
 
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.

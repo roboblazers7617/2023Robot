@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.Drivetrain;
 
 import java.util.Optional;
 import java.util.function.DoubleSupplier;
@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.DrivetrainConstants.DrivetrainMode;
 import frc.robot.FieldPositions.FieldLocation;
+import frc.robot.subsystems.Vision;
 
 public class Drivetrain extends SubsystemBase {
   /** Creates a new Drivetrain. */
@@ -136,8 +137,8 @@ public class Drivetrain extends SubsystemBase {
   }
 }
 
-public void drive(DoubleSupplier leftY, DoubleSupplier rightX, DoubleSupplier rightY, Supplier<Boolean> isQuickTurn) {
- drive(leftY.getAsDouble(), rightX.getAsDouble(), rightY.getAsDouble(), isQuickTurn);
+public void drive(Supplier<Double> leftY, Supplier<Double> rightX, Supplier<Double> rightY, Supplier<Boolean> isQuickTurn) {
+ drive(leftY.get(), rightX.get(), rightY.get(), isQuickTurn);
  drivetrain.feed();
 }
 
