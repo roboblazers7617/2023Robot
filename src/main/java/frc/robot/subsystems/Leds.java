@@ -232,7 +232,6 @@ public class Leds extends SubsystemBase {
     }
     for (int i = bouncePosition; i < BOUNCE_LENGTH + bouncePosition; i++){
       m_ledBuffer.setLED(i, new Color(255, 255, 255));
-
     }
   }
 }
