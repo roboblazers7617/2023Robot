@@ -87,7 +87,6 @@ public class RobotContainer {
         // The robot's subsystems and commands are defined here...
         private final Vision vision = new Vision();
         private final Drivetrain drivetrain = new Drivetrain(vision);
-        // private final Leds leds = new Leds();
         private final Pnuematics pnuematics = new Pnuematics();
         private final Intake intake = new Intake();
         private final Arm arm = new Arm(pnuematics);

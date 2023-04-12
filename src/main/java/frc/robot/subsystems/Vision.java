@@ -23,7 +23,7 @@ import frc.robot.Constants.VisionConstants;
 
 public class Vision extends SubsystemBase {
   /** Creates a new Vision. */
-  PhotonCamera camera = new PhotonCamera(VisionConstants.CAMERA_NAME);
+  //PhotonCamera camera = new PhotonCamera(VisionConstants.CAMERA_NAME);
   PhotonPipelineResult result;
   PhotonTrackedTarget bestTag;
   AprilTagFieldLayout layout;
@@ -35,17 +35,17 @@ public class Vision extends SubsystemBase {
     } catch (IOException e) {
       layout = null;
     }
-    poseEstimator = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP, camera,
-        VisionConstants.CAMERA_POSITION);
+    //poseEstimator = new PhotonPoseEstimator(layout, PoseStrategy.MULTI_TAG_PNP, camera,
+    //    VisionConstants.CAMERA_POSITION);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    result = camera.getLatestResult();
-    if (result.hasTargets())
-      bestTag = result.getBestTarget();
-    else
+   // result = camera.getLatestResult();
+    //if (result.hasTargets())
+    //  bestTag = result.getBestTarget();
+   // else
       bestTag = null;
   }
 
