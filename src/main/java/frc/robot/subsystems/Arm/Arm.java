@@ -5,7 +5,6 @@
 package frc.robot.subsystems.Arm;
 
 
-import java.security.InvalidParameterException;
 import java.util.function.Supplier;
 
 import com.revrobotics.CANSparkMax;
@@ -20,7 +19,6 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.PieceType;
@@ -33,6 +31,7 @@ import frc.robot.Constants.ArmConstants.PnuematicsConstants.PnuematicPositions;
 import frc.robot.Constants.ArmConstants.WristConstants.WristPosition;
 import frc.robot.subsystems.Pnuematics;
 import frc.robot.subsystems.Arm.States.ArmState;
+import frc.robot.subsystems.Arm.States.WaitUntilAtSetpoint;
 import frc.robot.subsystems.Arm.States.WaitUntilAtState;
 
 public class Arm extends SubsystemBase {
@@ -172,7 +171,7 @@ public class Arm extends SubsystemBase {
       wristMotor.setIdleMode(IdleMode.kCoast);
     }
   }
-  private void setPosition(double shoulderPosition, double wristPosition) {
+  public void setPosition(double shoulderPosition, double wristPosition) {
     shoulderSetpoint = Math.min(shoulderPosition, armUpperBound);
     shoulderSetpoint = Math.max(shoulderSetpoint, armLowerBound);
     wristSetpoint = Math.min(wristUpperBound, wristPosition);
@@ -364,10 +363,10 @@ public class Arm extends SubsystemBase {
         System.out.println(e.getMessage());
         return Commands.none();
       }
-      commandToReturn.andThen(new WaitUntilAtState(this)).andThen(new ArmState(this, interimState));
+      commandToReturn.andThen(new WaitUntilAtSetpoint(this)).andThen(new ArmState(this, interimState));
     }
     if(waitUntilAtSetpoint)
-        commandToReturn.andThen(new WaitUntilAtState(this));
+        commandToReturn.andThen(new WaitUntilAtSetpoint(this));
     return commandToReturn;
     }
 
@@ -377,6 +376,14 @@ public class Arm extends SubsystemBase {
 
     public Command changeState(Supplier<PieceType> piece, Supplier<GenericPosition> position, boolean waitUntilAtSetpoint){
       return changeState(piece.get(), position.get(), waitUntilAtSetpoint);
+    }
+
+    public StatePosition getCurrentState() {
+        return currentState;
+    }
+
+    public StatePosition getTargetState() {
+        return targetState;
     }
 
   }

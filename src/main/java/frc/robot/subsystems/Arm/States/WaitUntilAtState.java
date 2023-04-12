@@ -2,31 +2,20 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Arm;
+package frc.robot.subsystems.Arm.States;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.subsystems.Arm.Arm;
+import frc.team4272.globals.State;
 
-public class WaitTillAtTargetState extends CommandBase {
+public class WaitUntilAtState extends State<Arm> {
   /** Creates a new WaitTillAtTargetState. */
-  public WaitTillAtTargetState() {
+  public WaitUntilAtState(Arm arm) {
     // Use addRequirements() here to declare subsystem dependencies.
+    super(arm);
   }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {}
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {}
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
+  
   @Override
   public boolean isFinished() {
-    return false;
+    return (requiredSubsystem.atSetpoints() && (requiredSubsystem.getCurrentState() == requiredSubsystem.getTargetState()));
   }
 }
