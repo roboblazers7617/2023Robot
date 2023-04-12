@@ -366,7 +366,7 @@ public class Arm extends SubsystemBase {
       commandToReturn.andThen(new WaitUntilAtSetpoint(this)).andThen(new ArmState(this, interimState));
     }
     if(waitUntilAtSetpoint)
-        commandToReturn.andThen(new WaitUntilAtSetpoint(this));
+        commandToReturn.andThen(new WaitUntilAtState(this));
     return commandToReturn;
     }
 

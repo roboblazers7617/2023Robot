@@ -12,11 +12,11 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ArmConstants.WristConstants;
 import frc.robot.Constants.ArmConstants.StateConstants.GenericPosition;
-import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Arm.Arm;
 import frc.robot.subsystems.Arm.States.SetVelocitiesState;
 import frc.robot.subsystems.Arm.States.WaitUntilAtSetpoint;
 import frc.robot.subsystems.Arm.States.WaitUntilAtState;
+import frc.robot.subsystems.Intake.Intake;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
@@ -25,6 +25,6 @@ public class TiltWristDownAndStow extends SequentialCommandGroup {
   public TiltWristDownAndStow(Arm arm, Intake intake, Supplier<PieceType> piece) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(intake.SpinIntakeCommand(piece, true), new InstantCommand(() -> arm.setPosition(arm.getShoulderAngle(), arm.getWristAngle()-10), arm), new WaitUntilAtSetpoint(arm), arm.changeState(piece, GenericPosition.Stow, false));
+    addCommands(intake.SpinIntakeCommand(piece, true), new InstantCommand(() -> arm.setPosition(arm.getShoulderAngle(), arm.getWristAngle()-10), arm), new WaitUntilAtSetpoint(arm), new Stow(arm, intake, false));
   }
 }

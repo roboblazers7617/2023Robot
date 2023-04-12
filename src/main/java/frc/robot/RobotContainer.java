@@ -10,16 +10,19 @@ import frc.robot.Constants.PieceType;
 import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.Constants.ArmConstants.StateConstants.GenericPosition;
 import frc.robot.Constants.ArmConstants.StateConstants.StatePosition;
-import frc.robot.commands.ArmStuff.IntakePiece;
-import frc.robot.commands.ArmStuff.OutakePiece;
 import frc.robot.commands.ArmStuff.SimplePickup;
 import frc.robot.commands.ArmStuff.SimpleScore;
+import frc.robot.commands.ArmStuff.Stow;
 import frc.robot.commands.Drivetrain.AutoBalance;
 import frc.robot.commands.Drivetrain.FaceScoreLocation;
 import frc.robot.shuffleboard.*;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Arm.Arm;
 import frc.robot.subsystems.Arm.States.*;
+import frc.robot.subsystems.Intake.Intake;
+import frc.robot.subsystems.Intake.States.IntakePiece;
+import frc.robot.subsystems.Intake.States.OutakePiece;
+import frc.robot.subsystems.Intake.States.StopIntake;
 
 import java.util.ArrayList;
 import com.pathplanner.lib.PathConstraints;
@@ -350,7 +353,7 @@ public class RobotContainer {
                                 new ParallelDeadlineGroup(getPickupPathPlannerCommand(),  intake.SpinIntakeCommand(()-> driverStationTab.getAutoPath().selectedPiece2nd(),true)));
                                         new InstantCommand(() -> turnOnBrakesDrivetrain(true));
                         
-                        auto.addCommands(arm.changeState(AutoPath::selectedPiece2nd, GenericPosition.Stow, false));
+                        auto.addCommands(new Stow(arm, intake, false));
                         if (driverStationTab.getAutoPath().Return()) {
                                 auto.addCommands(new FaceScoreLocation(drivetrain, (180)));
                                 auto.addCommands(new ParallelCommandGroup(
@@ -361,7 +364,7 @@ public class RobotContainer {
                                                 (new SequentialCommandGroup(new WaitCommand(2.5),
                                                                 new SimpleScore(arm, intake,
                                                                                 () -> PieceType.Cube,
-                                                                               () ->  GenericPosition.Level2, false)))));
+                                                                               () ->  GenericPosition.Level2, true)))));
                         }
                 }
                 return auto;
