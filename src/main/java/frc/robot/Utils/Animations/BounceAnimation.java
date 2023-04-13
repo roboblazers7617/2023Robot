@@ -14,14 +14,13 @@ public class BounceAnimation extends Animation {
     Color bouncingColor;
     int bouncePositionUpper;
     int bouncePositionLower = 0;
-    int stripLength;
     int bounceLength;
     boolean isGoingUp = true;
     //TODO: add illegal arguement protections if bounce length is bigger that the strip
     public BounceAnimation(Color backgroundColor, Color bouncingColor, int bounceLength, int stripLength){
+        super(stripLength);
         this.backgroundColor = backgroundColor;
         this.bouncingColor = bouncingColor;
-        this.stripLength = stripLength;
         this.bounceLength = bounceLength;
         bouncePositionUpper = bounceLength;
     }
@@ -37,7 +36,7 @@ public class BounceAnimation extends Animation {
     @Override
     public HashMap<Integer, Color> generatePattern(){
         generatedHashmap.clear();
-        if(bouncePositionUpper == stripLength)
+        if(bouncePositionUpper == LEDStripLength)
             isGoingUp = false;
         if(isGoingUp){
             bouncePositionLower++;
@@ -49,7 +48,7 @@ public class BounceAnimation extends Animation {
         }
         generatedHashmap.put(bouncePositionLower, backgroundColor);
         generatedHashmap.put(bouncePositionUpper, bouncingColor);
-        generatedHashmap.put(stripLength, backgroundColor);
+        generatedHashmap.put(LEDStripLength, backgroundColor);
         return generatedHashmap;
     }
 }

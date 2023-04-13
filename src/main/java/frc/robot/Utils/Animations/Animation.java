@@ -11,18 +11,23 @@ import edu.wpi.first.wpilibj.util.Color;
 
 /** Add your docs here. */
 public abstract class Animation {
-    private Timer time = new Timer();
-    public double minUpdatePeriod = 0.01;
+    private final Timer time = new Timer();
+    protected double minUpdatePeriod = 0.01;
     private int cyclesRan = 0;
+    protected final int LEDStripLength;
     protected HashMap<Integer, Color> generatedHashmap;
     
-    public Animation(){
+    public Animation(int LEDStripLength){
         time.start();
+        this.LEDStripLength = LEDStripLength;
+        generatedHashmap.clear();
     }
 
-    public Animation(int minUpdatePeriod){
+    public Animation(int minUpdatePeriod, int LEDStripLength){
         time.start();
         this.minUpdatePeriod = minUpdatePeriod;
+        this.LEDStripLength = LEDStripLength;
+        generatedHashmap.clear();
     }
 
     public void update(){
@@ -37,6 +42,7 @@ public abstract class Animation {
 
     public void reset(){
         cyclesRan = 0;
+        generatedHashmap.clear();
     }
 
     public int getCyclesRan(){

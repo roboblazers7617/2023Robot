@@ -12,15 +12,14 @@ import edu.wpi.first.wpilibj.util.Color;
 public class RaceAnimation extends Animation {
     private final Color backgroundColor, raceColor;
     private Color previousStripColor;
-    private final int raceLength, raceGap, LEDStripLength;
+    private final int raceLength, raceGap;
 
     public RaceAnimation(Color backgroundColor, Color raceColor, int raceLength, int raceGap, int LEDStripLength) {
-        super();
+        super(LEDStripLength);
         this.backgroundColor = backgroundColor;
         this.raceColor = raceColor;
         this.raceLength = raceLength;
         this.raceGap = raceGap;
-        this.LEDStripLength = LEDStripLength;
         previousStripColor = backgroundColor;
     }
 
