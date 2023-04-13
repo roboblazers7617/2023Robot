@@ -19,6 +19,12 @@ public abstract class Animation {
     public Animation(){
         time.start();
     }
+
+    public Animation(int minUpdatePeriod){
+        time.start();
+        this.minUpdatePeriod = minUpdatePeriod;
+    }
+
     public void update(){
         if(time.advanceIfElapsed(minUpdatePeriod)){
             cyclesRan++;
@@ -29,8 +35,18 @@ public abstract class Animation {
 
     public abstract HashMap<Integer, Color> generatePattern();
 
+    public void reset(){
+        cyclesRan = 0;
+    }
+
     public int getCyclesRan(){
         return cyclesRan;
+    }
+
+    public void replaceElementKey(int key, int newKey){
+        Color replacedColor = generatedHashmap.get(key);
+        generatedHashmap.remove(key);
+        generatedHashmap.put(newKey, replacedColor);
     }
 
 }

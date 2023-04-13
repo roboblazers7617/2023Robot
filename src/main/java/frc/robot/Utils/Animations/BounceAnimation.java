@@ -15,13 +15,23 @@ public class BounceAnimation extends Animation {
     int bouncePositionUpper;
     int bouncePositionLower = 0;
     int stripLength;
+    int bounceLength;
     boolean isGoingUp = true;
-    
+    //TODO: add illegal arguement protections if bounce length is bigger that the strip
     public BounceAnimation(Color backgroundColor, Color bouncingColor, int bounceLength, int stripLength){
         this.backgroundColor = backgroundColor;
         this.bouncingColor = bouncingColor;
         this.stripLength = stripLength;
+        this.bounceLength = bounceLength;
         bouncePositionUpper = bounceLength;
+    }
+
+    @Override
+    public void reset(){
+        super.reset();
+        bouncePositionUpper = bounceLength;
+        bouncePositionLower = 0;
+        isGoingUp = true;
     }
 
     @Override

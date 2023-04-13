@@ -38,6 +38,8 @@ public class Led extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if(runningAutomation)
+      setStripToMultipleColors(currentAnimation.generatePattern());
   }
 
   public void setEntireStripToColor(Color color){
@@ -63,11 +65,13 @@ public class Led extends SubsystemBase {
   
   public void setAnimation(Animation animation){
     currentAnimation = animation;
+    currentAnimation.reset();
     runningAutomation = true;
   }
 
   public void startAnimation(){
     runningAutomation = true;
+    currentAnimation.reset();
   }
   public void stopAnimation(){
     runningAutomation = false;
