@@ -43,7 +43,7 @@ public abstract class Animation {
         return cyclesRan;
     }
 
-    public void replaceElementKey(int key, int newKey){
+    protected void replaceElementKey(int key, int newKey){
         Color replacedColor = generatedHashmap.get(key);
         generatedHashmap.remove(key);
         generatedHashmap.put(newKey, replacedColor);
