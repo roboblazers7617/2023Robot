@@ -408,7 +408,7 @@ public Command getMobilityPathPlannerCommand() {
                                 new PathConstraints(setAutoBalanceVelocity(),
                                                 setAutoBalanceAcceleration()),
                                 true);
-                        return new PPRamseteCommand(path,
+                        Command commandtorun= new PPRamseteCommand(path,
                         drivetrain::getPose2d,
                         new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
                         new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
@@ -422,6 +422,7 @@ public Command getMobilityPathPlannerCommand() {
                         drivetrain::tankDriveVolts,
                         false,
                          drivetrain);
+                        return new InstantCommand(() -> drivetrain.resetOdometry(path.getInitialPose())).andThen(commandtorun);
         }                
                 
 
