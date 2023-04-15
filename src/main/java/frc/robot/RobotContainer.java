@@ -10,28 +10,22 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.Constants.PickupLocation;
 import frc.robot.Constants.PieceType;
 import frc.robot.Constants.ScoreLevel;
-import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.WristConstants;
 import frc.robot.Constants.ArmConstants.ArmPositions;
 import frc.robot.Constants.DrivetrainConstants.AutoPath;
 import frc.robot.Constants.PnuematicsConstants.PnuematicPositions;
 import frc.robot.Constants.WristConstants.WristPosition;
-import frc.robot.commands.ArmStuff.AutonMoveToScore;
 import frc.robot.commands.ArmStuff.IntakePiece;
 import frc.robot.commands.ArmStuff.OutakePiece;
 import frc.robot.commands.ArmStuff.SimpleMoveToPickup;
 import frc.robot.commands.ArmStuff.SimpleMoveToScore;
-import frc.robot.commands.ArmStuff.SimplePickup;
 import frc.robot.commands.ArmStuff.SimpleScore;
 import frc.robot.commands.ArmStuff.Stow;
 import frc.robot.commands.ArmStuff.StowAuton;
 import frc.robot.commands.ArmStuff.TiltWristDown;
-import frc.robot.commands.ArmStuff.TiltWristDownAndStow;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
-import frc.robot.commands.Drivetrain.AlignToDouble;
 import frc.robot.commands.Drivetrain.AutoBalance;
 import frc.robot.commands.Drivetrain.FaceScoreLocation;
-import frc.robot.commands.Drivetrain.IntakeAtDouble;
 import frc.robot.shuffleboard.ArmTab;
 import frc.robot.shuffleboard.DriveTrainTab;
 import frc.robot.shuffleboard.DriverStationTab;
@@ -64,14 +58,11 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -333,7 +324,7 @@ public class RobotContainer {
                 if (driverStationTab.getAutoPath().autoBalance() == true) {
                         return 1.5;
                 } else {
-                        return 2.5;
+                        return 3;
                 }
         }
 
@@ -341,30 +332,30 @@ public class RobotContainer {
                 if (driverStationTab.getAutoPath().autoBalance() == true) {
                         return 1.5;
                 } else {
-                        return 2.5;
+                        return 4;
                 }
         }
-private Command getPathFollowingCommand(String pathName) {
-                PathPlannerTrajectory path = PathPlanner.loadPath(pathName,
-                                new PathConstraints(setAutoBalanceVelocity(),
-                                                setAutoBalanceAcceleration()),
-                                driverStationTab.getAutoPath().isReverse());
+// private Command getPathFollowingCommand(String pathName) {
+//                 PathPlannerTrajectory path = PathPlanner.loadPath(pathName,
+//                                 new PathConstraints(setAutoBalanceVelocity(),
+//                                                 setAutoBalanceAcceleration()),
+//                                 driverStationTab.getAutoPath().isReverse());
 
-                return new PPRamseteCommand(path,
-                                drivetrain::getPose2d,
-                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
-                                new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
-                                                DrivetrainConstants.KA),
-                                drivetrain.getKinematics(),
-                                drivetrain::getWheelSpeeds,
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                drivetrain::tankDriveVolts,
-                                false,
-                                drivetrain);
-        }
+//                 return new PPRamseteCommand(path,
+//                                 drivetrain::getPose2d,
+//                                 new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
+//                                 new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
+//                                                 DrivetrainConstants.KA),
+//                                 drivetrain.getKinematics(),
+//                                 drivetrain::getWheelSpeeds,
+//                                 new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+//                                                 DrivetrainConstants.KD_LIN),
+//                                 new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+//                                                 DrivetrainConstants.KD_LIN),
+//                                 drivetrain::tankDriveVolts,
+//                                 false,
+//                                 drivetrain);
+//         }
 
         public Command getReturnPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().returnpathname(),
@@ -396,8 +387,21 @@ private Command getPathFollowingCommand(String pathName) {
 //6 for simple, 6.3 I think for far
 HashMap<String, Command> eventMap = new HashMap<>();
 eventMap.put("intake down", new TiltWristDown(arm, wrist));
-
-                return new FollowPathWithEvents(getPathFollowingCommand(driverStationTab.getAutoPath().name()), path.getMarkers(), eventMap);
+PPRamseteCommand pathFolowingcommand = new PPRamseteCommand(path,
+drivetrain::getPose2d,
+new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
+new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
+                DrivetrainConstants.KA),
+drivetrain.getKinematics(),
+drivetrain::getWheelSpeeds,
+new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                DrivetrainConstants.KD_LIN),
+new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                DrivetrainConstants.KD_LIN),
+drivetrain::tankDriveVolts,
+false,
+drivetrain);
+                return new FollowPathWithEvents(pathFolowingcommand, path.getMarkers(), eventMap);
         }
 
         public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
@@ -434,10 +438,10 @@ eventMap.put("intake down", new TiltWristDown(arm, wrist));
                                                                 new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                                                                 getReturnPathPlannerCommand(),
                                                                 new InstantCommand(() -> turnOnBrakesDrivetrain(true))),
-                                                (new SequentialCommandGroup(new WaitCommand(2.5),
+                                                (new SequentialCommandGroup(new WaitCommand(2.0),
                                                                 new SimpleScore(arm, wrist, intake,
-                                                                                () -> PieceType.CUBE,
-                                                                                () -> ScoreLevel.LEVEL_2)))));
+                                                                                () -> driverStationTab.getAutoPath().selectedPiece2nd(),
+                                                                                ()-> driverStationTab.getAutoPath().scoreLevelSecond())))));
                         }
                 }
                 return auto;

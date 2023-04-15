@@ -65,6 +65,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
         autoPath.addOption("right 2", DrivetrainConstants.AutoPath.rightTwo);
         autoPath.addOption("Mid Cone High", DrivetrainConstants.AutoPath.midHighCone);
         autoPath.addOption("Mid Cube High", DrivetrainConstants.AutoPath.midHighCube);
+        autoPath.addOption("Right High Cube 2", DrivetrainConstants.AutoPath.rightCubeTwo);
         tab.add("Auto Path", autoPath).withPosition(1, 0);
 
         //debug mode
