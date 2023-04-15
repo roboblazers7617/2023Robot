@@ -434,46 +434,47 @@ public Command getMobilityPathPlannerCommand() {
                                                         () -> driverStationTab.getAutoPath().selectedPiece()),
                                         new OutakePiece(intake, () -> driverStationTab.getAutoPath().selectedPiece()));
                 }
-                if (driverStationTab.getAutoPath().Mobility()){
-                auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                (new ParallelCommandGroup(getMobilityPathPlannerCommand(), new StowAuton(arm, wrist, intake))),
-                                new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
-                }
-                else {
+                if ((driverStationTab.getAutoPath().autoBalance()) || (driverStationTab.getAutoPath().Pickup())) {
                         auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                (new ParallelCommandGroup(getPathPlannerCommand(), new StowAuton(arm, wrist, intake))),
-                                new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
-                }
-                if (driverStationTab.getAutoPath().autoBalance()) {
-                        auto.addCommands(new AutoBalance(drivetrain));
-                } 
-                else if (driverStationTab.getAutoPath().Pickup()) {
-                        auto.addCommands(new FaceScoreLocation(drivetrain, 6),
-                        new SimpleMoveToPickup(arm, wrist, () -> driverStationTab.getAutoPath().selectedPiece2nd(), () -> driverStationTab.getAutoPath().pickupLocation()));
+                                        new ParallelCommandGroup(getPathPlannerCommand(), new StowAuton(arm, wrist, intake)),
+                                        new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+                
+                        if (driverStationTab.getAutoPath().autoBalance()) {
+                                auto.addCommands(new AutoBalance(drivetrain));
+                        } 
+                        else if (driverStationTab.getAutoPath().Pickup()) {
+                                auto.addCommands(new FaceScoreLocation(drivetrain, 6),
+                                new SimpleMoveToPickup(arm, wrist, () -> driverStationTab.getAutoPath().selectedPiece2nd(), () -> driverStationTab.getAutoPath().pickupLocation()));
+                                        
+                                auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                                        new ParallelDeadlineGroup(getPickupPathPlannerCommand(),  intake.SpinIntakeCommand(()-> driverStationTab.getAutoPath().selectedPiece2nd(),true)));
+                                                new InstantCommand(() -> turnOnBrakesDrivetrain(true));
                                 
-                        auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                new ParallelDeadlineGroup(getPickupPathPlannerCommand(),  intake.SpinIntakeCommand(()-> driverStationTab.getAutoPath().selectedPiece2nd(),true)));
-                                        new InstantCommand(() -> turnOnBrakesDrivetrain(true));
-                        
-                        auto.addCommands(new Stow(arm, wrist, intake));
-                        // auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                        // getPickupPathPlannerCommand(),
-                        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
-                        if (driverStationTab.getAutoPath().Return()) {
-                                auto.addCommands(new FaceScoreLocation(drivetrain, (180)));
-                                auto.addCommands(new ParallelCommandGroup(
-                                                new SequentialCommandGroup(
-                                                                new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-                                                                getReturnPathPlannerCommand(),
-                                                                new InstantCommand(() -> turnOnBrakesDrivetrain(true))),
-                                                (new SequentialCommandGroup(new WaitCommand(2.0),
-                                                                new SimpleScore(arm, wrist, intake,
-                                                                                () -> driverStationTab.getAutoPath().selectedPiece2nd(),
-                                                                                ()-> driverStationTab.getAutoPath().scoreLevelSecond())))));
+                                auto.addCommands(new Stow(arm, wrist, intake));
+                                // auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                                // getPickupPathPlannerCommand(),
+                                // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+                                if (driverStationTab.getAutoPath().Return()) {
+                                        auto.addCommands(new FaceScoreLocation(drivetrain, (180)));
+                                        auto.addCommands(new ParallelCommandGroup(
+                                                        new SequentialCommandGroup(
+                                                                        new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                                                                        getReturnPathPlannerCommand(),
+                                                                        new InstantCommand(() -> turnOnBrakesDrivetrain(true))),
+                                                        (new SequentialCommandGroup(new WaitCommand(2.0),
+                                                                        new SimpleScore(arm, wrist, intake,
+                                                                                        () -> driverStationTab.getAutoPath().selectedPiece2nd(),
+                                                                                        ()-> driverStationTab.getAutoPath().scoreLevelSecond())))));
+                                }
                         }
                 }
+                else if (driverStationTab.getAutoPath().Mobility()){
+                        auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                                        (new ParallelCommandGroup(getMobilityPathPlannerCommand(), new StowAuton(arm, wrist, intake))),
+                                        new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+                }
                 return auto;
-        }
+}
         // Add your commands in the addCommands() call, e.g.
         // addCommands(new FooCommand(), new BarCommand());
         // if (driverStationTab.getAutoPath().scoring()) {
