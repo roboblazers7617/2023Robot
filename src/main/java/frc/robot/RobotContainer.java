@@ -403,27 +403,28 @@ false,
 drivetrain);
                 return new FollowPathWithEvents(pathFolowingcommand, path.getMarkers(), eventMap);
         }
-public Command getMobilityPathPlannerCommand() {
+        public Command getMobilityPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath("blue mobility",
                                 new PathConstraints(setAutoBalanceVelocity(),
                                                 setAutoBalanceAcceleration()),
-                                true);
-                        Command commandtorun= new PPRamseteCommand(path,
-                        drivetrain::getPose2d,
-                        new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
-                        new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
+                                true); 
+
+                PPRamseteCommand commandToRun = new PPRamseteCommand(path,
+                                drivetrain::getPose2d,
+                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
+                                new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
                                                 DrivetrainConstants.KA),
-                        drivetrain.getKinematics(),
-                        drivetrain::getWheelSpeeds,
-                        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                        DrivetrainConstants.KD_LIN),
-                        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                        DrivetrainConstants.KD_LIN),
-                        drivetrain::tankDriveVolts,
-                        false,
-                         drivetrain);
-                        return new InstantCommand(() -> drivetrain.resetOdometry(path.getInitialPose())).andThen(commandtorun);
-        }                
+                                drivetrain.getKinematics(),
+                                drivetrain::getWheelSpeeds,
+                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                                DrivetrainConstants.KD_LIN),
+                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                                DrivetrainConstants.KD_LIN),
+                                drivetrain::tankDriveVolts,
+                                false,
+                                drivetrain);
+                return new InstantCommand(() -> drivetrain.resetOdometry(path.getInitialPose()))/* .andThen(commandToRun)*/;
+        }
                 
 
         public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
