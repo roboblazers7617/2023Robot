@@ -472,6 +472,11 @@ public Command getMobilityPathPlannerCommand() {
                                                                                 ()-> driverStationTab.getAutoPath().scoreLevelSecond())))));
                         }
                 }
+                else if (driverStationTab.getAutoPath().Mobility()){
+                        auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                        getMobilityPathPlannerCommand(),
+                        new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+                }
                 return auto;
         }
         // Add your commands in the addCommands() call, e.g.
