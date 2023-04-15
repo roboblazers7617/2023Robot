@@ -50,7 +50,7 @@ public class Vision extends SubsystemBase {
   }
 
   public Optional<EstimatedRobotPose> getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
-    poseEstimator.setLastPose(prevEstimatedRobotPose);
+    //poseEstimator.setLastPose(prevEstimatedRobotPose);
     return poseEstimator.update();
   }
 
