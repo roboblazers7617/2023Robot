@@ -404,7 +404,7 @@ drivetrain);
                 return new FollowPathWithEvents(pathFolowingcommand, path.getMarkers(), eventMap);
         }
         public Command getMobilityPathPlannerCommand() {
-                PathPlannerTrajectory path = PathPlanner.loadPath("blue mobility",
+                PathPlannerTrajectory path = PathPlanner.loadPath("backup only",
                                 new PathConstraints(setAutoBalanceVelocity(),
                                                 setAutoBalanceAcceleration()),
                                 true); 
@@ -423,7 +423,7 @@ drivetrain);
                                 drivetrain::tankDriveVolts,
                                 false,
                                 drivetrain);
-                return new InstantCommand(() -> drivetrain.resetOdometry(path.getInitialPose()))/* .andThen(commandToRun)*/;
+                return new InstantCommand(() -> drivetrain.resetOdometry(path.getInitialPose())).andThen(commandToRun);
         }
                 
 
@@ -471,6 +471,7 @@ drivetrain);
                         }
                 }
                 else if (driverStationTab.getAutoPath().Mobility()){
+                        System.out.println("I am mobile");
                         auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
                                         (new ParallelCommandGroup(getMobilityPathPlannerCommand(), new StowAuton(arm, wrist, intake))),
                                         new InstantCommand(() -> turnOnBrakesDrivetrain(true)));

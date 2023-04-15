@@ -57,15 +57,16 @@ public class DriverStationTab extends ShuffleboardTabBase {
         tab.add("Drivetrain Mode", drivetrainMode).withPosition(0, 0);
 
 
-        autoPath.setDefaultOption("left 1", DrivetrainConstants.AutoPath.leftOne);
-        autoPath.addOption("left 2", DrivetrainConstants.AutoPath.leftTwo);
-        autoPath.addOption("mid cone", DrivetrainConstants.AutoPath.midCone);
-        autoPath.addOption("mid cube", DrivetrainConstants.AutoPath.midCube);
-        autoPath.addOption("right 1", DrivetrainConstants.AutoPath.rightOne);
-        autoPath.addOption("right 2", DrivetrainConstants.AutoPath.rightTwo);
-        autoPath.addOption("Mid Cone High", DrivetrainConstants.AutoPath.midHighCone);
-        autoPath.addOption("Mid Cube High", DrivetrainConstants.AutoPath.midHighCube);
-        autoPath.addOption("Right High Cube 2", DrivetrainConstants.AutoPath.rightCubeTwo);
+        autoPath.setDefaultOption("left 1 Piece", DrivetrainConstants.AutoPath.leftOne);
+        autoPath.addOption("left 2 Piece", DrivetrainConstants.AutoPath.leftTwo);
+        autoPath.addOption("balance cone mid", DrivetrainConstants.AutoPath.midCone);
+        autoPath.addOption("balance cube mid", DrivetrainConstants.AutoPath.midCube);
+        autoPath.addOption("balance Cube High", DrivetrainConstants.AutoPath.midHighCube);
+        autoPath.addOption("right 1 Piece", DrivetrainConstants.AutoPath.rightOne);
+        autoPath.addOption("right 2 Piece", DrivetrainConstants.AutoPath.rightTwo);
+        // autoPath.addOption("Mid Cone High", DrivetrainConstants.AutoPath.midHighCone);
+
+        // autoPath.addOption("Right High Cube 2", DrivetrainConstants.AutoPath.rightCubeTwo);
         tab.add("Auto Path", autoPath).withPosition(1, 0);
 
         //debug mode
