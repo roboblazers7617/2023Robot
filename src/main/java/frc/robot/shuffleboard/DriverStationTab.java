@@ -56,24 +56,15 @@ public class DriverStationTab extends ShuffleboardTabBase {
         drivetrainMode.addOption("Curvature Drive", DrivetrainMode.curvatureDrive.toString());
         tab.add("Drivetrain Mode", drivetrainMode).withPosition(0, 0);
 
-        // autoPath.setDefaultOption("Blue Right Node", DrivetrainConstants.AutoPath.blueNodeOne);
-        // autoPath.addOption("Blue Mid Node", DrivetrainConstants.AutoPath.blueNodeSix);
-        // autoPath.addOption("Blue Left Node", DrivetrainConstants.AutoPath.blueNodeNine);
-        // autoPath.addOption("Red Left Node", DrivetrainConstants.AutoPath.redNodeOne);
-        // autoPath.addOption("Red Mid Node", DrivetrainConstants.AutoPath.redNodeSix);
-        // autoPath.addOption("Red Right Node", DrivetrainConstants.AutoPath.redNodeNine);
-        // autoPath.setDefaultOption("high cone score left blue simple", DrivetrainConstants.AutoPath.leftBlueSimple);
-        // autoPath.addOption("high cone score mid blue simple", DrivetrainConstants.AutoPath.midBlueSimple);
-        // autoPath.addOption("high cone score right blue simple", DrivetrainConstants.AutoPath.rightBlueSimple);
-        // autoPath.addOption("high cone scoreleft red simple", DrivetrainConstants.AutoPath.leftRedSimple);
-        // autoPath.addOption("high cone score mid red simple", DrivetrainConstants.AutoPath.midRedSimple);
-        // autoPath.addOption("high cone score right red simple", DrivetrainConstants.AutoPath.rightRedSimple);
-        // autoPath.addOption("TEST TEST TEST", DrivetrainConstants.AutoPath.testpath);
+
         autoPath.setDefaultOption("left 1", DrivetrainConstants.AutoPath.leftOne);
         autoPath.addOption("left 2", DrivetrainConstants.AutoPath.leftTwo);
-        autoPath.addOption("mid", DrivetrainConstants.AutoPath.midOne);
+        autoPath.addOption("mid cone", DrivetrainConstants.AutoPath.midCone);
+        autoPath.addOption("mid cube", DrivetrainConstants.AutoPath.midCube);
         autoPath.addOption("right 1", DrivetrainConstants.AutoPath.rightOne);
         autoPath.addOption("right 2", DrivetrainConstants.AutoPath.rightTwo);
+        autoPath.addOption("Mid Cone High", DrivetrainConstants.AutoPath.midHighCone);
+        autoPath.addOption("Mid Cube High", DrivetrainConstants.AutoPath.midHighCube);
         tab.add("Auto Path", autoPath).withPosition(1, 0);
 
         //debug mode

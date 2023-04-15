@@ -25,6 +25,7 @@ import frc.robot.commands.ArmStuff.SimplePickup;
 import frc.robot.commands.ArmStuff.SimpleScore;
 import frc.robot.commands.ArmStuff.Stow;
 import frc.robot.commands.ArmStuff.StowAuton;
+import frc.robot.commands.ArmStuff.TiltWristDown;
 import frc.robot.commands.ArmStuff.TiltWristDownAndStow;
 import frc.robot.commands.ArmStuff.ToggleArmPnuematics;
 import frc.robot.commands.Drivetrain.AlignToDouble;
@@ -47,9 +48,12 @@ import frc.robot.subsystems.Vision;
 import frc.robot.subsystems.Wrist;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.pathplanner.lib.PathConstraints;
 import com.pathplanner.lib.PathPlanner;
 import com.pathplanner.lib.PathPlannerTrajectory;
+import com.pathplanner.lib.commands.FollowPathWithEvents;
 import com.pathplanner.lib.commands.PPRamseteCommand;
 import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -67,6 +71,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -339,6 +344,27 @@ public class RobotContainer {
                         return 2.5;
                 }
         }
+private Command getPathFollowingCommand(String pathName) {
+                PathPlannerTrajectory path = PathPlanner.loadPath(pathName,
+                                new PathConstraints(setAutoBalanceVelocity(),
+                                                setAutoBalanceAcceleration()),
+                                driverStationTab.getAutoPath().isReverse());
+
+                return new PPRamseteCommand(path,
+                                drivetrain::getPose2d,
+                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
+                                new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
+                                                DrivetrainConstants.KA),
+                                drivetrain.getKinematics(),
+                                drivetrain::getWheelSpeeds,
+                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                                DrivetrainConstants.KD_LIN),
+                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                                DrivetrainConstants.KD_LIN),
+                                drivetrain::tankDriveVolts,
+                                false,
+                                drivetrain);
+        }
 
         public Command getReturnPathPlannerCommand() {
                 PathPlannerTrajectory path = PathPlanner.loadPath(driverStationTab.getAutoPath().returnpathname(),
@@ -368,20 +394,10 @@ public class RobotContainer {
                                                 1),
                                 false);
 //6 for simple, 6.3 I think for far
-                return new PPRamseteCommand(path,
-                                drivetrain::getPose2d,
-                                new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
-                                new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
-                                                DrivetrainConstants.KA),
-                                drivetrain.getKinematics(),
-                                drivetrain::getWheelSpeeds,
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
-                                                DrivetrainConstants.KD_LIN),
-                                drivetrain::tankDriveVolts,
-                                false,
-                                drivetrain);
+HashMap<String, Command> eventMap = new HashMap<>();
+eventMap.put("intake down", new TiltWristDown(arm, wrist));
+
+                return new FollowPathWithEvents(getPathFollowingCommand(driverStationTab.getAutoPath().name()), path.getMarkers(), eventMap);
         }
 
         public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {

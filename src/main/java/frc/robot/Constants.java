@@ -156,9 +156,11 @@ public final class Constants {
             midTwo("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
             rightTwo("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, true, true),
             leftOne("left blue simple","left blue simple return","left blue simple pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
-            midOne("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
+            midCone("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
             rightOne("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
-
+            midHighCone("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
+            midHighCube("mid blue simple","null","null",                         true, PieceType.CUBE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
+            midCube("mid blue simple","null","null",                         true, PieceType.CUBE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
 
 
             testpath("simple", "null","null",                                         false, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, false, false, false);
