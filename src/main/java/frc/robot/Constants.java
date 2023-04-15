@@ -143,27 +143,27 @@ public final class Constants {
         }
 
         public enum AutoPath {
-            leftBlueSimple("left blue simple","left blue simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true,false),
-            midBlueSimple("mid blue simple","null","null",                            true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
-            rightBlueSimple("right blue simple","right blue simple return","null",    true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, true),
-            leftRedSimple("right blue simple","right blue simple return","null",          true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
-            midRedSimple("mid red simple","null","null",                              true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
-            rightRedSimple("right red simple","right red simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
+        //     leftBlueSimple("left blue simple","left blue simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true,false),
+        //     midBlueSimple("mid blue simple","null","null",                            true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
+        //     rightBlueSimple("right blue simple","right blue simple return","null",    true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, true),
+        //     leftRedSimple("right blue simple","right blue simple return","null",          true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
+        //     midRedSimple("mid red simple","null","null",                              true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
+        //     rightRedSimple("right red simple","right red simple return","null",       true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, false),
            
             
 //          THE IMPORTANT ONES \/ \/ \/
-            leftTwo("left blue simple","left blue simple return","left blue simple pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, true),
-            rightTwo("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, true),
-            leftOne("left blue simple","left blue simple return","left blue simple pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
-            midCone("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
-            rightOne("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false),
-            midHighCone("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
-            midHighCube("mid blue simple","null","null",                         true, PieceType.CUBE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false),
-            midCube("mid blue simple","null","null",                         true, PieceType.CUBE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false),
-            rightCubeTwo("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_3, PickupLocation.FLOOR, false, true, true, true),
+            leftTwo("left blue simple","left blue simple return","left blue simple pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, true, false),
+            rightTwo("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, false, true, true, true, false),
+            leftOne("left blue simple","left blue simple return","left blue simple pickup",true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false, true),
+            midCone("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false, false),
+            rightOne("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, true, false, false, true),
+            midHighCone("mid blue simple","null","null",                         true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false, false),
+            midHighCube("mid blue simple","null","null",                         true, PieceType.CUBE, PieceType.CUBE, ScoreLevel.LEVEL_3, ScoreLevel.LEVEL_2, PickupLocation.FLOOR, true, true,false, false, false),
+            midCube("mid blue simple","null","null",                         true, PieceType.CUBE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, true, true,false, false, false),
+            rightCubeTwo("right blue simple","right blue simple return","right blue simple pickup", true, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_3, PickupLocation.FLOOR, false, true, true, true, false);
 
 
-            testpath("simple", "null","null",                                         false, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, false, false, false);
+            // testpath("simple", "null","null",                                         false, PieceType.CONE, PieceType.CUBE, ScoreLevel.LEVEL_2, ScoreLevel.LEVEL_1, PickupLocation.FLOOR, false, false, false, false);
       
             private final String pathname;
             private final String returnpathname;
@@ -178,9 +178,10 @@ public final class Constants {
             private final boolean scoring;
             private final boolean Pickup;
             private final boolean Return;
+            private final boolean Mobility;
 
             AutoPath(String pathname, String returnpathname, String pickuppathname, boolean isReverse, PieceType selectedPiece, PieceType slectedPiece2nd, ScoreLevel ScoreLevelFirst,
-                    ScoreLevel ScoreLevelSecond, PickupLocation pickupLocation, boolean autoBalance, boolean scoring, boolean Pickup, boolean Return) {
+                    ScoreLevel ScoreLevelSecond, PickupLocation pickupLocation, boolean autoBalance, boolean scoring, boolean Pickup, boolean Return, Boolean Mobility) {
                 this.pathname = pathname;
                 this.returnpathname = returnpathname;
                 this.pickuppathname = pickuppathname;
@@ -194,6 +195,7 @@ public final class Constants {
                 this.scoring = scoring;
                 this.Pickup = Pickup;
                 this.Return = Return;
+                this.Mobility = Mobility;
             }
 
             public String pathname() {
@@ -241,6 +243,9 @@ public final class Constants {
             }
             public boolean Return() {
                 return Return;
+            }
+            public boolean Mobility() {
+                return Mobility;
             }
         }
     }

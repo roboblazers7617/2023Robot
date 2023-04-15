@@ -403,6 +403,27 @@ false,
 drivetrain);
                 return new FollowPathWithEvents(pathFolowingcommand, path.getMarkers(), eventMap);
         }
+public Command getMobilityPathPlannerCommand() {
+                PathPlannerTrajectory path = PathPlanner.loadPath("blue mobility",
+                                new PathConstraints(setAutoBalanceVelocity(),
+                                                setAutoBalanceAcceleration()),
+                                true);
+                        return new PPRamseteCommand(path,
+                        drivetrain::getPose2d,
+                        new RamseteController(DrivetrainConstants.RAMSETEb, DrivetrainConstants.RAMSETEzeta),
+                        new SimpleMotorFeedforward(DrivetrainConstants.KS, DrivetrainConstants.KV,
+                                                DrivetrainConstants.KA),
+                        drivetrain.getKinematics(),
+                        drivetrain::getWheelSpeeds,
+                        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                        DrivetrainConstants.KD_LIN),
+                        new PIDController(DrivetrainConstants.KP_LIN, DrivetrainConstants.KI_LIN,
+                                        DrivetrainConstants.KD_LIN),
+                        drivetrain::tankDriveVolts,
+                        false,
+                         drivetrain);
+        }                
+                
 
         public SequentialCommandGroup SimpleAuto(AutoPath AutoPath) {
                 SequentialCommandGroup auto = new SequentialCommandGroup();
@@ -443,6 +464,11 @@ drivetrain);
                                                                                 () -> driverStationTab.getAutoPath().selectedPiece2nd(),
                                                                                 ()-> driverStationTab.getAutoPath().scoreLevelSecond())))));
                         }
+                }
+                else if (driverStationTab.getAutoPath().Mobility()){
+                        auto.addCommands(new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+                        getMobilityPathPlannerCommand(),
+                        new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                 }
                 return auto;
         }
