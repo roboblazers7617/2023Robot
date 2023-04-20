@@ -59,6 +59,7 @@ dependencies {
     implementation wpi.java.vendor.java()
     //Libraries added manually go here:
     implementation name: 'MaverickLib'
+    implementation name: 'LEDLib'
 
     roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
     roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)

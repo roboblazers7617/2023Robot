@@ -67,7 +67,7 @@ public class RobotContainer {
         private final Pnuematics pnuematics = new Pnuematics();
         private final Intake intake = new Intake();
         private final Arm arm = new Arm(pnuematics);
-        private final Leds leds = new Leds(intake, drivetrain);
+        private final Leds leds = new Leds();
 
         private final CommandXboxController m_driverController = new CommandXboxController(
                         OperatorConstants.DRIVER_CONTROLLER_PORT);
@@ -223,9 +223,9 @@ public class RobotContainer {
 
         public void setSelectedPiece(PieceType piece) {
                 if (piece == PieceType.Cone) {
-                        leds.orange();
+                //        leds.orange();
                 } else {
-                        leds.purple();
+                //        leds.purple();
                 }
                 selectedPiece = piece;
         }

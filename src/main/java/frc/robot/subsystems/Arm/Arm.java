@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Pnuematics;
 import frc.robot.Constants.PieceType;
@@ -338,7 +339,7 @@ public class Arm extends SubsystemBase {
   }
 
   public Command changeState(PieceType piece, GenericPosition position, boolean waitUntilAtSetpoint){
-    Command commandToReturn = Commands.none();
+    SequentialCommandGroup commandToReturn = new SequentialCommandGroup(Commands.none());
     try{
       targetState = evalState(piece, position);
     }
@@ -353,7 +354,7 @@ public class Arm extends SubsystemBase {
       System.out.println(e.getMessage());
       return Commands.none();
     }
-    commandToReturn.andThen(new ArmState(this, interimState));
+    commandToReturn.addCommands(new ArmState(this, interimState));
 
     while(interimState != targetState){
       try{
@@ -363,10 +364,10 @@ public class Arm extends SubsystemBase {
         System.out.println(e.getMessage());
         return Commands.none();
       }
-      commandToReturn.andThen(new WaitUntilAtSetpoint(this)).andThen(new ArmState(this, interimState));
+      commandToReturn.addCommands(new WaitUntilAtSetpoint(this),(new ArmState(this, interimState)));
     }
     if(waitUntilAtSetpoint)
-        commandToReturn.andThen(new WaitUntilAtState(this));
+        commandToReturn.addCommands(new WaitUntilAtState(this));
     return commandToReturn;
     }
 
