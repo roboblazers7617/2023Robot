@@ -125,6 +125,7 @@ public final class Constants {
 
         public static final double KP_BALANCE = 2.8;//2
         public static final double KI_BALANCE = 0;
+
         public static final double KD_BALANCE = 0.5;
         public static final double BALANCING_TOLERANCE = 13.75;//15
         // TODO: Lukas. (High) Decide this value
