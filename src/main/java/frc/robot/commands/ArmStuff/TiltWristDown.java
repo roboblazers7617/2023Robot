@@ -13,7 +13,7 @@ public class TiltWristDown extends SequentialCommandGroup {
   /** Creates a new TiltWristDown. */
   public TiltWristDown(Arm arm, Wrist wrist) {
     // Use addRequirements() here to declare subsystem dependencies.
-    addCommands(new InstantCommand(() -> wrist.setPosition(wrist.getWristPosition()-14, () -> arm.getArmAngle())), 
+    addCommands(new InstantCommand(() -> wrist.setPosition(wrist.getWristPosition()-18, () -> arm.getArmAngle())), 
     wrist.WaitUntilWristInPosition());
   }
 

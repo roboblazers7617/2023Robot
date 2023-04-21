@@ -123,13 +123,13 @@ public final class Constants {
         public static final double LENGTH_OF_ROBOT = Units.inchesToMeters(38.5);
         public static final double X_OFFSET_FROM_SCORE_LOCATION = LENGTH_OF_ROBOT / 2.0 + Units.inchesToMeters(14.0);
 
-        public static final double KP_BALANCE = 2.8;//2
+        public static final double KP_BALANCE = 1.8;//2
         public static final double KI_BALANCE = 0;
 
         public static final double KD_BALANCE = 0.5;
-        public static final double BALANCING_TOLERANCE = 13.75;//15
+        public static final double BALANCING_TOLERANCE = 13;//15
         // TODO: Lukas. (High) Decide this value
-        public static final double MAX_BALANCE_SPEED = 0.52;//.55
+        public static final double MAX_BALANCE_SPEED = 0.35;//.55
 
         public static final int BALANCE_SPEED_BOOST_TOLERANCE = 15;
 
@@ -324,7 +324,7 @@ public final class Constants {
         // TODO: Lukas. (High) Set the angles
         public enum ArmPositions {
             LEVEL_3_CONE(42.44, PnuematicPositions.EXTENDED),
-            LEVEL_2_CONE(-1, PnuematicPositions.RETRACTED),
+            LEVEL_2_CONE(4.6, PnuematicPositions.RETRACTED),
             LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
             LEVEL_3_CUBE(37, PnuematicPositions.EXTENDED), // TODO
             LEVEL_2_CUBE(-19.11, PnuematicPositions.RETRACTED), // TODO
@@ -389,10 +389,10 @@ public final class Constants {
             DOUBLE_PICKUP_CONE(-17.25),
             DOUBLE_PICKUP_CUBE(-5.75),
             LEVEL_3_CONE(-15.927),
-            LEVEL_2_CONE(-3.39),
+            LEVEL_2_CONE(-8.5),
             LEVEL_1_CONE(41),
             LEVEL_3_CUBE(21), // TODO
-            LEVEL_2_CUBE(58), // TODO
+            LEVEL_2_CUBE(68.5), // TODO
             LEVEL_1_CUBE(41);// TODO
 
             private final double angle;

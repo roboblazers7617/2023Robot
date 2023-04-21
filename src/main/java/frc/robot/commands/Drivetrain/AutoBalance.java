@@ -55,10 +55,10 @@ public class AutoBalance extends
         0);
     }
     else if(mDrivetrain.getPitch() > 2){
-      mDrivetrain.arcadeDrive(-0.2, 0);
+      mDrivetrain.arcadeDrive(-0.3, 0);
     }
     else if(mDrivetrain.getPitch() < -2){
-      mDrivetrain.arcadeDrive(0.2, 0);
+      mDrivetrain.arcadeDrive(0.25, 0);
     }
     else {
       mDrivetrain.arcadeDrive(0, 0);
