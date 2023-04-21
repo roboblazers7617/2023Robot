@@ -37,8 +37,7 @@ public class Wrist extends SubsystemBase {
 
   private final SparkMaxPIDController wristController = wristMotor.getPIDController();
 
-  private final SparkMaxAbsoluteEncoder wristEncoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
-  private final RelativeEncoder relativeWristEncoder = wristMotor.getEncoder();
+  private final RelativeEncoder wristEncoder = wristMotor.getEncoder();
 
   // TODO: private final DigitalInput isStowed = new
   // DigitalInput(IntakeConstants.WRIST_LIMIT_SWITCH_CHANEL);
@@ -56,14 +55,9 @@ public class Wrist extends SubsystemBase {
     wristMotor.setSmartCurrentLimit(WristConstants.CURRENT_LIMIT);
     wristMotor.setIdleMode(IdleMode.kBrake);
 
-    wristEncoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
-    wristEncoder.setVelocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR);
-    wristEncoder.setInverted(WristConstants.IS_ENCODER_INVERTED);
-    wristEncoder.setZeroOffset(WristConstants.ZERO_OFFSET);
-
-    relativeWristEncoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR*WristConstants.WRIST_GEAR_RATIO);
-    relativeWristEncoder.setVelocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR*WristConstants.WRIST_GEAR_RATIO);
-    relativeWristEncoder.setPosition(102);
+    wristEncoder.setPositionConversionFactor(WristConstants.WRIST_ENCODER_CONVERSION_FACTOR);
+    wristEncoder.setVelocityConversionFactor(WristConstants.WRIST_ENCODER_CONVERSION_FACTOR);
+    wristEncoder.setPosition(102);
 
 
     wristController.setP(WristConstants.WRIST_KP);
@@ -103,23 +97,16 @@ public class Wrist extends SubsystemBase {
     return wristEncoder.getPosition();
   }
 
-  public double getRelativeEncoderWristPosition(){
-    return relativeWristEncoder.getPosition();
-  }
-
   public double getWristVelocity() {
     return wristEncoder.getVelocity();
   }
 
-  private double calculateFeedforwardSetpoint(double setpoint){
-    return setpoint- WristConstants.FF_OFFSET;
-  }
 
   public void setPosition(double position, Supplier<Double> armAngleSupplier) {
     setpoint = Math.min(position, maxAngle);
     wristController.setReference(position, CANSparkMax.ControlType.kPosition, 0,
         wristFeedforward.calculate(
-            Units.degreesToRadians(calculateFeedforwardSetpoint(setpoint) + (armAngleSupplier.get() - ArmConstants.FF_MAX_SHOULDER_ANGLE)), 0));
+            Units.degreesToRadians(setpoint)+ (armAngleSupplier.get() - ArmConstants.FF_MAX_SHOULDER_ANGLE), 0));
   }
 
   public void setPosition(WristPosition position, Supplier<Double> armAngleSupplier) {
@@ -131,7 +118,7 @@ public class Wrist extends SubsystemBase {
     setpoint = Math.min(setpoint, maxAngle);
     wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         wristFeedforward.calculate(
-            Units.degreesToRadians(calculateFeedforwardSetpoint(setpoint) + (armAngleSupplier.get() - ArmConstants.FF_MAX_SHOULDER_ANGLE)),
+            Units.degreesToRadians(setpoint)+ (armAngleSupplier.get() - ArmConstants.FF_MAX_SHOULDER_ANGLE),
             Units.degreesToRadians(velocityDegrees)));
   }
 
@@ -181,4 +168,16 @@ public class Wrist extends SubsystemBase {
     else
       return WristPosition.STOW;
   }
+
+public void removeBounds() {
+	 maxAngle = 200;
+}
+
+public void addBounds() {
+     maxAngle = WristConstants.MAX_WRIST_ANGLE;
+}
+
+public void resetEncoder() {
+    wristEncoder.setPosition(102);
+}
 }

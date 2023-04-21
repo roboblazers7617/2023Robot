@@ -368,15 +368,15 @@ public final class Constants {
 
         public static final int CURRENT_LIMIT = 20;
 
-        public static final double WRIST_ANGLE_TOLERANCE = 5;
-        public static final double MAX_WRIST_ANGLE = 355;
+        public static final double WRIST_ANGLE_TOLERANCE = 2;
+        public static final double MAX_WRIST_ANGLE = 103;
         public static final double MAX_UPWARD_WRIST_SPEED = 0.33; // TODO: Changed 3/4/23 from 0.25
         public static final double MAX_DOWNWARD_WRIST_SPEED = -0.2;
         public static final double MAX_WRIST_ACCEL = 0.12;
         public static final double WRIST_KS = 0.55;//.5
         public static final double WRIST_KG = 0.35;
         public static final double WRIST_KV = 0;
-        public static final double WRIST_KP = 0.016;//.016
+        public static final double WRIST_KP = 0.016;
         public static final double WRIST_KI = 0.0;
         public static final double WRIST_KD = 0.02;
         public static final double WRIST_POT_OFFSET = -199;// so stowed is 120
@@ -388,26 +388,19 @@ public final class Constants {
         public static final double MAX_MANNUAL_WRIST_SPEED = 65;
         public static final double MAX_ACCEL = 10;//degrees per sec squared?
         public static final double MAX_VEL = 30;//degrees per sec?
-
-        public static final double ZERO_OFFSET = 343;
-        public static final boolean IS_ENCODER_INVERTED  = true;
-        public static final double VELOCITY_CONVERSION_FACTOR = 360/60;//rotations to degrees; seconds to minutes
-        public static final double POSITION_CONVERSION_FACTOR = 360;//rotations to degrees
-
-        public static final double FF_OFFSET = 225;//degrees
-
+        
         public enum WristPosition {
             STOW(WristConstants.MAX_WRIST_ANGLE),
-            FLOOR_CUBE_PICKUP(266.61),//41.61
-            FLOOR_CONE_PICKUP(279),//279.0
-            DOUBLE_PICKUP_CONE(198),//198.5
-            DOUBLE_PICKUP_CUBE(214.56),// 214.56
-            LEVEL_3_CONE(203.32),//203.32
-            LEVEL_2_CONE(207.34),//207.34
-            LEVEL_1_CONE(268.13),//268.13
-            LEVEL_3_CUBE(245.2), //245.2
-            LEVEL_2_CUBE(301.5),//301.5
-            LEVEL_1_CUBE(268.13);//268.13
+            FLOOR_CUBE_PICKUP(41.61),
+            FLOOR_CONE_PICKUP(50.4),
+            DOUBLE_PICKUP_CONE(-17.25),
+            DOUBLE_PICKUP_CUBE(-5.75),
+            LEVEL_3_CONE(-15.927),
+            LEVEL_2_CONE(-8.5),
+            LEVEL_1_CONE(41),
+            LEVEL_3_CUBE(21), // TODO
+            LEVEL_2_CUBE(68.5), // TODO
+            LEVEL_1_CUBE(41);// TODO
 
             private final double angle;
 

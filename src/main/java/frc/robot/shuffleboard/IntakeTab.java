@@ -40,8 +40,6 @@ public class IntakeTab extends ShuffleboardTabBase {
         wristEncoderAnglePublisher = networkTable.getDoubleTopic("Wrist Encoder Angle").publish();
         intakeCurrentPublisher = networkTable.getDoubleTopic("Intake Current").publish();
         intakeTempPublisher = networkTable.getDoubleTopic("Intake Temp").publish();
-        feedForwardWristAnglePublisher = networkTable.getDoubleTopic("Feedforward Wrist Angle").publish();
-        relativeAnglePublisher = networkTable.getDoubleTopic("Relative Encoder Angle").publish();
         
         //shuffleboardTabTesting.add(new intake.moveToPositionCommand(IntakeConstants.WristPosition.FloorConePickup));
         
@@ -57,8 +55,6 @@ public class IntakeTab extends ShuffleboardTabBase {
         wristTempPublisher.set((wrist.getWristMotorTemp()*(9.0/5.0)+32.0));
         intakeTempPublisher.set((intake.getMotorTemperature()*(9.0/5.0)+32.0));
         intakeCurrentPublisher.set(intake.getCurent());
-        feedForwardWristAnglePublisher.set(wrist.getWristPosition() - WristConstants.FF_OFFSET);
-        relativeAnglePublisher.set(wrist.getRelativeEncoderWristPosition());
 
     }
     

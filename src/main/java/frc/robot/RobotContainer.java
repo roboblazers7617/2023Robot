@@ -230,17 +230,8 @@ public class RobotContainer {
 
                 m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
 
-               // m_operatorController.start()
-               //                 .onTrue(new InstantCommand(() -> arm.removeBounds()))
-                //                .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
-                 //                               new InstantCommand(() -> arm.resetEncoders())));
-              //  m_operatorController.back()
-                 //               .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.removeBounds()),
-                  //                              new InstantCommand(() -> wrist.removeBounds())))
-                  //              .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
-                    //                            new InstantCommand(() -> wrist.addBounds()),
-                    //                            new InstantCommand(() -> arm.resetEncoders()),
-                     //                           new InstantCommand(() -> wrist.resetEncoder())));
+                m_operatorController.back() .onTrue(new InstantCommand(()-> wrist.removeBounds()))
+                .onFalse(new ParallelCommandGroup(new InstantCommand(() -> wrist.addBounds()), new InstantCommand(() -> wrist.resetEncoder())));
                 m_operatorController.povDown().onTrue(
                                 new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
                 m_operatorController.povRight().onTrue(
@@ -494,7 +485,41 @@ public class RobotContainer {
                                         new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
                 }
                 return auto;
-        }
+}
+        // Add your commands in the addCommands() call, e.g.
+        // addCommands(new FooCommand(), new BarCommand());
+        // if (driverStationTab.getAutoPath().scoring()) {
+        // if (driverStationTab.getAutoPath().autoBalance()) {
+        // return new SequentialCommandGroup(
+        // new SimpleScore(arm, wrist, intake,
+        // () -> driverStationTab.getAutoPath().selectedPiece(),
+        // () -> driverStationTab.getAutoPath().scoreLevelFirst()),
+        // new Stow(arm, wrist, intake),
+        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+        // getPathPlannerCommand(),
+        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
+        // new AutoBalance(drivetrain));
+        // } else {
+        // return new SequentialCommandGroup(
+        // new SimpleScore(arm, wrist, intake,
+        // () -> driverStationTab.getAutoPath().selectedPiece(),
+        // () -> driverStationTab.getAutoPath().scoreLevelFirst()),
+        // new Stow(arm, wrist, intake),
+        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+        // getPathPlannerCommand(),
+        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
+        // }
+        // } else if (driverStationTab.getAutoPath().autoBalance()) {
+        // return new SequentialCommandGroup(
+        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+        // getPathPlannerCommand(),
+        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
+        // new AutoBalance(drivetrain));
+        // } else {
+        // return new SequentialCommandGroup(
+        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
+        // getPathPlannerCommand(),
+        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
 
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.

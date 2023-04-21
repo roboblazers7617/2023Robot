@@ -181,8 +181,6 @@ public class Arm extends SubsystemBase {
     setpoint = Math.max(setpoint, minAngle);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(calculateFeedforwardSetpoint(setpoint)), Units.degreesToRadians(velocityDegreesPerSec)));
-      //System.out.println("Setpoint for FF is " + calculateFeedforwardSetpoint(setpoint));
-      //System.out.println("Velocity for FF is " + velocityDegreesPerSec);
       }
 
 
@@ -266,6 +264,10 @@ public class Arm extends SubsystemBase {
   }
 
   public ArmPositions evalScoreLevel(ScoreLevel level) {
+    return null;
+  }
+
+  public Object removeBounds() {
     return null;
   }
 }
