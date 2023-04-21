@@ -366,10 +366,10 @@ public final class Constants {
         public static final double MAX_UPWARD_WRIST_SPEED = 0.33; // TODO: Changed 3/4/23 from 0.25
         public static final double MAX_DOWNWARD_WRIST_SPEED = -0.2;
         public static final double MAX_WRIST_ACCEL = 0.12;
-        public static final double WRIST_KS = 0.5;
+        public static final double WRIST_KS = 0.55;//.5
         public static final double WRIST_KG = 0.35;
         public static final double WRIST_KV = 0;
-        public static final double WRIST_KP = 0.011;
+        public static final double WRIST_KP = 0.016;//.011
         public static final double WRIST_KI = 0.0;
         public static final double WRIST_KD = 0.0;
         public static final double WRIST_POT_OFFSET = -199;// so stowed is 120
@@ -385,14 +385,14 @@ public final class Constants {
         public enum WristPosition {
             STOW(WristConstants.MAX_WRIST_ANGLE),
             FLOOR_CUBE_PICKUP(41.61),
-            FLOOR_CONE_PICKUP(50.29),
+            FLOOR_CONE_PICKUP(50.4),
             DOUBLE_PICKUP_CONE(-17.25),
             DOUBLE_PICKUP_CUBE(-5.75),
-            LEVEL_3_CONE(-23),
+            LEVEL_3_CONE(-15.927),
             LEVEL_2_CONE(-3.39),
             LEVEL_1_CONE(41),
             LEVEL_3_CUBE(21), // TODO
-            LEVEL_2_CUBE(72.5), // TODO
+            LEVEL_2_CUBE(58), // TODO
             LEVEL_1_CUBE(41);// TODO
 
             private final double angle;
