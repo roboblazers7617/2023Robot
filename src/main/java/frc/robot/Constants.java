@@ -66,38 +66,30 @@ public final class Constants {
         public static final double SLOW_SPEED = 0.2;
         public static final double REALLY_SLOW_SPEED = 15;
         public static final double FAST_SPEED = 1;
+
+        
         public static final double MAX_ANGULAR_VELOCITY = 0.65;// .5
         public static final double MAX_LINEAR_VELOCITY = 0.7;// .5
 
         public static final double KP_LIN = 3.3174;
         public static final double KI_LIN = 0.0;
         public static final double KD_LIN = 0.0;
-        public static final double KS_LIN = .12529;
+        public static final double KS_LIN = 0.10721;
+        public static final double KV_LIN = 2.7934;
+        public static final double KA_LIN = 0.274;
 
-        public static final double KP_ROT_POS = 0.02;
-        public static final double KI_ROT_POS = 0.0;
-        public static final double KD_ROT_POS = 0.0;
+        public static final double KP_ROT = 0.02;
+        public static final double KI_ROT = 0.0;
+        public static final double KD_ROT = 0.0;
+
         public static final double KS_ROT = 0.48693;
         public static final double KV_ROT = 2.9804;
         public static final double KA_ROT = 0.21385;
-
-        public static final double KP_ROT_VEL = 0.54643;// 0.015
-        public static final double KI_ROT_VEL = 0.0;
-        public static final double KD_ROT_VEL = 0.0;
-
-        public static final double KS = 0.10721;
-        public static final double KV = 2.7934;
-        public static final double KA = 0.274;
-
-        public static final double SIMPLE_FF_LINEAR = 0.5;
-        public static final double SIMPLE_FF_ANGULAR = 0.3;
 
         public static final double TRACK_WIDTH_METERS = Units.inchesToMeters(20.5);
 
         public static final double MAX_ERROR_LINEAR = Units.inchesToMeters(1.0);
         public static final double MAX_ERROR_ROTATION = 1.0; // in degrees
-        // public static final double LINEAR_ERROR_TARGET_DRIVER =
-        // Units.inchesToMeters(3);
 
         public static final double MAX_AUTO_ACCELERATION = 3;//2;
         public static final double MAX_AUTO_VELOCITY = 3.5; //3;

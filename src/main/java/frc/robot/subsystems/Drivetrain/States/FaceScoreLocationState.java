@@ -15,7 +15,7 @@ import frc.team4272.globals.State;
 public class FaceScoreLocationState extends State<Drivetrain> {
   /** Creates a new FaceScoreLocation. */
   private PIDController turnController = 
-        new PIDController(DrivetrainConstants.KP_ROT_POS, DrivetrainConstants.KI_ROT_POS, DrivetrainConstants.KD_ROT_POS);
+        new PIDController(DrivetrainConstants.KP_ROT, DrivetrainConstants.KI_ROT, DrivetrainConstants.KD_ROT);
   private Alliance color;
   private double targetAngle;
   private final double angleTolerance = DrivetrainConstants.MAX_ERROR_ROTATION;
