@@ -495,40 +495,6 @@ public class RobotContainer {
                 }
                 return auto;
         }
-        // Add your commands in the addCommands() call, e.g.
-        // addCommands(new FooCommand(), new BarCommand());
-        // if (driverStationTab.getAutoPath().scoring()) {
-        // if (driverStationTab.getAutoPath().autoBalance()) {
-        // return new SequentialCommandGroup(
-        // new SimpleScore(arm, wrist, intake,
-        // () -> driverStationTab.getAutoPath().selectedPiece(),
-        // () -> driverStationTab.getAutoPath().scoreLevelFirst()),
-        // new Stow(arm, wrist, intake),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-        // getPathPlannerCommand(),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
-        // new AutoBalance(drivetrain));
-        // } else {
-        // return new SequentialCommandGroup(
-        // new SimpleScore(arm, wrist, intake,
-        // () -> driverStationTab.getAutoPath().selectedPiece(),
-        // () -> driverStationTab.getAutoPath().scoreLevelFirst()),
-        // new Stow(arm, wrist, intake),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-        // getPathPlannerCommand(),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
-        // }
-        // } else if (driverStationTab.getAutoPath().autoBalance()) {
-        // return new SequentialCommandGroup(
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-        // getPathPlannerCommand(),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)),
-        // new AutoBalance(drivetrain));
-        // } else {
-        // return new SequentialCommandGroup(
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(false)),
-        // getPathPlannerCommand(),
-        // new InstantCommand(() -> turnOnBrakesDrivetrain(true)));
 
         /**
          * Use this to pass the autonomous command to the main {@link Robot} class.
