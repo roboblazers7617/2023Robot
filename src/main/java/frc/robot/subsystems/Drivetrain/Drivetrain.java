@@ -38,6 +38,8 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.simulation.AnalogGyroSim;
 import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
 import edu.wpi.first.wpilibj.simulation.EncoderSim;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -83,6 +85,9 @@ public class Drivetrain extends SubsystemBase {
 
   private DrivetrainMode mode;
 
+  private Field2d m_field = new Field2d();
+
+
   // private SlewRateLimiter slewRateFilterLeft = new SlewRateLimiter(1.0/
   // DrivetrainConstants.RAMP_TIME_SECONDS);
   // private SlewRateLimiter slewRateFilterRight = new SlewRateLimiter(1.0/
@@ -97,6 +102,9 @@ public class Drivetrain extends SubsystemBase {
             DrivetrainConstants.KV_ROT, DrivetrainConstants.KA_ROT),
         DCMotor.getNEO(2), DrivetrainConstants.WHEEL_GEAR_RATIO, DrivetrainConstants.TRACK_WIDTH_METERS,
         DrivetrainConstants.WHEEL_RADIUS, VecBuilder.fill(0.001, 0.001, 0.001, 0.1, 0.1, 0.005, 0.005));
+
+    SmartDashboard.putData("Field", m_field);
+    
     mode = DrivetrainConstants.DrivetrainMode.arcadeDrive;
 
     leftFrontMotor.restoreFactoryDefaults();
@@ -109,6 +117,7 @@ public class Drivetrain extends SubsystemBase {
     configureEncoder(leftFollowerEncoder);
     configureEncoder(rightFollowerEncoder);
 
+    //TODO set distance per pulse
     configureMotor(leftFrontMotor);
     configureMotor(rightFrontMotor);
     configureMotor(leftFollowerMotor);
@@ -153,11 +162,15 @@ public class Drivetrain extends SubsystemBase {
         rightFrontMotor.get() * RobotController.getInputVoltage());
 
     drivetrainSim.update(0.02);
+    // EncoderSim leftEncoderSim = EncoderSim.createForChannel(123);
+    // EncoderSim rightEncoderSim = EncoderSim.createForChannel(456);
+
     // leftEncoderSim.setDistance(drivetrainSim.getLeftPositionMeters());
     // leftEncoderSim.setRate(drivetrainSim.getLeftVelocityMetersPerSecond());
     // rightEncoderSim.setDistance(drivetrainSim.getRightPositionMeters());
     // rightEncoderSim.setRate(drivetrainSim.getRightVelocityMetersPerSecond());
-    gyroSim.setRawHeading(-drivetrainSim.getHeading().getDegrees());
+    // gyroSim.setRawHeading(-drivetrainSim.getHeading().getDegrees());
+
   }
 
   public void drive(double leftY, double rightX, double rightY, Supplier<Boolean> isQuickTurn) {
