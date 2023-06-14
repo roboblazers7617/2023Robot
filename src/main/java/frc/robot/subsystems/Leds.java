@@ -5,14 +5,14 @@
 package frc.robot.subsystems;
 
 
-import edu.wpi.first.wpilibj.util.Color;
 import frc.LedStrip;
+import frc.PredefinedColors;
 import frc.Animations.BounceAnimation;
 
 public class Leds extends LedStrip{
 
   public Leds() {
     super(9, 75);
-    setAnimation(new BounceAnimation(this, Color.kMaroon, Color.kPaleVioletRed, 10));
+    setAnimation(new BounceAnimation(this, PredefinedColors.kMaroon, PredefinedColors.kPaleVioletRed, 10));
   }
 }
