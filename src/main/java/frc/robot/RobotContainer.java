@@ -201,8 +201,8 @@ public class RobotContainer {
                 m_operatorController.povUp().onTrue(
                         arm.changeState(() -> getSelectedPiece(), GenericPosition.Level3, true));
 
-                m_operatorController.start().onTrue(new InstantCommand(arm::removeBounds, arm)).onFalse(new InstantCommand(arm::addBounds, arm)).onFalse(new InstantCommand(arm::resetEncoders, arm));
-                m_operatorController.back().onTrue(new InstantCommand(arm::removeBounds, arm)).onFalse(new InstantCommand(arm::addBounds, arm)).onFalse(new InstantCommand(arm::resetEncoders, arm));
+              //  m_operatorController.start().onTrue(new InstantCommand(arm::removeBounds, arm)).onFalse(new InstantCommand(arm::addBounds, arm)).onFalse(new InstantCommand(arm::resetEncoders, arm));
+               // m_operatorController.back().onTrue(new InstantCommand(arm::removeBounds, arm)).onFalse(new InstantCommand(arm::addBounds, arm)).onFalse(new InstantCommand(arm::resetEncoders, arm));
         }
 
         public void stow() {
