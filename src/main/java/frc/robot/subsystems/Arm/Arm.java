@@ -7,11 +7,13 @@ package frc.robot.subsystems.Arm;
 
 import java.util.function.Supplier;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
@@ -42,8 +44,7 @@ public class Arm extends SubsystemBase {
       MotorType.kBrushless);
   private SparkMaxPIDController controller;
   private SparkMaxPIDController controllerFollower;
-  private RelativeEncoder shoulderEncoder = shoulderMotor.getEncoder();
-  private RelativeEncoder shoulderFollowerEncoder = shoulderMotorFollower.getEncoder();
+  private AbsoluteEncoder shoulderEncoder = shoulderMotor.getAbsoluteEncoder(Type.kDutyCycle);
   private DoubleSolenoid leftPiston;
   private DoubleSolenoid rightPiston;
   private Pnuematics pneumatics;
@@ -55,7 +56,7 @@ public class Arm extends SubsystemBase {
 
   private final SparkMaxPIDController wristController = wristMotor.getPIDController();
 
-  private final RelativeEncoder wristEncoder = wristMotor.getEncoder();
+  private final AbsoluteEncoder wristEncoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
   private Timer time = new Timer();
 
   private double dt, lastTime;
@@ -104,16 +105,11 @@ public class Arm extends SubsystemBase {
     wristMotor.setSmartCurrentLimit(WristConstants.CURRENT_LIMIT);
     wristMotor.setIdleMode(IdleMode.kBrake);
 
-    shoulderEncoder.setPositionConversionFactor(ShoulderConstants.POSITION_CONVERSION_FACTOR);
-    shoulderEncoder.setVelocityConversionFactor(ShoulderConstants.POSITION_CONVERSION_FACTOR / 60.0);
-    shoulderEncoder.setPosition(ShoulderConstants.MINIMUM_SHOULDER_ANGLE);
-    shoulderFollowerEncoder.setPositionConversionFactor(ShoulderConstants.POSITION_CONVERSION_FACTOR);
-    shoulderFollowerEncoder.setVelocityConversionFactor(ShoulderConstants.POSITION_CONVERSION_FACTOR / 60.0);
-    shoulderFollowerEncoder.setPosition(ShoulderConstants.MINIMUM_SHOULDER_ANGLE);
+   // shoulderEncoder.setPositionConversionFactor(ShoulderConstants.POSITION_CONVERSION_FACTOR);
+   // shoulderEncoder.setVelocityConversionFactor(ShoulderConstants.POSITION_CONVERSION_FACTOR / 60.0);
 
-    wristEncoder.setPositionConversionFactor(WristConstants.WRIST_ENCODER_CONVERSION_FACTOR);
-    wristEncoder.setVelocityConversionFactor(WristConstants.WRIST_ENCODER_CONVERSION_FACTOR / 60);
-    wristEncoder.setPosition(WristConstants.MAX_WRIST_ANGLE);
+   // wristEncoder.setPositionConversionFactor(WristConstants.WRIST_ENCODER_CONVERSION_FACTOR);
+   // wristEncoder.setVelocityConversionFactor(WristConstants.WRIST_ENCODER_CONVERSION_FACTOR / 60);
 
     controller = shoulderMotor.getPIDController();
     controllerFollower = shoulderMotorFollower.getPIDController();
@@ -122,12 +118,14 @@ public class Arm extends SubsystemBase {
     controllerFollower.setI(ShoulderConstants.KI);
     controllerFollower.setD(ShoulderConstants.KD);
     controllerFollower.setOutputRange(ShoulderConstants.MAX_SPEED_DOWNWARD, ShoulderConstants.MAX_SPEED_UPWARD);
+    controllerFollower.setFeedbackDevice(shoulderEncoder);
     controllerFollower.setSmartMotionMaxAccel(ShoulderConstants.MAX_ACCEL, 0);
     controllerFollower.setSmartMotionMaxVelocity(ShoulderConstants.MAX_VEL, 0);
 
     controller.setP(ShoulderConstants.KP);
     controller.setI(ShoulderConstants.KI);
     controller.setD(ShoulderConstants.KD);
+    controller.setFeedbackDevice(shoulderEncoder);
     controller.setOutputRange(ShoulderConstants.MAX_SPEED_DOWNWARD, ShoulderConstants.MAX_SPEED_UPWARD);
     controller.setSmartMotionMaxAccel(ShoulderConstants.MAX_ACCEL, 0);
     controller.setSmartMotionMaxVelocity(ShoulderConstants.MAX_VEL, 0);
@@ -137,6 +135,7 @@ public class Arm extends SubsystemBase {
     wristController.setP(WristConstants.WRIST_KP);
     wristController.setI(WristConstants.WRIST_KI);
     wristController.setD(WristConstants.WRIST_KD);
+    wristController.setFeedbackDevice(wristEncoder);
     wristController.setOutputRange(WristConstants.MAX_DOWNWARD_WRIST_SPEED, WristConstants.MAX_UPWARD_WRIST_SPEED);
     wristController.setSmartMotionMaxAccel(WristConstants.MAX_ACCEL, 0);
     wristController.setSmartMotionMaxVelocity(WristConstants.MAX_VEL, 0);
@@ -229,12 +228,12 @@ public class Arm extends SubsystemBase {
     rightPiston.set(positions.getValue());
   }
 
-  public void resetEncoders(){
-    shoulderEncoder.setPosition(ShoulderConstants.MINIMUM_SHOULDER_ANGLE);
-    shoulderFollowerEncoder.setPosition(ShoulderConstants.MINIMUM_SHOULDER_ANGLE);
-    wristEncoder.setPosition(WristConstants.MAX_WRIST_ANGLE);
-    setPosition(ShoulderConstants.MINIMUM_SHOULDER_ANGLE, WristConstants.MAX_WRIST_ANGLE);
-  }
+  //public void resetEncoders(){
+    //shoulderEncoder.setPosition(ShoulderConstants.MINIMUM_SHOULDER_ANGLE);
+   // shoulderFollowerEncoder.setPosition(ShoulderConstants.MINIMUM_SHOULDER_ANGLE);
+   // wristEncoder.setPosition(WristConstants.MAX_WRIST_ANGLE);
+   // setPosition(ShoulderConstants.MINIMUM_SHOULDER_ANGLE, WristConstants.MAX_WRIST_ANGLE);
+ // }
 
   public void enableCompressor(boolean enableCompressor) {
     if (enableCompressor) {
