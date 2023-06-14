@@ -311,7 +311,7 @@ public class Arm extends SubsystemBase {
       return StatePosition.Stow;
     }
     for(int i = 1; i<stateDiagram.length; i++){
-      if((stateDiagram[i][0].name().contains(piece.name())) && (stateDiagram[i][0].name().contains(piece.name())))
+      if((stateDiagram[i][0].name().contains(piece.name())) && (stateDiagram[i][0].name().contains(position.name())))
               return stateDiagram[i][0];
     }
    throw new Exception("The state you are trying to reach does not exist");
