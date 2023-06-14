@@ -6,11 +6,13 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
@@ -38,8 +40,7 @@ public class Arm extends SubsystemBase {
       MotorType.kBrushless);
   private SparkMaxPIDController controller;
   private SparkMaxPIDController controllerFollower;
-  private RelativeEncoder shoulderEncoder = shoulderMotor.getEncoder();
-  private RelativeEncoder shoulderFollowerEncoder = shoulderMotorFollower.getEncoder();
+  private AbsoluteEncoder shoulderEncoder = shoulderMotor.getAbsoluteEncoder(Type.kDutyCycle);
   private DoubleSolenoid leftPiston;
   private DoubleSolenoid rightPiston;
   private Pnuematics pneumatics;
@@ -72,19 +73,16 @@ public class Arm extends SubsystemBase {
 
     shoulderMotorFollower.follow(shoulderMotor, true);
 
-    shoulderEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
-    shoulderEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR / 60.0);
-    shoulderEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    shoulderFollowerEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
-    shoulderFollowerEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR / 60.0);
-    shoulderFollowerEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
-
+    //shoulderEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
+    //shoulderEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR / 60.0);
+    //shoulderEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
     controller = shoulderMotor.getPIDController();
     controllerFollower = shoulderMotorFollower.getPIDController();
 
     controllerFollower.setP(ArmConstants.KP);
     controllerFollower.setI(ArmConstants.KI);
     controllerFollower.setD(ArmConstants.KD);
+    controllerFollower.setFeedbackDevice(shoulderEncoder);
     controllerFollower.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
     controllerFollower.setSmartMotionMaxAccel(ArmConstants.MAX_ACCEL, 0);
     controllerFollower.setSmartMotionMaxVelocity(ArmConstants.MAX_VEL, 0);
@@ -92,6 +90,7 @@ public class Arm extends SubsystemBase {
     controller.setP(ArmConstants.KP);
     controller.setI(ArmConstants.KI);
     controller.setD(ArmConstants.KD);
+    controller.setFeedbackDevice(shoulderEncoder);
     controller.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
     controller.setSmartMotionMaxAccel(ArmConstants.MAX_ACCEL, 0);
     controller.setSmartMotionMaxVelocity(ArmConstants.MAX_VEL, 0);
@@ -213,12 +212,6 @@ public class Arm extends SubsystemBase {
 
   public boolean isArmStowed() {
     return isArmStowed.get();
-  }
-
-  public void resetEncoders(){
-    shoulderEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    shoulderFollowerEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
   }
 
   public double getShoulderAngle() {
