@@ -159,9 +159,10 @@ public class Arm extends SubsystemBase {
   public void setPosition(double positionDegrees) {
     setpoint = Math.min(positionDegrees, maxAngle);
     setpoint = Math.max(setpoint, minAngle);
-    controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+    //TODO:
+    controller.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
-    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
   }
 

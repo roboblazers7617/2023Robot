@@ -103,7 +103,7 @@ public class Wrist extends SubsystemBase {
 
   public void setPosition(double position, Supplier<Double> armAngleSupplier) {
     setpoint = Math.min(position, maxAngle);
-    wristController.setReference(position, CANSparkMax.ControlType.kPosition, 0,
+    wristController.setReference(position, CANSparkMax.ControlType.kSmartMotion, 0,
         wristFeedforward.calculate(
             Units.degreesToRadians(setpoint + (armAngleSupplier.get() - ArmConstants.MINIMUM_SHOULDER_ANGLE)), 0));
   }
