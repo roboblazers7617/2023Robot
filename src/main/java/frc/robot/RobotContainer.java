@@ -230,17 +230,17 @@ public class RobotContainer {
 
                 m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
 
-                m_operatorController.start()
-                                .onTrue(new InstantCommand(() -> arm.removeBounds()))
-                                .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
-                                                new InstantCommand(() -> arm.resetEncoders())));
-                m_operatorController.back()
-                                .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.removeBounds()),
-                                                new InstantCommand(() -> wrist.removeBounds())))
-                                .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
-                                                new InstantCommand(() -> wrist.addBounds()),
-                                                new InstantCommand(() -> arm.resetEncoders()),
-                                                new InstantCommand(() -> wrist.resetEncoder())));
+               // m_operatorController.start()
+               //                 .onTrue(new InstantCommand(() -> arm.removeBounds()))
+                //                .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
+                 //                               new InstantCommand(() -> arm.resetEncoders())));
+              //  m_operatorController.back()
+                 //               .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.removeBounds()),
+                  //                              new InstantCommand(() -> wrist.removeBounds())))
+                  //              .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
+                    //                            new InstantCommand(() -> wrist.addBounds()),
+                    //                            new InstantCommand(() -> arm.resetEncoders()),
+                     //                           new InstantCommand(() -> wrist.resetEncoder())));
                 m_operatorController.povDown().onTrue(
                                 new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
                 m_operatorController.povRight().onTrue(
