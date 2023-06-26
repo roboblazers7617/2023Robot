@@ -38,9 +38,6 @@ public class Wrist extends SubsystemBase {
 
   private final AbsoluteEncoder wristEncoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
-  private final AnalogPotentiometer wristPotentiometer = new AnalogPotentiometer(WristConstants.POT_CHANEL,
-      WristConstants.WRIST_POT_SCALE, WristConstants.WRIST_POT_OFFSET);
-
   // TODO: private final DigitalInput isStowed = new
   // DigitalInput(IntakeConstants.WRIST_LIMIT_SWITCH_CHANEL);
 
@@ -57,18 +54,22 @@ public class Wrist extends SubsystemBase {
     wristMotor.setSmartCurrentLimit(WristConstants.CURRENT_LIMIT);
     wristMotor.setIdleMode(IdleMode.kBrake);
 
-    //wristEncoder.setPositionConversionFactor(WristConstants.WRIST_ENCODER_CONVERSION_FACTOR);
-    //wristEncoder.setVelocityConversionFactor(WristConstants.WRIST_ENCODER_CONVERSION_FACTOR / 60);
-    //wristEncoder.setPosition(WristConstants.MAX_WRIST_ANGLE);
+    wristEncoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR);
+    wristEncoder.setVelocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR);
+    wristEncoder.setInverted(WristConstants.IS_ENCODER_INVERTED);
+    wristEncoder.setZeroOffset(WristConstants.ZERO_OFFSET);
 
     wristController.setP(WristConstants.WRIST_KP);
     wristController.setI(WristConstants.WRIST_KI);
     wristController.setD(WristConstants.WRIST_KD);
     wristController.setFeedbackDevice(wristEncoder);
     wristController.setOutputRange(WristConstants.MAX_DOWNWARD_WRIST_SPEED, WristConstants.MAX_UPWARD_WRIST_SPEED);
-    wristController.setSmartMotionMaxAccel(WristConstants.MAX_ACCEL, 0);
-    wristController.setSmartMotionMaxVelocity(WristConstants.MAX_VEL, 0);
-    wristController.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
+    wristController.setPositionPIDWrappingEnabled(true);
+    wristController.setPositionPIDWrappingMaxInput(360);
+    wristController.setPositionPIDWrappingMinInput(0);
+    //wristController.setSmartMotionMaxAccel(WristConstants.MAX_ACCEL, 0);
+   // wristController.setSmartMotionMaxVelocity(WristConstants.MAX_VEL, 0);
+    wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         wristFeedforward.calculate(Units.degreesToRadians(setpoint), 0));
 
     time.reset();
@@ -103,7 +104,7 @@ public class Wrist extends SubsystemBase {
 
   public void setPosition(double position, Supplier<Double> armAngleSupplier) {
     setpoint = Math.min(position, maxAngle);
-    wristController.setReference(position, CANSparkMax.ControlType.kSmartMotion, 0,
+    wristController.setReference(position, CANSparkMax.ControlType.kPosition, 0,
         wristFeedforward.calculate(
             Units.degreesToRadians(setpoint + (armAngleSupplier.get() - ArmConstants.MINIMUM_SHOULDER_ANGLE)), 0));
   }
@@ -165,7 +166,7 @@ public class Wrist extends SubsystemBase {
     else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CONE))
       return WristPosition.LEVEL_2_CONE;
     else if (level.get().equals(ScoreLevel.LEVEL_3) && piece.get().equals(PieceType.CONE))
-      return WristPosition.LEVEL_2_CONE;
+      return WristPosition.LEVEL_3_CONE;
     else if (level.get().equals(ScoreLevel.LEVEL_1 )&& piece.get().equals(PieceType.CUBE))
       return WristPosition.LEVEL_1_CUBE;
     else if (level.get().equals(ScoreLevel.LEVEL_2) && piece.get().equals(PieceType.CUBE))

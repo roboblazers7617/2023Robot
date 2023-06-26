@@ -39,7 +39,6 @@ public class Arm extends SubsystemBase {
   private CANSparkMax shoulderMotorFollower = new CANSparkMax(ArmConstants.SHOULDER_FOLLOWER_MOTOR_ID,
       MotorType.kBrushless);
   private SparkMaxPIDController controller;
-  private SparkMaxPIDController controllerFollower;
   private AbsoluteEncoder shoulderEncoder = shoulderMotor.getAbsoluteEncoder(Type.kDutyCycle);
   private DoubleSolenoid leftPiston;
   private DoubleSolenoid rightPiston;
@@ -73,11 +72,12 @@ public class Arm extends SubsystemBase {
 
     shoulderMotorFollower.follow(shoulderMotor, true);
 
+    shoulderEncoder.setZeroOffset(.9648651);
     //shoulderEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
     //shoulderEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR / 60.0);
     //shoulderEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
     controller = shoulderMotor.getPIDController();
-    controllerFollower = shoulderMotorFollower.getPIDController();
+   /*  controllerFollower = shoulderMotorFollower.getPIDController();
 
     controllerFollower.setP(ArmConstants.KP);
     controllerFollower.setI(ArmConstants.KI);
@@ -85,7 +85,7 @@ public class Arm extends SubsystemBase {
     controllerFollower.setFeedbackDevice(shoulderEncoder);
     controllerFollower.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
     controllerFollower.setSmartMotionMaxAccel(ArmConstants.MAX_ACCEL, 0);
-    controllerFollower.setSmartMotionMaxVelocity(ArmConstants.MAX_VEL, 0);
+    controllerFollower.setSmartMotionMaxVelocity(ArmConstants.MAX_VEL, 0);*/
 
     controller.setP(ArmConstants.KP);
     controller.setI(ArmConstants.KI);
@@ -160,9 +160,7 @@ public class Arm extends SubsystemBase {
     setpoint = Math.min(positionDegrees, maxAngle);
     setpoint = Math.max(setpoint, minAngle);
     //TODO:
-    controller.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
-        feedforward.calculate(Units.degreesToRadians(setpoint), 0));
-    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kSmartMotion, 0,
+    controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), 0));
   }
 
@@ -176,8 +174,8 @@ public class Arm extends SubsystemBase {
     setpoint = Math.max(setpoint, minAngle);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
-    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
-        feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
+   // controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+        //feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
   }
 
   public void removeBounds(){

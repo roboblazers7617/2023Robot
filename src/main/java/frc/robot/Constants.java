@@ -382,18 +382,23 @@ public final class Constants {
         public static final double MAX_ACCEL = 10;//degrees per sec squared?
         public static final double MAX_VEL = 30;//degrees per sec?
 
+        public static final double ZERO_OFFSET = 235.8;
+        public static final boolean IS_ENCODER_INVERTED  = true;
+        public static final double VELOCITY_CONVERSION_FACTOR = 360/60;//rotations to degrees; seconds to minutes
+        public static final double POSITION_CONVERSION_FACTOR = 360;//rotations to degrees
+
         public enum WristPosition {
             STOW(WristConstants.MAX_WRIST_ANGLE),
             FLOOR_CUBE_PICKUP(41.61),
             FLOOR_CONE_PICKUP(50.4),
-            DOUBLE_PICKUP_CONE(-17.25),
-            DOUBLE_PICKUP_CUBE(-5.75),
+            DOUBLE_PICKUP_CONE(352.75),//-17.25
+            DOUBLE_PICKUP_CUBE(354.25),//-5.75
             LEVEL_3_CONE(-15.927),
-            LEVEL_2_CONE(-8.5),
+            LEVEL_2_CONE(351.5),//-8.5
             LEVEL_1_CONE(41),
-            LEVEL_3_CUBE(21), // TODO
-            LEVEL_2_CUBE(68.5), // TODO
-            LEVEL_1_CUBE(41);// TODO
+            LEVEL_3_CUBE(21), 
+            LEVEL_2_CUBE(68.5),
+            LEVEL_1_CUBE(41);
 
             private final double angle;
 
