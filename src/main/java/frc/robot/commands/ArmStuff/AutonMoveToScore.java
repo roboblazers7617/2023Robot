@@ -24,7 +24,7 @@ public class AutonMoveToScore extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new InstantCommand(() -> arm.setPosition(arm.evalScorePosition(level, piece))), arm.WaitUntilArmInPosition(),
     arm.actuateSuperstructureCommandScore(level, piece),
-    new InstantCommand(() -> wrist.setPosition(wrist.evalScorePosition(level, piece), arm::getArmAngle), wrist),
+    new InstantCommand(() -> wrist.setPosition(wrist.evalScorePosition(level, piece), arm::getWrappedArmPosition), wrist),
     wrist.WaitUntilWristInPosition());
   }
 }

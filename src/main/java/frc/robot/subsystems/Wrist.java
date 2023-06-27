@@ -11,6 +11,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 
@@ -36,7 +37,7 @@ public class Wrist extends SubsystemBase {
 
   private final SparkMaxPIDController wristController = wristMotor.getPIDController();
 
-  private final AbsoluteEncoder wristEncoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
+  private final SparkMaxAbsoluteEncoder wristEncoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
 
   // TODO: private final DigitalInput isStowed = new
   // DigitalInput(IntakeConstants.WRIST_LIMIT_SWITCH_CHANEL);
@@ -59,6 +60,7 @@ public class Wrist extends SubsystemBase {
     wristEncoder.setInverted(WristConstants.IS_ENCODER_INVERTED);
     wristEncoder.setZeroOffset(WristConstants.ZERO_OFFSET);
 
+
     wristController.setP(WristConstants.WRIST_KP);
     wristController.setI(WristConstants.WRIST_KI);
     wristController.setD(WristConstants.WRIST_KD);
@@ -69,7 +71,8 @@ public class Wrist extends SubsystemBase {
     wristController.setPositionPIDWrappingMinInput(0);
     //wristController.setSmartMotionMaxAccel(WristConstants.MAX_ACCEL, 0);
    // wristController.setSmartMotionMaxVelocity(WristConstants.MAX_VEL, 0);
-    wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
+   //TODO: fix this
+   wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         wristFeedforward.calculate(Units.degreesToRadians(setpoint), 0));
 
     time.reset();
@@ -102,11 +105,15 @@ public class Wrist extends SubsystemBase {
     return wristEncoder.getVelocity();
   }
 
+  private double calculateFeedforwardSetpoint(double setpoint){
+    return (setpoint < 105) ? setpoint : (setpoint-360);
+  }
+
   public void setPosition(double position, Supplier<Double> armAngleSupplier) {
     setpoint = Math.min(position, maxAngle);
     wristController.setReference(position, CANSparkMax.ControlType.kPosition, 0,
         wristFeedforward.calculate(
-            Units.degreesToRadians(setpoint + (armAngleSupplier.get() - ArmConstants.MINIMUM_SHOULDER_ANGLE)), 0));
+            Units.degreesToRadians(calculateFeedforwardSetpoint(setpoint) + (armAngleSupplier.get() - ArmConstants.FF_MAX_SHOULDER_ANGLE)), 0));
   }
 
   public void setPosition(WristPosition position, Supplier<Double> armAngleSupplier) {
@@ -118,16 +125,8 @@ public class Wrist extends SubsystemBase {
     setpoint = Math.min(setpoint, maxAngle);
     wristController.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         wristFeedforward.calculate(
-            Units.degreesToRadians(setpoint + (armAngleSupplier.get() - ArmConstants.MINIMUM_SHOULDER_ANGLE)),
+            Units.degreesToRadians(calculateFeedforwardSetpoint(setpoint) + (armAngleSupplier.get() - ArmConstants.FF_MAX_SHOULDER_ANGLE)),
             Units.degreesToRadians(velocityDegrees)));
-  }
-
-  public void removeBounds(){
-    maxAngle = 200;
-  }
-
-  public void addBounds(){
-    maxAngle = WristConstants.MAX_WRIST_ANGLE;
   }
 
   public double getWristMotorTemp() {

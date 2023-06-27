@@ -28,7 +28,7 @@ public class SimpleMoveToScore extends SequentialCommandGroup {
     new ParallelRaceGroup(
       arm.WaitUntilArmInPosition(),
       new WaitUntilCommand( () ->(arm.getArmAngle() > logicalNumber))),
-    new InstantCommand(() -> wrist.setPosition(wrist.evalScorePosition(level, piece), arm::getArmAngle),
+    new InstantCommand(() -> wrist.setPosition(wrist.evalScorePosition(level, piece), arm::getWrappedArmPosition),
       wrist),
     arm.WaitUntilArmInPosition(),
     wrist.WaitUntilWristInPosition());

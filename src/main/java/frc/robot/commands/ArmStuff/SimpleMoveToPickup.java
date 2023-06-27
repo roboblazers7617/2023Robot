@@ -25,7 +25,7 @@ public class SimpleMoveToPickup extends SequentialCommandGroup {
     double logicalNumber = -40;
     addCommands(arm.intigratedMoveToPickup(location, piece),
      // new WaitUntilCommand(() -> (arm.getArmAngle() > logicalNumber)),
-      new InstantCommand(() -> wrist.setPosition(wrist.evalPickupLocation(location, piece), arm::getArmAngle),
+      new InstantCommand(() -> wrist.setPosition(wrist.evalPickupLocation(location, piece), arm::getWrappedArmPosition),
         wrist),
       arm.WaitUntilArmInPosition(),
       wrist.WaitUntilWristInPosition());

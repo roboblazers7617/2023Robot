@@ -24,7 +24,7 @@ public class StowAuton extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new InstantCommand(() -> intake.setIntakeSpeed(IntakeDirection.STOP.speed()), intake),
-        new InstantCommand(() -> wrist.setPosition(WristPosition.STOW, arm::getArmAngle), wrist),
+        new InstantCommand(() -> wrist.setPosition(WristPosition.STOW, arm::getWrappedArmPosition), wrist),
         new InstantCommand(() -> arm.actuateSuperstructure(PnuematicPositions.RETRACTED)), new WaitCommand(.3),
         new InstantCommand(() -> arm.setPosition(ArmPositions.STOW), arm),
        arm.WaitUntilArmInPosition());
