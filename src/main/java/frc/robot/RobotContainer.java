@@ -125,7 +125,7 @@ public class RobotContainer {
                                 (Math.abs(m_operatorController.getLeftY()) > OperatorConstants.DEADZONE
                                                 ? -m_operatorController.getLeftY()
                                                 : 0) * WristConstants.MAX_MANNUAL_WRIST_SPEED,
-                                arm::getArmAngle), wrist));
+                                arm::getWrappedArmPosition), wrist));
 
                 ArrayList<ShuffleboardTabBase> tabs = new ArrayList<>();
                 // YOUR CODE HERE | | |
@@ -230,17 +230,17 @@ public class RobotContainer {
 
                 m_operatorController.a().onTrue(new ToggleArmPnuematics(arm));
 
-                m_operatorController.start()
-                                .onTrue(new InstantCommand(() -> arm.removeBounds()))
-                                .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
-                                                new InstantCommand(() -> arm.resetEncoders())));
-                m_operatorController.back()
-                                .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.removeBounds()),
-                                                new InstantCommand(() -> wrist.removeBounds())))
-                                .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
-                                                new InstantCommand(() -> wrist.addBounds()),
-                                                new InstantCommand(() -> arm.resetEncoders()),
-                                                new InstantCommand(() -> wrist.resetEncoder())));
+               // m_operatorController.start()
+               //                 .onTrue(new InstantCommand(() -> arm.removeBounds()))
+                //                .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
+                 //                               new InstantCommand(() -> arm.resetEncoders())));
+              //  m_operatorController.back()
+                 //               .onTrue(new ParallelCommandGroup(new InstantCommand(() -> arm.removeBounds()),
+                  //                              new InstantCommand(() -> wrist.removeBounds())))
+                  //              .onFalse(new ParallelCommandGroup(new InstantCommand(() -> arm.addBounds()),
+                    //                            new InstantCommand(() -> wrist.addBounds()),
+                    //                            new InstantCommand(() -> arm.resetEncoders()),
+                     //                           new InstantCommand(() -> wrist.resetEncoder())));
                 m_operatorController.povDown().onTrue(
                                 new SimpleMoveToScore(arm, wrist, () -> ScoreLevel.LEVEL_1, () -> getSelectedPiece()));
                 m_operatorController.povRight().onTrue(
@@ -255,7 +255,7 @@ public class RobotContainer {
 
         public void stow() {
                 arm.setPosition(ArmPositions.STOW);
-                wrist.setPosition(WristPosition.STOW, () -> arm.getArmAngle());
+                wrist.setPosition(WristPosition.STOW, () -> arm.getWrappedArmPosition());
                 arm.actuateSuperstructure(PnuematicPositions.RETRACTED);
                 intake.setIntakeSpeed(0);
         }

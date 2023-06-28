@@ -6,11 +6,14 @@ package frc.robot.subsystems;
 
 import java.util.function.Supplier;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.util.Units;
@@ -33,13 +36,11 @@ import frc.robot.Constants.ScoreLevel;
 
 public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
-  private CANSparkMax shoulderMotor = new CANSparkMax(ArmConstants.SHOULDER_MOTOR_ID, MotorType.kBrushless);
-  private CANSparkMax shoulderMotorFollower = new CANSparkMax(ArmConstants.SHOULDER_FOLLOWER_MOTOR_ID,
+  private CANSparkMax shoulderMotor = new CANSparkMax(ArmConstants.SHOULDER_FOLLOWER_MOTOR_ID, MotorType.kBrushless);
+  private CANSparkMax shoulderMotorFollower = new CANSparkMax(ArmConstants.SHOULDER_MOTOR_ID,
       MotorType.kBrushless);
   private SparkMaxPIDController controller;
-  private SparkMaxPIDController controllerFollower;
-  private RelativeEncoder shoulderEncoder = shoulderMotor.getEncoder();
-  private RelativeEncoder shoulderFollowerEncoder = shoulderMotorFollower.getEncoder();
+  private SparkMaxAbsoluteEncoder shoulderEncoder = shoulderMotor.getAbsoluteEncoder(Type.kDutyCycle);
   private DoubleSolenoid leftPiston;
   private DoubleSolenoid rightPiston;
   private Pnuematics pneumatics;
@@ -59,7 +60,7 @@ public class Arm extends SubsystemBase {
   private double setpoint = ArmPositions.STOW.getShoulderAngle();
 
   private double maxAngle = ArmConstants.MAX_SHOULDER_ANGLE;
-  private double minAngle = ArmConstants.MINIMUM_SHOULDER_ANGLE;
+  private double minAngle = ArmConstants.MIN_SHOULDER_ANGLE;
 
   public Arm(Pnuematics pnuematics) {
     shoulderMotor.restoreFactoryDefaults();
@@ -73,29 +74,21 @@ public class Arm extends SubsystemBase {
     shoulderMotorFollower.follow(shoulderMotor, true);
 
     shoulderEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
-    shoulderEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR / 60.0);
-    shoulderEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    shoulderFollowerEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
-    shoulderFollowerEncoder.setVelocityConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR / 60.0);
-    shoulderFollowerEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
+    shoulderEncoder.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
+    shoulderEncoder.setInverted(ArmConstants.IS_ENCODER_INVERTED);
+    shoulderEncoder.setZeroOffset(ArmConstants.ZERO_OFFSET);
 
     controller = shoulderMotor.getPIDController();
-    controllerFollower = shoulderMotorFollower.getPIDController();
-
-    controllerFollower.setP(ArmConstants.KP);
-    controllerFollower.setI(ArmConstants.KI);
-    controllerFollower.setD(ArmConstants.KD);
-    controllerFollower.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
-    controllerFollower.setSmartMotionMaxAccel(ArmConstants.MAX_ACCEL, 0);
-    controllerFollower.setSmartMotionMaxVelocity(ArmConstants.MAX_VEL, 0);
-
     controller.setP(ArmConstants.KP);
     controller.setI(ArmConstants.KI);
     controller.setD(ArmConstants.KD);
+    controller.setFeedbackDevice(shoulderEncoder);
     controller.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
     controller.setSmartMotionMaxAccel(ArmConstants.MAX_ACCEL, 0);
     controller.setSmartMotionMaxVelocity(ArmConstants.MAX_VEL, 0);
-    controller.setP(ArmConstants.KP);
+    controller.setPositionPIDWrappingEnabled(true);
+    controller.setPositionPIDWrappingMaxInput(360);
+    controller.setPositionPIDWrappingMaxInput(0);
 
     this.pneumatics = pnuematics;
     leftPiston = pnuematics.getLeftArmPiston();
@@ -157,13 +150,21 @@ public class Arm extends SubsystemBase {
       return ArmPositions.STOW;
   }
 
+  private double calculateFeedforwardSetpoint(double setpoint){
+    return (setpoint > 90) ? setpoint : (setpoint-360);
+  }
+
+  public double getWrappedArmPosition(){
+    return calculateFeedforwardSetpoint(shoulderEncoder.getPosition()) 
+    + ((getSuperstructureState() == Value.kForward) ? ArmConstants.PISTON_BACK : ArmConstants.PISTON_FORWARD);
+  }
+
   public void setPosition(double positionDegrees) {
     setpoint = Math.min(positionDegrees, maxAngle);
     setpoint = Math.max(setpoint, minAngle);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
-        feedforward.calculate(Units.degreesToRadians(setpoint), 0));
-    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
-        feedforward.calculate(Units.degreesToRadians(setpoint), 0));
+        feedforward.calculate(Units.degreesToRadians(calculateFeedforwardSetpoint(setpoint)), 0));
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\nposition");
   }
 
   public void setPosition(ArmPositions position) {
@@ -175,20 +176,10 @@ public class Arm extends SubsystemBase {
     setpoint = Math.min(setpoint, maxAngle);
     setpoint = Math.max(setpoint, minAngle);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
-        feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
-    controllerFollower.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
-        feedforward.calculate(Units.degreesToRadians(setpoint), Units.degreesToRadians(velocityDegreesPerSec)));
+        feedforward.calculate(Units.degreesToRadians(calculateFeedforwardSetpoint(setpoint)), Units.degreesToRadians(velocityDegreesPerSec)));
+        System.out.println("\n\n\n\n\n\n\n\n\n\n\n"+setpoint);
   }
 
-  public void removeBounds(){
-    maxAngle = 100;
-    minAngle = -100;
-  }
-
-  public void addBounds(){
-    maxAngle = ArmConstants.MAX_SHOULDER_ANGLE;
-    minAngle = ArmConstants.MINIMUM_SHOULDER_ANGLE;
-  }
 
   public Command actuateSuperstructureCommandPickup(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
     return Commands.runOnce(() -> actuateSuperstructure(evalPickupPosition(location, piece).getPistonPosition()), this);
@@ -213,12 +204,6 @@ public class Arm extends SubsystemBase {
 
   public boolean isArmStowed() {
     return isArmStowed.get();
-  }
-
-  public void resetEncoders(){
-    shoulderEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    shoulderFollowerEncoder.setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
-    setPosition(ArmConstants.MINIMUM_SHOULDER_ANGLE);
   }
 
   public double getShoulderAngle() {
