@@ -295,11 +295,11 @@ public final class Constants {
         public static final int SHOULDER_FOLLOWER_MOTOR_ID = 32;
         public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
 
-        public static final double KP = 0.015;
+        public static final double KP = 0.06;//.015
         public static final double KI = 0;
-        public static final double KD = 0;//.12
+        public static final double KD = 0.12;//35;//.12
         public static final double KS = 0.00;
-        public static final double KG = 0.1;
+        public static final double KG = 0.18;
         public static final double KV = 0;
 
         // TODO: Lukas. (High) Set a position tolerance
