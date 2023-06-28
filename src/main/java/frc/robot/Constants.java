@@ -391,9 +391,9 @@ public final class Constants {
             LEVEL_3_CONE(-15.927),
             LEVEL_2_CONE(-8.5),
             LEVEL_1_CONE(41),
-            LEVEL_3_CUBE(21), // TODO
-            LEVEL_2_CUBE(68.5), // TODO
-            LEVEL_1_CUBE(41);// TODO
+            LEVEL_3_CUBE(21), 
+            LEVEL_2_CUBE(68.5), 
+            LEVEL_1_CUBE(41);
 
             private final double angle;
 
