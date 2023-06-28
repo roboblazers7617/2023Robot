@@ -295,51 +295,53 @@ public final class Constants {
         public static final int SHOULDER_FOLLOWER_MOTOR_ID = 32;
         public static final AnalogInput SHOULDER_POTENTIOMETER_PORT = new AnalogInput(0);
 
-        public static final double KP = 0.005;//0 .07
+        public static final double KP = 0.015;
         public static final double KI = 0;
-        public static final double KD = 0;
+        public static final double KD = 0;//.12
         public static final double KS = 0.00;
-        public static final double KG = 0.01;
+        public static final double KG = 0.1;
         public static final double KV = 0;
 
         // TODO: Lukas. (High) Set a position tolerance
-        public static final double POSITION_TOLERANCE = 0.5;
+        public static final double POSITION_TOLERANCE = 2.5;
         public static final double SHOULDER_POTENTIOMETER_RANGE = 340;
         public static final double SHOULDER_POTENTIOMETER_OFFSET = -222;
         public static final int CURRENT_LIMIT = 39;
         public static final double SHOULDER_GEAR_RATIO = 1.0 / 204;
-        public static final double MAX_SHOULDER_ANGLE = 309;//-51
+        public static final double MIN_SHOULDER_ANGLE = 5;
         public static final double FF_MAX_SHOULDER_ANGLE = -51;
-        public static final double MIN_SHOULDER_ANGLE = 70;
+        public static final double MAX_SHOULDER_ANGLE = 126;
         public static final double MAX_MANNUAL_ARM_SPEED = 50.0;
         public static final double MAX_SPEED_DOWNWARD = -0.7;
         public static final double MAX_SPEED_UPWARD = 0.633;
-        public static final double PISTON_BACK = -90 + MAX_SHOULDER_ANGLE;
+        public static final double PISTON_BACK = -90 + MIN_SHOULDER_ANGLE;
         public static final double PISTON_FORWARD = 0;
-        public static final double MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS = MAX_SHOULDER_ANGLE+3.5;
-        public static final double MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS_FOR_SCORING= MAX_SHOULDER_ANGLE+50;
+        public static final double MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS = MIN_SHOULDER_ANGLE+3.5;
+        public static final double MINIMUM_SHOULDER_ANGLE_TO_ENSURE_PNEUMATICS_DONT_HIT_THINGS_FOR_SCORING= MIN_SHOULDER_ANGLE+50;
         public static final double MAX_ACCEL =10;//degrees per sec squared?
         public static final double MAX_VEL = 30;//degrees per sec?
 
-        public static final double ZERO_OFFSET = 347.4;
+        public static final double ZERO_OFFSET = 291.4;
         public static final boolean IS_ENCODER_INVERTED  = true;
         public static final double VELOCITY_CONVERSION_FACTOR = 360/60;//rotations to degrees; seconds to minutes
         public static final double POSITION_CONVERSION_FACTOR = 360;//rotations to degrees
+        
+        public static final double FF_OFFSET = 56;
 
-        // TODO: Lukas. (High) Set the angles
+        // TODO: Lukas. (High) Set the angles(offset from old by 56 degrees)
         public enum ArmPositions {
-            LEVEL_3_CONE(42.44, PnuematicPositions.EXTENDED),
-            LEVEL_2_CONE(4.6, PnuematicPositions.RETRACTED),
-            LEVEL_1_CONE(MAX_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
-            LEVEL_3_CUBE(37, PnuematicPositions.EXTENDED), // 
-            LEVEL_2_CUBE(340.89, PnuematicPositions.RETRACTED), //- 19.11
-            LEVEL_1_CUBE(MAX_SHOULDER_ANGLE, PnuematicPositions.RETRACTED), // 
-            STOW(MAX_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
-            FLOOR_PICKUP_CONE(318.87, PnuematicPositions.EXTENDED),//-41.13
-            FLOOR_PICKUP_CUBE(317.53, PnuematicPositions.EXTENDED),//-42.47
+            LEVEL_3_CONE(98.44, PnuematicPositions.EXTENDED),
+            LEVEL_2_CONE(60.6, PnuematicPositions.RETRACTED),
+            LEVEL_1_CONE(MIN_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
+            LEVEL_3_CUBE(93, PnuematicPositions.EXTENDED),
+            LEVEL_2_CUBE(39.89, PnuematicPositions.RETRACTED), 
+            LEVEL_1_CUBE(MIN_SHOULDER_ANGLE, PnuematicPositions.RETRACTED), 
+            STOW(MIN_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
+            FLOOR_PICKUP_CONE(14.87, PnuematicPositions.EXTENDED),//-41.13
+            FLOOR_PICKUP_CUBE(13.53, PnuematicPositions.EXTENDED),//-42.47
           
-            STATION_PICKUP_CONE(16.876, PnuematicPositions.RETRACTED),
-            STATION_PICKUP_CUBE(11, PnuematicPositions.RETRACTED);
+            STATION_PICKUP_CONE(72.876, PnuematicPositions.RETRACTED),
+            STATION_PICKUP_CUBE(67, PnuematicPositions.RETRACTED);
 
             private final double shoulderAngle;
             private final PnuematicPositions pistonPosition;
@@ -366,8 +368,8 @@ public final class Constants {
 
         public static final int CURRENT_LIMIT = 20;
 
-        public static final double WRIST_ANGLE_TOLERANCE = 2;
-        public static final double MAX_WRIST_ANGLE = 102;
+        public static final double WRIST_ANGLE_TOLERANCE = 5;
+        public static final double MAX_WRIST_ANGLE = 355;
         public static final double MAX_UPWARD_WRIST_SPEED = 0.33; // TODO: Changed 3/4/23 from 0.25
         public static final double MAX_DOWNWARD_WRIST_SPEED = -0.2;
         public static final double MAX_WRIST_ACCEL = 0.12;
@@ -392,18 +394,20 @@ public final class Constants {
         public static final double VELOCITY_CONVERSION_FACTOR = 360/60;//rotations to degrees; seconds to minutes
         public static final double POSITION_CONVERSION_FACTOR = 360;//rotations to degrees
 
+        public static final double FF_OFFSET = 225;//degrees
+
         public enum WristPosition {
             STOW(WristConstants.MAX_WRIST_ANGLE),
-            FLOOR_CUBE_PICKUP(41.61),
-            FLOOR_CONE_PICKUP(50.4),
-            DOUBLE_PICKUP_CONE(352.75),//-17.25
-            DOUBLE_PICKUP_CUBE(354.25),//-5.75
-            LEVEL_3_CONE(-15.927),
-            LEVEL_2_CONE(351.5),//-8.5
-            LEVEL_1_CONE(41),
-            LEVEL_3_CUBE(21), 
-            LEVEL_2_CUBE(68.5),
-            LEVEL_1_CUBE(41);
+            FLOOR_CUBE_PICKUP(266.61),//41.61
+            FLOOR_CONE_PICKUP(279),//279.0
+            DOUBLE_PICKUP_CONE(198),//198.5
+            DOUBLE_PICKUP_CUBE(214.56),// 214.56
+            LEVEL_3_CONE(203.32),//203.32
+            LEVEL_2_CONE(207.34),//207.34
+            LEVEL_1_CONE(268.13),//268.13
+            LEVEL_3_CUBE(245.2), //245.2
+            LEVEL_2_CUBE(301.5),//301.5
+            LEVEL_1_CUBE(268.13);//268.13
 
             private final double angle;
 

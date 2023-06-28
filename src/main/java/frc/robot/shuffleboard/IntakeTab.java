@@ -5,20 +5,23 @@ import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import frc.robot.Constants.WristConstants;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Wrist;
 
 public class IntakeTab extends ShuffleboardTabBase {
     Wrist wrist;
-    DoublePublisher wristAnglePublisher;
-    DoublePublisher wristSpeedPublisher;
-    DoublePublisher intakeSpeedPublisher;
-    DoublePublisher wristTempPublisher;
-    DoublePublisher intakeTempPublisher;
-    BooleanPublisher isIntakeStoredPublisher;
-    BooleanPublisher isHoldingCubePublisher;
-    DoublePublisher wristEncoderAnglePublisher;
-    DoublePublisher intakeCurrentPublisher;
+    DoublePublisher wristAnglePublisher,
+     wristSpeedPublisher,
+     intakeSpeedPublisher,
+     wristTempPublisher,
+     intakeTempPublisher,
+     wristEncoderAnglePublisher,
+     intakeCurrentPublisher,
+     feedForwardWristAnglePublisher,
+     relativeAnglePublisher;
+    BooleanPublisher isIntakeStoredPublisher,
+     isHoldingCubePublisher;
     Intake intake;
     public IntakeTab (Intake subsystem, Wrist wrist){
         intake = subsystem;
@@ -37,6 +40,9 @@ public class IntakeTab extends ShuffleboardTabBase {
         wristEncoderAnglePublisher = networkTable.getDoubleTopic("Wrist Encoder Angle").publish();
         intakeCurrentPublisher = networkTable.getDoubleTopic("Intake Current").publish();
         intakeTempPublisher = networkTable.getDoubleTopic("Intake Temp").publish();
+        feedForwardWristAnglePublisher = networkTable.getDoubleTopic("Feedforward Wrist Angle").publish();
+        relativeAnglePublisher = networkTable.getDoubleTopic("Relative Encoder Angle").publish();
+        
         //shuffleboardTabTesting.add(new intake.moveToPositionCommand(IntakeConstants.WristPosition.FloorConePickup));
         
     }
@@ -51,6 +57,8 @@ public class IntakeTab extends ShuffleboardTabBase {
         wristTempPublisher.set((wrist.getWristMotorTemp()*(9.0/5.0)+32.0));
         intakeTempPublisher.set((intake.getMotorTemperature()*(9.0/5.0)+32.0));
         intakeCurrentPublisher.set(intake.getCurent());
+        feedForwardWristAnglePublisher.set(wrist.getWristPosition() - WristConstants.FF_OFFSET);
+        relativeAnglePublisher.set(wrist.getRelativeEncoderWristPosition());
 
     }
     

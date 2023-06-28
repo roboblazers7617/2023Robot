@@ -41,6 +41,7 @@ public class Arm extends SubsystemBase {
       MotorType.kBrushless);
   private SparkMaxPIDController controller;
   private SparkMaxAbsoluteEncoder shoulderEncoder = shoulderMotor.getAbsoluteEncoder(Type.kDutyCycle);
+  private final RelativeEncoder relativeEncoder = shoulderMotor.getEncoder();
   private DoubleSolenoid leftPiston;
   private DoubleSolenoid rightPiston;
   private Pnuematics pneumatics;
@@ -71,12 +72,18 @@ public class Arm extends SubsystemBase {
     shoulderMotor.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
     shoulderMotorFollower.setSmartCurrentLimit(ArmConstants.CURRENT_LIMIT);
 
+    shoulderMotor.setInverted(true);
+
     shoulderMotorFollower.follow(shoulderMotor, true);
 
     shoulderEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR);
     shoulderEncoder.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR);
     shoulderEncoder.setInverted(ArmConstants.IS_ENCODER_INVERTED);
     shoulderEncoder.setZeroOffset(ArmConstants.ZERO_OFFSET);
+
+    relativeEncoder.setPositionConversionFactor(ArmConstants.POSITION_CONVERSION_FACTOR* ArmConstants.SHOULDER_GEAR_RATIO);
+    relativeEncoder.setVelocityConversionFactor(ArmConstants.VELOCITY_CONVERSION_FACTOR*ArmConstants.SHOULDER_GEAR_RATIO);
+    relativeEncoder.setPosition(-51);
 
     controller = shoulderMotor.getPIDController();
     controller.setP(ArmConstants.KP);
@@ -86,9 +93,6 @@ public class Arm extends SubsystemBase {
     controller.setOutputRange(ArmConstants.MAX_SPEED_DOWNWARD, ArmConstants.MAX_SPEED_UPWARD);
     controller.setSmartMotionMaxAccel(ArmConstants.MAX_ACCEL, 0);
     controller.setSmartMotionMaxVelocity(ArmConstants.MAX_VEL, 0);
-    controller.setPositionPIDWrappingEnabled(true);
-    controller.setPositionPIDWrappingMaxInput(360);
-    controller.setPositionPIDWrappingMaxInput(0);
 
     this.pneumatics = pnuematics;
     leftPiston = pnuematics.getLeftArmPiston();
@@ -151,7 +155,7 @@ public class Arm extends SubsystemBase {
   }
 
   private double calculateFeedforwardSetpoint(double setpoint){
-    return (setpoint > 90) ? setpoint : (setpoint-360);
+    return setpoint - ArmConstants.FF_OFFSET;
   }
 
   public double getWrappedArmPosition(){
@@ -164,7 +168,7 @@ public class Arm extends SubsystemBase {
     setpoint = Math.max(setpoint, minAngle);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(calculateFeedforwardSetpoint(setpoint)), 0));
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n\nposition");
+
   }
 
   public void setPosition(ArmPositions position) {
@@ -177,8 +181,9 @@ public class Arm extends SubsystemBase {
     setpoint = Math.max(setpoint, minAngle);
     controller.setReference(setpoint, CANSparkMax.ControlType.kPosition, 0,
         feedforward.calculate(Units.degreesToRadians(calculateFeedforwardSetpoint(setpoint)), Units.degreesToRadians(velocityDegreesPerSec)));
-        System.out.println("\n\n\n\n\n\n\n\n\n\n\n"+setpoint);
-  }
+      //System.out.println("Setpoint for FF is " + calculateFeedforwardSetpoint(setpoint));
+      //System.out.println("Velocity for FF is " + velocityDegreesPerSec);
+      }
 
 
   public Command actuateSuperstructureCommandPickup(Supplier<PickupLocation> location, Supplier<PieceType> piece) {
@@ -206,6 +211,10 @@ public class Arm extends SubsystemBase {
     return isArmStowed.get();
   }
 
+  public double getSetpoint() {
+      return setpoint;
+  }
+
   public double getShoulderAngle() {
     return shoulderEncoder.getPosition();
   }
@@ -213,6 +222,10 @@ public class Arm extends SubsystemBase {
   public double getArmAngle() {
     return shoulderEncoder.getPosition()
         + ((getSuperstructureState() == Value.kForward) ? ArmConstants.PISTON_BACK : ArmConstants.PISTON_FORWARD);
+  }
+
+  public double getRelativeEncoderAngle(){
+    return relativeEncoder.getPosition();
   }
 
   public boolean atSetpoint() {

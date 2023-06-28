@@ -38,6 +38,7 @@ public class Wrist extends SubsystemBase {
   private final SparkMaxPIDController wristController = wristMotor.getPIDController();
 
   private final SparkMaxAbsoluteEncoder wristEncoder = wristMotor.getAbsoluteEncoder(Type.kDutyCycle);
+  private final RelativeEncoder relativeWristEncoder = wristMotor.getEncoder();
 
   // TODO: private final DigitalInput isStowed = new
   // DigitalInput(IntakeConstants.WRIST_LIMIT_SWITCH_CHANEL);
@@ -60,15 +61,16 @@ public class Wrist extends SubsystemBase {
     wristEncoder.setInverted(WristConstants.IS_ENCODER_INVERTED);
     wristEncoder.setZeroOffset(WristConstants.ZERO_OFFSET);
 
+    relativeWristEncoder.setPositionConversionFactor(WristConstants.POSITION_CONVERSION_FACTOR*WristConstants.WRIST_GEAR_RATIO);
+    relativeWristEncoder.setVelocityConversionFactor(WristConstants.VELOCITY_CONVERSION_FACTOR*WristConstants.WRIST_GEAR_RATIO);
+    relativeWristEncoder.setPosition(102);
+
 
     wristController.setP(WristConstants.WRIST_KP);
     wristController.setI(WristConstants.WRIST_KI);
     wristController.setD(WristConstants.WRIST_KD);
     wristController.setFeedbackDevice(wristEncoder);
     wristController.setOutputRange(WristConstants.MAX_DOWNWARD_WRIST_SPEED, WristConstants.MAX_UPWARD_WRIST_SPEED);
-    wristController.setPositionPIDWrappingEnabled(true);
-    wristController.setPositionPIDWrappingMaxInput(360);
-    wristController.setPositionPIDWrappingMinInput(0);
     //wristController.setSmartMotionMaxAccel(WristConstants.MAX_ACCEL, 0);
    // wristController.setSmartMotionMaxVelocity(WristConstants.MAX_VEL, 0);
    //TODO: fix this
@@ -101,12 +103,16 @@ public class Wrist extends SubsystemBase {
     return wristEncoder.getPosition();
   }
 
+  public double getRelativeEncoderWristPosition(){
+    return relativeWristEncoder.getPosition();
+  }
+
   public double getWristVelocity() {
     return wristEncoder.getVelocity();
   }
 
   private double calculateFeedforwardSetpoint(double setpoint){
-    return (setpoint < 105) ? setpoint : (setpoint-360);
+    return setpoint- WristConstants.FF_OFFSET;
   }
 
   public void setPosition(double position, Supplier<Double> armAngleSupplier) {
