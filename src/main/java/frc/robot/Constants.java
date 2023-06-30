@@ -71,7 +71,7 @@ public final class Constants {
         public static final int CURRENT_LIMIT = 40;
 
         public static final double REG_SPEED = 0.5;
-        public static final double SLOW_SPEED = 0.2;//was .25
+        public static final double SLOW_SPEED = 0.25;//was .25
         public static final double REALLY_SLOW_SPEED = 0.15;//they want this removed
         public static final double FAST_SPEED = 1;
         public static final double MAX_ANGULAR_VELOCITY = 0.75;// .65
@@ -323,17 +323,17 @@ public final class Constants {
 
         // TODO: Lukas. (High) Set the angles
         public enum ArmPositions {
-            LEVEL_3_CONE(42.44, PnuematicPositions.EXTENDED),
-            LEVEL_2_CONE(4.6, PnuematicPositions.RETRACTED),
+            LEVEL_3_CONE(44.29, PnuematicPositions.EXTENDED),
+            LEVEL_2_CONE(3.621, PnuematicPositions.RETRACTED),
             LEVEL_1_CONE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
-            LEVEL_3_CUBE(37, PnuematicPositions.EXTENDED), // TODO
-            LEVEL_2_CUBE(-19.11, PnuematicPositions.RETRACTED), // TODO
+            LEVEL_3_CUBE(33.8, PnuematicPositions.EXTENDED), // TODO
+            LEVEL_2_CUBE(-16.8, PnuematicPositions.RETRACTED), // TODO
             LEVEL_1_CUBE(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED), // TODO
             STOW(MINIMUM_SHOULDER_ANGLE, PnuematicPositions.RETRACTED),
             FLOOR_PICKUP_CONE(-41.13, PnuematicPositions.EXTENDED),
-            FLOOR_PICKUP_CUBE(-42.47, PnuematicPositions.EXTENDED),
+            FLOOR_PICKUP_CUBE(-38.8, PnuematicPositions.EXTENDED),
           
-            STATION_PICKUP_CONE(16.876, PnuematicPositions.RETRACTED),
+            STATION_PICKUP_CONE(14.29, PnuematicPositions.RETRACTED),
             STATION_PICKUP_CUBE(11, PnuematicPositions.RETRACTED);
 
             private final double shoulderAngle;
@@ -384,14 +384,14 @@ public final class Constants {
 
         public enum WristPosition {
             STOW(WristConstants.MAX_WRIST_ANGLE),
-            FLOOR_CUBE_PICKUP(41.61),
+            FLOOR_CUBE_PICKUP(35),
             FLOOR_CONE_PICKUP(50.4),
-            DOUBLE_PICKUP_CONE(-17.25),
+            DOUBLE_PICKUP_CONE(-11.01),
             DOUBLE_PICKUP_CUBE(-5.75),
-            LEVEL_3_CONE(-15.927),
+            LEVEL_3_CONE(-16.4),
             LEVEL_2_CONE(-8.5),
             LEVEL_1_CONE(41),
-            LEVEL_3_CUBE(21), // TODO
+            LEVEL_3_CUBE(14.6), // TODO
             LEVEL_2_CUBE(68.5), // TODO
             LEVEL_1_CUBE(41);// TODO
 
