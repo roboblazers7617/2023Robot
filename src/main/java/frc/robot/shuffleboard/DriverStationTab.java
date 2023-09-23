@@ -4,6 +4,8 @@
 
 package frc.robot.shuffleboard;
 
+import java.util.HashMap;
+
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.networktables.BooleanPublisher;
@@ -19,6 +21,8 @@ import frc.robot.Constants.DrivetrainConstants;
 import frc.robot.Constants.DrivetrainConstants.DrivetrainMode;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Intake;
+import shuffleboardlib.Question;
+import shuffleboardlib.Questionnaire;
 
 //if auto things are happining
 
@@ -27,7 +31,8 @@ public class DriverStationTab extends ShuffleboardTabBase {
     IntegerSubscriber modeSub;
     private final SendableChooser<String> drivetrainMode = new SendableChooser<>();
     private final SendableChooser<Boolean> debugMode = new SendableChooser<>();
-    // private final SendableChooser<FieldPositions.FieldLocation> targetNode = new SendableChooser<>();
+    // private final SendableChooser<FieldPositions.FieldLocation> targetNode = new
+    // SendableChooser<>();
     private final SendableChooser<DrivetrainConstants.AutoPath> autoPath = new SendableChooser<>();
 
     private Drivetrain drivetrain;
@@ -79,9 +84,10 @@ public class DriverStationTab extends ShuffleboardTabBase {
         isInBrakeMode = networkTable.getBooleanTopic("Coast mode").publish();
         tab.add("Coast mode", false).withPosition(3, 0);
 
-        // isIntakeSpinning = networkTable.getBooleanTopic("Is Intake Spinning").publish();
+        // isIntakeSpinning = networkTable.getBooleanTopic("Is Intake
+        // Spinning").publish();
         // tab.add("Is Intake Spinning", false).withPosition(4, 0);
-        //path planning target use button box now
+        // path planning target use button box now
         // targetNode.setDefaultOption("Node 1", FieldLocation.NODE1);
         // targetNode.addOption("Node 2", FieldLocation.NODE2);
         // targetNode.addOption("Node 3", FieldLocation.NODE3);
@@ -92,16 +98,28 @@ public class DriverStationTab extends ShuffleboardTabBase {
         // targetNode.addOption("Node 8", FieldLocation.NODE8);
         // targetNode.addOption("Node 9", FieldLocation.NODE9);
         // tab.add("Field Target", targetNode);
-        
 
-
-        //current speed modifier
+        // current speed modifier
         maxSpeedPub = networkTable.getDoubleTopic("max SPEED").publish();
         tab.add("max SPEED", 20.0).withPosition(0, 1);
 
         // //path planning target
-        //  pathPlanningTargetPub = networkTable.getStringTopic("target position for path planning").publish();
-        //  tab.add("target position for path planning", "NA").withPosition(1, 2);
+        // pathPlanningTargetPub = networkTable.getStringTopic("target position for path
+        // planning").publish();
+        // tab.add("target position for path planning", "NA").withPosition(1, 2);
+
+        // 1 or 2 piece answer hashmap
+        HashMap<String, Question> pieceNumber = new HashMap<>();
+        pieceNumber.put("1", new Question("1 piece", null));
+        pieceNumber.put("2", new Question("2 piece", null));
+        Question pieceNumberQuestion = new Question("How many pieces?", pieceNumber);
+
+        HashMap<String, Question> answersHashMap = new HashMap<>();
+        answersHashMap.put("left", pieceNumberQuestion);
+        answersHashMap.put("middle", new Question("Do you like sushi?", null));
+        answersHashMap.put("right", pieceNumberQuestion);
+
+        new Questionnaire("Driver Station", new Question("starting position", answersHashMap), 3);
 
         camera = CameraServer.startAutomaticCapture();
         if (camera.isConnected()) {
@@ -124,10 +142,9 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
         // isInBrakeMode.set(!drivetrain.isBrakeMode());
 
-        //if intake speed is not equal to zero set isIntakeSpinning to true
+        // if intake speed is not equal to zero set isIntakeSpinning to true
         // isIntakeSpinning.set(intake.getIntakeSpeed() != 0 ? true: false);
         // if(intake.getIntakeSpeed())
-        
 
     }
     // public void update(){}
