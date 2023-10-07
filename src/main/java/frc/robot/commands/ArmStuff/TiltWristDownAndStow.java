@@ -21,7 +21,7 @@ public class TiltWristDownAndStow extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(//intake.SpinIntakeCommand(() -> PieceType.CUBE, true),
-          new InstantCommand(() -> wrist.setPosition(29, () -> arm.getArmAngle())), 
+          new InstantCommand(() -> wrist.setPosition(40, () -> arm.getArmAngle())), 
           wrist.WaitUntilWristInPosition(), 
           new Stow(arm, wrist, intake));
   }
