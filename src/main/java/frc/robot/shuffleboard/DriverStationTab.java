@@ -36,6 +36,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
     // private StringPublisher pathPlanningTargetPub;
     private BooleanPublisher debugModePub;
     private BooleanPublisher isInBrakeMode;
+    private DoublePublisher intakeMotorTempature;
     // private BooleanPublisher isIntakeSpinning;
 
 
@@ -78,6 +79,8 @@ public class DriverStationTab extends ShuffleboardTabBase {
 
         isInBrakeMode = networkTable.getBooleanTopic("Coast mode").publish();
         tab.add("Coast mode", false).withPosition(3, 0);
+        intakeMotorTempature = networkTable.getDoubleTopic("Intake motor tempature").publish();
+        tab.add("Intake motor tempature", 0.0).withPosition(4, 0);
 
         // isIntakeSpinning = networkTable.getBooleanTopic("Is Intake Spinning").publish();
         // tab.add("Is Intake Spinning", false).withPosition(4, 0);
@@ -121,6 +124,7 @@ public class DriverStationTab extends ShuffleboardTabBase {
         // pathPlanningTargetPub.set(drivetrain.getTargetPose());
 
         debugModePub.set(debugMode.getSelected());
+        intakeMotorTempature.set(intake.getMotorTemperature()*(9.0/5.0)+32.0);
 
         // isInBrakeMode.set(!drivetrain.isBrakeMode());
 
