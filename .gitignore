@@ -168,3 +168,6 @@ simgui.json
 simgui-ds.json
 .vscode/settings.json
 *.wpilog
+
+#commit lib jars
+!libs/*.jar
