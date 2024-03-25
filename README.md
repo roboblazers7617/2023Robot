@@ -1,5 +1,5 @@
 # 2023Robot
-7617 robot code
+The 7617 robot code for 2023. For our current code go to our [GitHub Page](https://github.com/roboblazers7617).
 
 ## Subsystems
 Subsystems are used to group parts of the robot together and abstract low-level control. Subsystems include drivetrain, arm, and intake.
